@@ -16,7 +16,7 @@ type PageMetadataInput = {
   title: string;
   /** 120–160 characters. Written for humans: it's the snippet in search results. */
   description: string;
-  /** Path of the canonical URL, e.g. "/we-buy-houses/marietta-ga". */
+  /** Path of the canonical URL, e.g. "/we-buy-houses/st-albert-ab". */
   path: string;
   /** Set true for pages that shouldn't appear in search (thank-you, etc.). */
   noindex?: boolean;
@@ -65,7 +65,7 @@ export function pageMetadata(input: PageMetadataInput): Metadata {
       title: socialTitle,
       description,
       siteName: site.name,
-      locale: "en_US",
+      locale: "en_CA",
       images: [ogImage],
       ...(type === "article" ? { publishedTime, modifiedTime } : {}),
     },

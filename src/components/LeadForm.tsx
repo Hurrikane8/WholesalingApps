@@ -3,17 +3,22 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, LoaderCircle, Lock } from "lucide-react";
-import { CONDITIONS, TIMELINES, normalizePhone, type Reason } from "@/lib/lead-options";
+import { CONDITIONS, OCCUPANCY, PROPERTY_TYPES, TIMELINES, normalizePhone, type Option, type Reason } from "@/lib/lead-options";
 import { phoneHref, site } from "@/config/site";
 import { trackEvent } from "@/lib/analytics";
+import { readAttribution } from "@/lib/attribution";
+import { FieldError, Honeypot } from "@/components/form-parts";
 
 type Values = {
   address: string;
   name: string;
   phone: string;
   email: string;
+  propertyType: string;
   condition: string;
   timeline: string;
+  occupancy: string;
+  notes: string;
   smsConsent: boolean;
   website: string;
 };
@@ -23,33 +28,14 @@ const EMPTY: Values = {
   name: "",
   phone: "",
   email: "",
+  propertyType: "",
   condition: "",
   timeline: "",
+  occupancy: "",
+  notes: "",
   smsConsent: false,
   website: "",
 };
-
-const ATTRIBUTION_KEY = "lead_attribution";
-const TRACKED_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "fbclid", "msclkid"];
-
-/** First-touch attribution: remembered for the browser session so it survives page navigation. */
-function readAttribution(): Record<string, string> {
-  const fromUrl: Record<string, string> = {};
-  const params = new URLSearchParams(window.location.search);
-  for (const key of TRACKED_PARAMS) {
-    const value = params.get(key);
-    if (value) fromUrl[key] = value.slice(0, 200);
-  }
-  try {
-    if (Object.keys(fromUrl).length) {
-      sessionStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(fromUrl));
-      return fromUrl;
-    }
-    return JSON.parse(sessionStorage.getItem(ATTRIBUTION_KEY) ?? "{}");
-  } catch {
-    return fromUrl;
-  }
-}
 
 type Props = {
   /** Heading shown above the form. */
@@ -187,19 +173,7 @@ export function LeadForm({
       </p>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Honeypot: hidden from people, irresistible to bots. */}
-        <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
-          <label htmlFor={`${id}-website`}>Website</label>
-          <input
-            id={`${id}-website`}
-            name="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            value={values.website}
-            onChange={(e) => set("website", e.target.value)}
-          />
-        </div>
+        <Honeypot id={id} value={values.website} onChange={(v) => set("website", v)} />
 
         {step === 1 ? (
           <div className="space-y-4">
@@ -212,7 +186,7 @@ export function LeadForm({
                 ref={addressRef}
                 type="text"
                 autoComplete="street-address"
-                placeholder="123 Main St, City, State"
+                placeholder="e.g. 1234 56 St NW, Edmonton"
                 className="field-input"
                 value={values.address}
                 onChange={(e) => set("address", e.target.value)}
@@ -268,7 +242,7 @@ export function LeadForm({
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
-                  placeholder="(555) 555-5555"
+                  placeholder="(780) 555-5555"
                   className="field-input"
                   value={values.phone}
                   onChange={(e) => set("phone", e.target.value)}
@@ -292,40 +266,30 @@ export function LeadForm({
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor={`${id}-condition`} className="field-label">
-                  Condition
-                </label>
-                <select
-                  {...field("condition")}
-                  className="field-input"
-                  value={values.condition}
-                  onChange={(e) => set("condition", e.target.value)}
-                >
-                  <option value="">Select…</option>
-                  {CONDITIONS.map((c) => (
-                    <option key={c}>{c}</option>
-                  ))}
-                </select>
+            <fieldset>
+              <legend className="mb-2 text-sm font-medium text-slate-700">
+                About the property <span className="font-normal text-slate-500">(optional, helps us make an accurate offer)</span>
+              </legend>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <SelectField id={`${id}-propertyType`} label="Property type" options={PROPERTY_TYPES} value={values.propertyType} onChange={(v) => set("propertyType", v)} />
+                <SelectField id={`${id}-condition`} label="Condition" options={CONDITIONS} value={values.condition} onChange={(v) => set("condition", v)} />
+                <SelectField id={`${id}-timeline`} label="When do you want to sell?" options={TIMELINES} value={values.timeline} onChange={(v) => set("timeline", v)} />
+                <SelectField id={`${id}-occupancy`} label="Who lives there now?" options={OCCUPANCY} value={values.occupancy} onChange={(v) => set("occupancy", v)} />
               </div>
-              <div>
-                <label htmlFor={`${id}-timeline`} className="field-label">
-                  When do you want to sell?
-                </label>
-                <select
-                  {...field("timeline")}
-                  className="field-input"
-                  value={values.timeline}
-                  onChange={(e) => set("timeline", e.target.value)}
-                >
-                  <option value="">Select…</option>
-                  {TIMELINES.map((t) => (
-                    <option key={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+              <label htmlFor={`${id}-notes`} className="field-label mt-3">
+                What&apos;s prompting the sale?
+              </label>
+              <textarea
+                id={`${id}-notes`}
+                name="notes"
+                rows={2}
+                maxLength={2000}
+                placeholder="e.g. condo fees keep going up, inherited it, moving for work…"
+                className="field-input resize-y"
+                value={values.notes}
+                onChange={(e) => set("notes", e.target.value)}
+              />
+            </fieldset>
 
             <div className="flex items-start gap-3">
               <input
@@ -385,11 +349,32 @@ export function LeadForm({
   );
 }
 
-function FieldError({ id, message }: { id: string; message?: string }) {
-  if (!message) return null;
+function SelectField({
+  id,
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  options: readonly Option[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
-    <p id={id} className="mt-1 text-sm text-red-600">
-      {message}
-    </p>
+    <div>
+      <label htmlFor={id} className="mb-1 block text-xs font-medium text-slate-600">
+        {label}
+      </label>
+      <select id={id} className="field-input py-2.5" value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value="">Select…</option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }

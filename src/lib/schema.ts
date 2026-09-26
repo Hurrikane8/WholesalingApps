@@ -50,11 +50,11 @@ export function localBusinessSchema(): Json {
     logo: absoluteUrl("/icon.svg"),
     image: absoluteUrl("/opengraph-image"),
     telephone: phoneHref,
-    email: site.email,
+    ...(site.email ? { email: site.email } : {}),
     address: postalAddress(),
     geo: { "@type": "GeoCoordinates", ...market.geo },
     areaServed: [
-      { "@type": "State", name: market.state },
+      { "@type": "AdministrativeArea", name: `${market.province}, Canada` },
       { "@type": "AdministrativeArea", name: market.region },
     ],
     priceRange: "Free cash offers",
@@ -71,15 +71,16 @@ export function localBusinessSchema(): Json {
     knowsAbout: [
       "Selling a house for cash",
       "Selling a house as-is",
-      "Avoiding foreclosure",
-      "Selling inherited and probate property",
+      "Selling a condo townhouse",
+      "Avoiding foreclosure in Alberta",
+      "Selling inherited and estate property",
       "Selling rental property with tenants",
     ],
     contactPoint: {
       "@type": "ContactPoint",
       telephone: phoneHref,
       contactType: "customer service",
-      areaServed: "US",
+      areaServed: "CA",
       availableLanguage: "English",
     },
   };
@@ -93,7 +94,7 @@ export function websiteSchema(): Json {
     url: site.url,
     name: site.name,
     publisher: { "@id": ORG_ID },
-    inLanguage: "en-US",
+    inLanguage: "en-CA",
   };
 }
 
@@ -138,8 +139,8 @@ export function serviceSchema(opts: { name: string; description: string; path: s
     areaServed: location
       ? {
           "@type": "City",
-          name: `${location.city}, ${location.stateAbbr}`,
-          containedInPlace: { "@type": "AdministrativeArea", name: `${location.county} County` },
+          name: `${location.city}, ${location.provinceAbbr}`,
+          containedInPlace: { "@type": "AdministrativeArea", name: location.region ?? site.market.region },
           ...(location.geo ? { geo: { "@type": "GeoCoordinates", ...location.geo } } : {}),
         }
       : { "@type": "AdministrativeArea", name: site.market.region },
@@ -147,7 +148,7 @@ export function serviceSchema(opts: { name: string; description: string; path: s
       "@type": "Offer",
       description: "Free, no-obligation cash offer",
       price: "0",
-      priceCurrency: "USD",
+      priceCurrency: "CAD",
     },
   };
 }
@@ -174,6 +175,6 @@ export function articleSchema(opts: {
     image: absoluteUrl(opts.image ?? "/opengraph-image"),
     author: opts.author ? { "@type": "Person", name: opts.author } : { "@id": ORG_ID },
     publisher: { "@id": ORG_ID },
-    inLanguage: "en-US",
+    inLanguage: "en-CA",
   };
 }

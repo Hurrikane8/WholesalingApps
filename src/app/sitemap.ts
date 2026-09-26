@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     })),
     page("/faq", 0.7),
+    page("/investors", 0.6),
     page("/about", 0.6),
     page("/contact", 0.6),
     page("/privacy", 0.2, "yearly"),

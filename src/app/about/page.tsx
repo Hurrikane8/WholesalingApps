@@ -31,7 +31,7 @@ const values = [
   {
     icon: MapPin,
     title: "Local and accountable",
-    text: `We buy in ${market.region} and work with local title companies and closing attorneys, so you always know who you're dealing with.`,
+    text: `We buy in ${market.region} and close through local real estate lawyers, so you always know who you're dealing with.`,
   },
 ];
 
@@ -55,16 +55,16 @@ export default function AboutPage() {
             <p>
               Selling a house the traditional way works well when the home is in great shape and you have months to
               spare. But many homeowners we meet don&apos;t have that luxury. They&apos;ve inherited a house that needs
-              work, fallen behind on payments, are going through a divorce, or are simply worn out by a rental that
-              never stops needing attention.
+              work, fallen behind on payments, are going through a separation, own a condo townhouse where the fees
+              and assessments keep climbing, or are simply worn out by a rental that never stops needing attention.
             </p>
             <p>
-              {name} gives those homeowners a straightforward alternative. We buy houses in any condition, pay cash,
-              and close when it suits you, with no repairs, no showings and no commissions.
+              {name} gives those homeowners a straightforward alternative. We buy houses, condos and townhouses in
+              any condition, pay cash, and close when it suits you, with no repairs, no showings and no commissions.
             </p>
             <p>
-              After closing, we renovate the homes we keep, or we connect them with local investors who will. That
-              means neglected houses get fixed up and put back into use, which is good for the neighborhood too.
+              Most of the homes we buy end up with local investors who renovate them and put them back to use, as
+              updated homes to own or rent. That&apos;s good for the neighbourhood too.
             </p>
             {site.foundedYear && (
               <p>
@@ -76,9 +76,15 @@ export default function AboutPage() {
             <h2 className="text-xl font-bold text-slate-900">Our disclosure to every seller</h2>
             <p className="mt-3 text-slate-700">{site.disclosure}</p>
             <p className="mt-3 text-slate-700">
-              Our offers are always free and carry no obligation. You&apos;re welcome to have an attorney or trusted
+              Our offers are always free and carry no obligation. You&apos;re welcome to have a lawyer or trusted
               advisor review anything before you sign.
             </p>
+            {site.nameStory && (
+              <>
+                <h2 className="mt-8 text-xl font-bold text-slate-900">The story behind our name</h2>
+                <p className="mt-3 text-slate-700">{site.nameStory}</p>
+              </>
+            )}
           </div>
         </div>
       </section>

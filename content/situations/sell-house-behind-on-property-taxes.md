@@ -1,59 +1,57 @@
 ---
-title: "Sell a House With Back Taxes or Liens"
-description: "Behind on property taxes or facing liens? A sale can pay them off at closing, often before a tax sale. Learn your options and get a no-obligation cash offer."
-h1: "Behind on Property Taxes? Sell Before It Becomes a Tax Sale"
-label: "Back taxes or liens"
-summary: "Delinquent property taxes, judgments or code liens? A sale can pay them off at closing, often before the county takes action."
+title: "Sell a House With Tax Arrears or Liens in Edmonton"
+description: "Behind on property taxes or dealing with liens or writs on title? A sale can pay them out at closing. Learn your options and get a no-obligation cash offer."
+h1: "Behind on Property Taxes? Sell Before It Becomes a Bigger Problem"
+label: "Tax arrears or liens"
+summary: "Property tax arrears, writs, builders' liens or condo caveats? A sale can pay them out at closing and clear the title."
 icon: Receipt
 reason: "Back taxes or liens"
 order: 7
 faqs:
-  - q: "Can I sell a house that has a tax lien?"
-    a: "Yes. Delinquent taxes and most other liens are paid off from the sale proceeds at closing. The title company or closing attorney identifies every lien during the title search and pays each one directly."
-  - q: "Will the liens come out of my proceeds?"
-    a: "Yes. Liens are paid from the sale price at closing, and you receive what's left. We'll look at the payoffs with you up front so there are no surprises."
-  - q: "What if the liens add up to more than the house is worth?"
-    a: "Some liens, such as certain judgments, code enforcement liens or medical liens, can sometimes be negotiated down. It depends on the lien and the lienholder. Tell us what you're dealing with and we'll be honest about whether a sale can work."
-  - q: "How fast can you close before a tax sale?"
-    a: "When the title work is straightforward, we can close in as little as {{closeDays}} days. If a tax sale date is close, call us right away at {{phone}}."
+  - q: "Can I sell a house that has tax arrears or liens registered on title?"
+    a: "Yes. Property tax arrears and most registrations on title are paid out from the sale proceeds at closing. The lawyers identify everything registered on title and pay each one directly."
+  - q: "Will the arrears and liens come out of my proceeds?"
+    a: "Yes. They're paid from the sale price at closing and you receive what's left. We'll look at the numbers with you up front so there are no surprises."
+  - q: "What if what I owe adds up to more than the house is worth?"
+    a: "Some debts, such as certain judgments or builders' liens, can sometimes be negotiated. It depends on the creditor. Tell us what you're dealing with and we'll be honest about whether a sale can work, and a lawyer or licensed insolvency trustee can walk you through the alternatives."
+  - q: "How fast can you close?"
+    a: "When the title work is straightforward, we can close in as little as {{closeDays}} days. If your municipality has already started collection steps, call us right away at {{phone}}."
 ---
 
-Falling behind on property taxes happens more often than people think: after a job loss, a medical emergency, a death in the family, or when a house is inherited and the tax bills go to an old address. The penalties and interest grow over time, and eventually the county can take action to collect.
+Falling behind on property taxes happens more often than people think: after a job loss, an illness, a death in the family, or when a home is inherited and the tax notices go to an old address. Penalties add up over time, and eventually the municipality can take steps to collect.
 
 ## What happens when property taxes go unpaid
 
-The details vary a lot by state and county, but the general pattern is:
+The details depend on your municipality, but the general pattern in Alberta is:
 
-1. **Penalties and interest** start accruing after the due date.
-2. **A tax lien** attaches to the property. In some states, the county sells tax lien certificates to investors, who then collect interest.
-3. **A tax sale or tax deed sale** can eventually transfer the property to someone else if the taxes remain unpaid. Some states give owners a redemption period afterward; others don't.
+1. **Penalties** are added to the unpaid balance.
+2. **The arrears are tied to the property.** Municipalities can register their interest against the title, which has to be dealt with before a sale can close cleanly.
+3. **Tax recovery.** If taxes stay unpaid long enough, the municipality can take further steps to recover them, which can ultimately include offering the property for sale at a public auction.
 
-Because the timeline depends so much on where the house is, contact your county tax office to find out exactly where you stand.
+Contact the City of Edmonton (or your municipality) to find out exactly where your account stands and what options they offer.
 
 ## Your options
 
-- **Set up a payment plan** with the county, if one is offered.
-- **Check for exemptions you're missing,** such as homestead, senior, veteran or disability exemptions, which can reduce future bills and occasionally past ones.
-- **Look into local hardship or assistance programs.**
+- **Ask about a payment arrangement** with your municipality.
+- **Check for programs you might qualify for,** such as property tax deferral or assistance programs for seniors and low-income homeowners.
 - **Refinance or borrow against the home,** if you qualify.
-- **Sell the house** and pay the taxes from the proceeds.
+- **Sell the home** and pay the arrears from the proceeds.
 
-## Other liens a sale can resolve
+## Other registrations a sale can clear
 
-Property taxes aren't the only thing that can cloud a title. At closing, the title company or closing attorney can pay off:
+Tax arrears aren't the only thing that can cloud a title. At closing, the lawyers can pay out:
 
-- Mortgage and home equity loans
-- Judgment liens from lawsuits or old debts
-- Code enforcement and municipal liens
-- Contractor (mechanic's) liens
-- HOA liens and unpaid dues
-- Utility liens, in some areas
+- Mortgages and home equity lines of credit
+- Writs of enforcement from court judgments
+- Builders' liens from unpaid contractors
+- Condo corporation caveats for unpaid condo fees
+- Canada Revenue Agency and other government claims
 
-## How a sale to {{company}} works when there are liens
+## How a sale to {{company}} works when there's money owing
 
-- **We order the title search** and review every lien with you before closing.
-- **Liens are paid directly at closing** from the sale price, and you receive the rest.
-- **We move fast** when a deadline is looming, and we can close in as little as {{closeDays}} days when the title is workable.
+- **Title search first.** We look at everything registered on title and review it with you before closing.
+- **Paid out directly at closing** from the sale price, and you receive the rest.
+- **We move fast** when a deadline is looming, and can close in as little as {{closeDays}} days when the title is workable.
 - **We buy as-is,** so you don't have to put money into the house first.
 
-Don't wait until the county sets a sale date. Request a no-obligation offer or call {{phone}} to talk through your situation.
+Don't wait until the municipality's process runs its course. Request a no-obligation offer or call {{phone}} to talk it through.

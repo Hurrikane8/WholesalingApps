@@ -21,8 +21,8 @@ import {
 const { market, promises, name } = site;
 
 // The primary city's /we-buy-houses page targets "we buy houses {city}"; the home page leads with "sell my house fast".
-const title = `Sell Your House Fast for Cash in ${market.name}, ${market.stateAbbr} | ${name}`;
-const description = `Sell your ${market.region} house fast for a fair cash offer. No repairs, no commissions, no fees. Close in as little as ${promises.closeInDays} days or on your schedule.`;
+const title = `Sell Your House Fast for Cash in ${market.name} | ${name}`;
+const description = `Sell your ${market.name} house, condo or townhouse fast for a fair cash offer. No repairs, no commissions. Close in as little as ${promises.closeInDays} days or on your schedule.`;
 
 export const metadata = pageMetadata({ title, description, path: "/", absoluteTitle: true });
 
@@ -42,7 +42,7 @@ export default function HomePage() {
       <FormHero
         eyebrow={`Local cash home buyers in ${market.region}`}
         title={`Sell Your House Fast for Cash in ${market.name}`}
-        subtitle={`Get a fair, no-obligation cash offer for your house in any condition. We buy as-is, cover the hassle, and close on the date you choose.`}
+        subtitle={`Get a fair, no-obligation cash offer for your house, condo or townhouse in any condition. We buy as-is, take care of the hassle, and close on the date you choose.`}
       />
       <ValueProps />
       <HowItWorks />

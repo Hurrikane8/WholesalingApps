@@ -29,12 +29,14 @@ export function SiteFooter() {
                 {site.phone}
               </a>
             </li>
-            <li>
-              <a href={`mailto:${site.email}`} className="flex items-center gap-2.5 hover:text-white">
-                <Mail className="size-4 text-accent-400" aria-hidden="true" />
-                {site.email}
-              </a>
-            </li>
+            {site.email && (
+              <li>
+                <a href={`mailto:${site.email}`} className="flex items-center gap-2.5 hover:text-white">
+                  <Mail className="size-4 text-accent-400" aria-hidden="true" />
+                  {site.email}
+                </a>
+              </li>
+            )}
             <li className="flex items-center gap-2.5">
               <MapPin className="size-4 text-accent-400" aria-hidden="true" />
               {formatAddress()}
@@ -60,7 +62,7 @@ export function SiteFooter() {
           {locations.map((l) => (
             <li key={l.slug}>
               <Link href={`/we-buy-houses/${l.slug}`} className="hover:text-white">
-                We Buy Houses {l.city}, {l.stateAbbr}
+                We Buy Houses {l.city}, {l.provinceAbbr}
               </Link>
             </li>
           ))}

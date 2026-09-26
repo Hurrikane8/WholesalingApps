@@ -1,5 +1,6 @@
 import {
   Armchair,
+  Building2,
   DoorOpen,
   Flame,
   Gavel,
@@ -16,6 +17,7 @@ import {
 /** Icons available to situation pages via the `icon` frontmatter field. */
 export const SITUATION_ICONS: Record<string, LucideIcon> = {
   Armchair,
+  Building2,
   DoorOpen,
   Flame,
   Gavel,

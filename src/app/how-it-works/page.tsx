@@ -30,20 +30,20 @@ const details = [
     title: "3. Your written cash offer",
     points: [
       `Within ${promises.offerWithinHours} hours we send a written offer and explain exactly how we arrived at it.`,
-      "Take your time. Compare it with other options, talk it over with family or an attorney. We don't use pressure tactics.",
+      "Take your time. Compare it with other options, talk it over with family or a lawyer. We don't use pressure tactics.",
     ],
   },
   {
     title: "4. Sign and pick your closing date",
     points: [
       "If you accept, we sign a simple purchase agreement. You choose the closing date, whether that's next week or two months from now.",
-      "A licensed title company or closing attorney handles the title search, payoffs and paperwork.",
+      "Your real estate lawyer and ours handle the title search at Land Titles, the mortgage payout and the paperwork.",
     ],
   },
   {
     title: "5. Close and get paid",
     points: [
-      "Sign the closing documents and get paid by wire or cashier's check at closing.",
+      "Sign the documents with your lawyer, and the sale proceeds are paid out through your lawyer's trust account on closing day.",
       "Leave behind anything you don't want. We take care of the clean-out.",
     ],
   },
@@ -62,7 +62,7 @@ const offerFaqs = [
   {
     question: "Can I back out after I sign?",
     answer:
-      "Our purchase agreement spells out everyone's rights, including any inspection period and cancellation terms, in plain language. We'll go over it with you, and you're welcome to have an attorney review it before you sign.",
+      "Our purchase agreement spells out everyone's rights, including any conditions and when they come off, in plain language. We'll go over it with you, and you're welcome to have a lawyer review it before you sign.",
   },
 ];
 

@@ -37,7 +37,7 @@ const { promises } = site;
 
 const DEFAULT_BULLETS = [
   "Sell as-is. No repairs, cleaning or showings",
-  promises.paysClosingCosts ? "No commissions or fees. We pay closing costs" : "No commissions or agent fees",
+  promises.coversLegalFees ? "No commissions or fees. We cover your legal fees" : "No commissions or agent fees",
   `Close in as little as ${promises.closeInDays} days, or on your schedule`,
   `Fair written offer within ${promises.offerWithinHours} hours, with no obligation`,
 ];
@@ -131,7 +131,7 @@ export function PageHeader({
 
 export function ValueProps() {
   const items = [
-    { icon: BadgeDollarSign, title: "No commissions or fees", text: promises.paysClosingCosts ? "And we pay normal closing costs" : "Keep more of your sale price" },
+    { icon: BadgeDollarSign, title: "No commissions or fees", text: promises.coversLegalFees ? "And we cover your legal fees" : "Keep more of your sale price" },
     { icon: Wrench, title: "No repairs or cleaning", text: "We buy houses in any condition" },
     { icon: Timer, title: `Close in ${promises.closeInDays} days`, text: "Or whenever you're ready" },
     { icon: ShieldCheck, title: "No obligation", text: "Free offer, zero pressure" },
@@ -169,7 +169,7 @@ export const STEPS = [
   {
     icon: CalendarCheck,
     title: "Close on your date",
-    text: "Pick your closing date. A licensed title company or closing attorney handles the paperwork, and you get paid at closing.",
+    text: "Pick your closing date. Real estate lawyers handle the paperwork and the funds, and you get paid on closing day.",
   },
 ];
 
@@ -218,14 +218,14 @@ export function Benefits({ place = site.market.region }: { place?: string }) {
     {
       icon: HandCoins,
       title: "No fees or commissions",
-      text: promises.paysClosingCosts
-        ? "No agent commissions and no hidden fees. We also pay the normal seller closing costs."
+      text: promises.coversLegalFees
+        ? "No agent commissions and no hidden fees. We also cover your standard legal fees."
         : "No agent commissions and no hidden fees, so you know exactly what you walk away with.",
     },
     { icon: CalendarCheck, title: "You pick the closing date", text: `Close in as little as ${promises.closeInDays} days, or take the time you need to pack and move.` },
     { icon: FileText, title: "Straightforward offers", text: "We show you how we reached our number and put it in writing. No pressure and no obligation." },
     { icon: Handshake, title: "Any situation", text: "Foreclosure, probate, divorce, tenants, liens, code violations or relocation. We've seen it before." },
-    { icon: MapPin, title: "Local to you", text: `We buy houses in ${place}, so you work with people who know the neighborhoods and answer the phone.` },
+    { icon: MapPin, title: "Local to you", text: `We buy houses in ${place}, so you work with people who know the neighbourhoods and answer the phone.` },
   ];
   return (
     <section className="section">
@@ -398,7 +398,7 @@ export function AreasGrid({
                 className="flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-3 font-medium text-slate-800 hover:border-brand-300 hover:bg-brand-50"
               >
                 <MapPin className="size-4 shrink-0 text-brand-500" aria-hidden="true" />
-                {l.city}, {l.stateAbbr}
+                {l.city}, {l.provinceAbbr}
               </Link>
             </li>
           ))}

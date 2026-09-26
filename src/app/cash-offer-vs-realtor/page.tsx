@@ -9,53 +9,73 @@ const { name, promises } = site;
 export const metadata = pageMetadata({
   title: "Cash Offer vs. Listing With a Realtor: Which Nets More?",
   description:
-    "Compare a cash sale with listing through an agent: commissions, repairs, closing costs, holding costs and timelines, with a worked net-proceeds example.",
+    "Compare a cash sale with listing through an Alberta realtor: commissions plus GST, repairs, legal fees, holding costs and timelines, with a worked example.",
   path: "/cash-offer-vs-realtor",
 });
 
 /*
- * Illustrative example. The numbers are round, hypothetical figures chosen to
+ * Illustrative Edmonton-area example. Round, hypothetical figures chosen to
  * show how the costs stack up. They are not a quote or a market statistic.
  */
 const ex = {
-  afterRepairValue: 300_000,
-  repairs: 35_000,
-  commissionRate: 0.055,
-  closingCostRate: 0.015,
-  monthlyHolding: 1_800,
-  listingMonths: 5,
-  concessions: 3_000,
-  cashOffer: 225_000,
+  afterRepairValue: 400_000,
+  repairs: 45_000,
+  asIsListPrice: 335_000,
+  legalAndDischarge: 1_500,
+  /** Mortgage interest, property taxes, condo fees/utilities and insurance. */
+  monthlyHolding: 2_200,
+  repairAndListMonths: 5,
+  asIsListMonths: 4,
+  inspectionCredit: 4_000,
+  asIsPriceCut: 10_000,
+  cashOffer: 265_000,
   cashMonths: 0.5,
 };
 
-const usd = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+/** A common Alberta structure: 7% on the first $100,000 and 3% on the balance, plus 5% GST. Negotiable. */
+function commission(price: number): number {
+  const base = 0.07 * Math.min(price, 100_000) + 0.03 * Math.max(price - 100_000, 0);
+  return Math.round(base * 1.05);
+}
 
-const listing = [
+const cad = (n: number) => n.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+
+type Row = readonly [string, number];
+
+const repairAndList: Row[] = [
   ["Sale price (after repairs)", ex.afterRepairValue],
   ["Repairs & updates before listing", -ex.repairs],
-  [`Agent commissions (${(ex.commissionRate * 100).toFixed(1)}%)`, -ex.afterRepairValue * ex.commissionRate],
-  [`Seller closing costs (~${(ex.closingCostRate * 100).toFixed(1)}%)`, -ex.afterRepairValue * ex.closingCostRate],
-  [`Holding costs (${ex.listingMonths} months of payments, taxes, insurance, utilities)`, -ex.monthlyHolding * ex.listingMonths],
-  ["Buyer repair credits after inspection", -ex.concessions],
-] as const;
+  ["Commission (7% / 3%) + GST", -commission(ex.afterRepairValue)],
+  ["Legal fees & mortgage discharge", -ex.legalAndDischarge],
+  [`Holding costs (${ex.repairAndListMonths} months)`, -ex.monthlyHolding * ex.repairAndListMonths],
+  ["Credit to buyer after inspection", -ex.inspectionCredit],
+];
 
-const cash = [
+const listAsIs: Row[] = [
+  ["Sale price (as-is)", ex.asIsListPrice],
+  ["Repairs & updates", 0],
+  ["Commission (7% / 3%) + GST", -commission(ex.asIsListPrice)],
+  ["Legal fees & mortgage discharge", -ex.legalAndDischarge],
+  [`Holding costs (${ex.asIsListMonths} months)`, -ex.monthlyHolding * ex.asIsListMonths],
+  ["Price cut after inspection", -ex.asIsPriceCut],
+];
+
+const cash: Row[] = [
   ["Cash offer (as-is)", ex.cashOffer],
   ["Repairs & updates", 0],
-  ["Agent commissions", 0],
-  ["Seller closing costs", promises.paysClosingCosts ? 0 : -ex.cashOffer * ex.closingCostRate],
+  ["Commission", 0],
+  ["Legal fees & mortgage discharge", promises.coversLegalFees ? 0 : -ex.legalAndDischarge],
   ["Holding costs (about 2 weeks)", -ex.monthlyHolding * ex.cashMonths],
-  ["Buyer repair credits", 0],
-] as const;
+  ["Credits or price cuts", 0],
+];
 
-const total = (rows: readonly (readonly [string, number])[]) => rows.reduce((s, [, v]) => s + v, 0);
+const total = (rows: Row[]) => rows.reduce((sum, [, v]) => sum + v, 0);
 
 const faqs = [
   {
     question: "Will I always get less with a cash offer?",
     answer:
-      "Usually the cash price is below what a fully repaired, well-marketed home could sell for. But once you subtract repairs, commissions, closing costs, holding costs and buyer credits, the difference in what you actually take home is often much smaller, and sometimes a cash sale comes out ahead.",
+      "Usually the cash price is below what a fully repaired, well-marketed home could sell for. Once you subtract repairs, commissions and GST, legal fees, holding costs and price cuts after inspection, the difference in what you actually take home is smaller, and for homes that need a lot of work it can be close.",
   },
   {
     question: "When does listing with an agent make more sense?",
@@ -69,7 +89,8 @@ const faqs = [
 ];
 
 export default function ComparePage() {
-  const listingNet = total(listing);
+  const repairNet = total(repairAndList);
+  const asIsNet = total(listAsIs);
   const cashNet = total(cash);
 
   return (
@@ -92,23 +113,32 @@ export default function ComparePage() {
             <p className="eyebrow">Worked example</p>
             <h2 className="section-title mt-2">What you actually walk away with</h2>
             <p className="section-lead">
-              Take a house that would sell for {usd(ex.afterRepairValue)} once fully updated, but that needs about{" "}
-              {usd(ex.repairs)} of work today. Here&apos;s how the numbers can play out. These are illustrative figures,
-              and yours will depend on your house, your market and your agent&apos;s terms.
+              Take an Edmonton home that would sell for {cad(ex.afterRepairValue)} once fully updated, but that needs
+              about {cad(ex.repairs)} of work today. Here are three ways it could go. These are illustrative figures;
+              yours will depend on your home, the market and your agent&apos;s terms.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-2 lg:items-start">
-            <NetSheet title="Repair, then list with an agent" rows={listing} net={listingNet} time={`About ${ex.listingMonths} months`} />
+          <div className="mt-10 grid gap-6 lg:grid-cols-3 lg:items-start">
+            <NetSheet title="Repair, then list" rows={repairAndList} net={repairNet} time={`About ${ex.repairAndListMonths} months`} />
+            <NetSheet title="List as-is with an agent" rows={listAsIs} net={asIsNet} time={`About ${ex.asIsListMonths} months`} />
             <NetSheet title={`Sell as-is to ${name}`} rows={cash} net={cashNet} time={`As little as ${promises.closeInDays} days`} highlight />
           </div>
 
-          <p className="mt-6 max-w-3xl text-slate-600">
-            In this example the listing route nets about {usd(Math.abs(listingNet - cashNet))}{" "}
-            {listingNet >= cashNet ? "more" : "less"}, but it requires {usd(ex.repairs)} up front for repairs, several
-            months of managing contractors and showings, and the risk that a buyer&apos;s financing or inspection falls
-            through. For many sellers, that trade-off is exactly why they choose a cash sale.
-          </p>
+          <div className="mt-6 max-w-3xl space-y-3 text-slate-600">
+            <p>
+              On paper, repairing and listing nets the most here, about {cad(repairNet - cashNet)} more than selling to
+              us. But it needs {cad(ex.repairs)} of your own money up front, months of managing contractors and
+              showings, and a buyer whose financing and inspection conditions come through. Listing as-is avoids the
+              repairs, but homes that need work tend to attract investors and bargain hunters who negotiate hard once
+              the inspection is done.
+            </p>
+            <p>
+              If you have the cash, the time and the appetite for it, listing may be your best move, and we&apos;ll
+              tell you so. If you don&apos;t, a cash sale trades some of the price for speed, certainty and zero
+              out-of-pocket costs.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -121,7 +151,7 @@ export default function ComparePage() {
                 "The house needs repairs you can't or don't want to pay for",
                 "You're facing a deadline: foreclosure, relocation, a divorce settlement",
                 "You've inherited a property and want a simple, clean sale",
-                "The house has tenants, code violations or title issues",
+                "The home has tenants, a special assessment, bylaw issues or title problems",
                 "You value certainty and speed over squeezing out the last dollar",
               ]}
             />
@@ -162,39 +192,39 @@ function NetSheet({
   highlight,
 }: {
   title: string;
-  rows: readonly (readonly [string, number])[];
+  rows: Row[];
   net: number;
   time: string;
   highlight?: boolean;
 }) {
   return (
     <div className={`overflow-hidden rounded-2xl border bg-white shadow-sm ${highlight ? "border-brand-400 ring-2 ring-brand-400/40" : "border-slate-200"}`}>
-      <h3 className={`px-6 py-4 text-lg font-bold ${highlight ? "bg-brand-800 text-white" : "bg-slate-100 text-slate-900"}`}>{title}</h3>
-      <table className="w-full text-sm sm:text-base">
+      <h3 className={`px-4 py-4 text-lg font-bold ${highlight ? "bg-brand-800 text-white" : "bg-slate-100 text-slate-900"}`}>{title}</h3>
+      <table className="w-full text-sm">
         <tbody className="divide-y divide-slate-100">
           {rows.map(([label, value]) => (
             <tr key={label}>
-              <th scope="row" className="px-6 py-3 text-left font-normal text-slate-700">
+              <th scope="row" className="px-4 py-3 text-left font-normal text-slate-700">
                 {label}
               </th>
-              <td className={`px-6 py-3 text-right font-medium tabular-nums ${value < 0 ? "text-red-700" : "text-slate-900"}`}>
-                {value === 0 ? "$0" : `${value < 0 ? "−" : ""}${usd(Math.abs(value))}`}
+              <td className={`px-4 py-3 text-right font-medium tabular-nums ${value < 0 ? "text-red-700" : "text-slate-900"}`}>
+                {value === 0 ? "$0" : `${value < 0 ? "−" : ""}${cad(Math.abs(value))}`}
               </td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr className="bg-slate-50">
-            <th scope="row" className="px-6 py-4 text-left font-bold text-slate-900">
+            <th scope="row" className="px-4 py-4 text-left font-bold text-slate-900">
               Estimated net (before loan payoff)
             </th>
-            <td className="px-6 py-4 text-right text-lg font-extrabold tabular-nums text-slate-900">{usd(net)}</td>
+            <td className="px-4 py-4 text-right text-lg font-extrabold tabular-nums text-slate-900">{cad(net)}</td>
           </tr>
           <tr className="bg-slate-50">
-            <th scope="row" className="px-6 pb-4 text-left font-normal text-slate-600">
+            <th scope="row" className="px-4 pb-4 text-left font-normal text-slate-600">
               Typical timeline
             </th>
-            <td className="px-6 pb-4 text-right font-semibold text-slate-900">{time}</td>
+            <td className="px-4 pb-4 text-right font-semibold text-slate-900">{time}</td>
           </tr>
         </tfoot>
       </table>

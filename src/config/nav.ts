@@ -4,9 +4,10 @@ export type NavLink = { href: string; label: string };
 export const mainNav: NavLink[] = [
   { href: "/how-it-works", label: "How It Works" },
   { href: "/situations", label: "Situations" },
-  { href: "/we-buy-houses", label: "Areas We Serve" },
+  { href: "/we-buy-houses", label: "Areas" },
   { href: "/cash-offer-vs-realtor", label: "Cash vs. Listing" },
-  { href: "/blog", label: "Seller Guides" },
+  { href: "/blog", label: "Guides" },
+  { href: "/investors", label: "Investors" },
 ];
 
 /** Extra links shown only in the mobile menu, where there's room. */
@@ -22,6 +23,7 @@ export const companyNav: NavLink[] = [
   { href: "/cash-offer-vs-realtor", label: "Cash Offer vs. Realtor" },
   { href: "/faq", label: "FAQ" },
   { href: "/blog", label: "Seller Guides" },
+  { href: "/investors", label: "For Investors" },
   { href: "/contact", label: "Contact" },
 ];
 

@@ -9,8 +9,8 @@ import { MobileCtaBar } from "@/components/MobileCtaBar";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
-const defaultTitle = `Sell Your House Fast for Cash in ${site.market.name}, ${site.market.stateAbbr}`;
-const defaultDescription = `Sell your ${site.market.region} house fast for a fair cash offer. No repairs, no commissions, no fees. Close in as little as ${site.promises.closeInDays} days or on your schedule.`;
+const defaultTitle = `Sell Your House Fast for Cash in ${site.market.name}, ${site.market.provinceAbbr}`;
+const defaultDescription = `Sell your ${site.market.name} house, condo or townhouse fast for a fair cash offer. No repairs, no commissions. Close in as little as ${site.promises.closeInDays} days or on your schedule.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: site.name,
-    locale: "en_US",
+    locale: "en_CA",
     title: `${defaultTitle} | ${site.name}`,
     description: defaultDescription,
     url: site.url,
@@ -46,7 +46,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-US">
+    <html lang="en-CA">
       <body className="flex min-h-screen flex-col">
         <JsonLd data={[localBusinessSchema(), websiteSchema()]} />
         <SiteHeader />

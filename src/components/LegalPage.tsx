@@ -5,7 +5,7 @@ export function LegalPage({ title, path, updated, html }: { title: string; path:
   const date = updated instanceof Date ? updated : new Date(String(updated));
   const label = Number.isNaN(date.getTime())
     ? undefined
-    : date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+    : date.toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
   return (
     <>
       <PageHeader

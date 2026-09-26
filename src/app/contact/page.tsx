@@ -1,4 +1,4 @@
-import { Clock, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, MessageSquare, Phone, Users } from "lucide-react";
 import { formatAddress, phoneHref, site } from "@/config/site";
 import { pageMetadata } from "@/lib/seo";
 import { LeadForm } from "@/components/LeadForm";
@@ -6,17 +6,18 @@ import { PageHeader } from "@/components/sections";
 
 export const metadata = pageMetadata({
   title: "Contact Us",
-  description: `Call, text or email ${site.name} about selling your house in ${site.market.region}. We're available ${site.hours.label}. Free, no-obligation cash offers.`,
+  description: `Call or text ${site.name} about selling your house, condo or townhouse in ${site.market.name}. Available ${site.hours.label}. Free, no-obligation cash offers.`,
   path: "/contact",
 });
 
 export default function ContactPage() {
-  const items = [
+  const items: { icon: typeof Phone; label: string; value: string; href?: string }[] = [
     { icon: Phone, label: "Call us", value: site.phone, href: `tel:${phoneHref}` },
     { icon: MessageSquare, label: "Text us", value: site.phone, href: `sms:${phoneHref}` },
-    { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
+    ...(site.email ? [{ icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` }] : []),
     { icon: Clock, label: "Hours", value: site.hours.label },
     { icon: MapPin, label: "Serving", value: `${site.market.region} · ${formatAddress()}` },
+    { icon: Users, label: "Real estate investor?", value: "Join our buyers list", href: "/investors" },
   ];
 
   return (

@@ -45,27 +45,30 @@ Each page has one job. Don't create a second page targeting the same primary key
 
 | Page | Primary keyword | Supporting keywords |
 |---|---|---|
-| `/` | sell my house fast {market} | sell house for cash {market}, cash home buyers {market} |
-| `/we-buy-houses/{city}` | we buy houses {city} | sell my house fast {city}, cash home buyers {city} |
-| `/get-cash-offer` | cash offer for my house | get a cash offer on my home |
-| `/situations/sell-house-facing-foreclosure` | sell house to avoid foreclosure | behind on mortgage payments, stop foreclosure |
-| `/situations/sell-inherited-house` | sell inherited house fast | sell probate house, inherited property |
-| `/situations/sell-house-during-divorce` | sell house during divorce | divorce house sale |
-| `/situations/sell-house-fast-relocating` | sell house fast relocating | job relocation sell house |
-| `/situations/sell-rental-property-with-tenants` | sell rental property with tenants | tired landlord, sell house with bad tenants |
-| `/situations/sell-house-that-needs-repairs` | sell house that needs repairs | sell house as-is, sell house with foundation problems |
-| `/situations/sell-house-behind-on-property-taxes` | sell house with back taxes | sell house with tax lien, liens |
-| `/situations/sell-vacant-house` | sell vacant house | sell empty house, out-of-state owner |
-| `/situations/sell-fire-damaged-house` | sell fire damaged house | sell water damaged house, storm damage |
-| `/situations/sell-house-when-downsizing` | sell house downsizing | sell parent's house assisted living |
-| `/cash-offer-vs-realtor` | cash offer vs realtor | sell to investor or list |
-| `/blog/cash-offer-vs-listing-net-proceeds` | how to compare cash offer vs listing | net proceeds calculator |
+| `/` | sell my house fast Edmonton | sell house for cash Edmonton, cash home buyers Edmonton |
+| `/we-buy-houses/edmonton-ab` | we buy houses Edmonton | cash for houses Edmonton |
+| `/we-buy-houses/{area}` | we buy houses {area} | sell my house fast {area}, cash home buyers {area} |
+| `/get-cash-offer` | cash offer for my house Edmonton | get a cash offer on my home |
+| `/situations/sell-condo-townhouse` | sell condo townhouse Edmonton | sell condo with special assessment, high condo fees |
+| `/situations/sell-house-facing-foreclosure` | avoid foreclosure Alberta | behind on mortgage payments Edmonton |
+| `/situations/sell-inherited-house` | sell inherited house Edmonton | sell estate property, probate house sale Alberta |
+| `/situations/sell-house-during-divorce` | sell house during divorce Alberta | separation house sale |
+| `/situations/sell-house-fast-relocating` | sell house fast relocating Edmonton | job transfer sell house |
+| `/situations/sell-rental-property-with-tenants` | sell rental property with tenants Alberta | tired landlord Edmonton |
+| `/situations/sell-house-that-needs-repairs` | sell house as-is Edmonton | sell house with Poly-B, foundation problems |
+| `/situations/sell-house-behind-on-property-taxes` | sell house with tax arrears Edmonton | writs, builders' liens |
+| `/situations/sell-vacant-house` | sell vacant house Edmonton | sell empty house, out-of-town owner |
+| `/situations/sell-fire-damaged-house` | sell fire damaged house Edmonton | water damage, sewer backup, hail damage |
+| `/situations/sell-house-when-downsizing` | sell house downsizing Edmonton | parent moving to seniors' housing |
+| `/cash-offer-vs-realtor` | cash offer vs realtor Alberta | realtor commission Alberta 7/3 |
+| `/investors` | off-market properties Edmonton | wholesale properties Edmonton, investor buyers list |
+| `/blog/cash-offer-vs-listing-net-proceeds` | cash offer vs listing net proceeds | selling costs Alberta |
 | `/blog/how-cash-home-buyers-calculate-offers` | how do cash buyers calculate offers | 70% rule, why cash offers are low |
-| `/blog/how-to-sell-an-inherited-house` | how to sell an inherited house | probate, stepped-up basis |
-| `/blog/selling-a-house-as-is` | what does selling a house as-is mean | as-is disclosure |
+| `/blog/how-to-sell-an-inherited-house` | how to sell an inherited house Alberta | grant of probate, estate taxes |
+| `/blog/selling-a-house-as-is` | selling a house as-is Alberta | disclosure, buyer beware |
 | `/blog/how-to-spot-a-legitimate-cash-home-buyer` | are cash home buyers legit | we buy houses scams |
-| `/blog/what-is-a-real-estate-wholesaler` | what is a real estate wholesaler | assignment contract |
-| `/blog/how-long-does-it-take-to-sell-a-house-for-cash` | how long to sell a house for cash | cash closing timeline |
+| `/blog/what-is-a-real-estate-wholesaler` | what is a real estate wholesaler | assignment of contract Alberta |
+| `/blog/how-long-does-it-take-to-sell-a-house-for-cash` | how long to sell a house for cash | cash closing timeline Alberta |
 
 ---
 
@@ -73,21 +76,20 @@ Each page has one job. Don't create a second page targeting the same primary key
 
 Do these in order. The first five matter most.
 
-1. **Finish `src/config/site.ts`.** Real name, phone, email, market, hours, and promises you actually keep. `npm run build` warns while placeholders remain.
-2. **Replace the example cities** in `src/content/locations.ts` with the cities and counties you actually buy in. Write a genuinely local `intro` and `localDetails` for each (tests fail on duplicates).
-3. **Deploy on your own domain** (see README). Choose `www.` or the bare domain, and have your host redirect the other one to it.
-4. **Google Search Console:** add the property, verify with `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, then submit `https://yourdomain.com/sitemap.xml`. Import the site into **Bing Webmaster Tools** from Search Console.
+1. **Lock in the name and a business phone number first.** Google Business Profile and directory listings should all show the same name and number from day one; changing them later dilutes local rankings. If you're moving to a Quo number, set it up **before** creating listings, then update `site.phone`. Before committing to "Aurora Home Buyers", run a NUANS name search and check trademarks. Also note that "Aurora" is a city in Ontario (and in Colorado and Illinois), so searches for "Aurora home buyers" can surface results about those places; keep "Edmonton" next to the brand in your profiles and ads.
+2. **Get a domain** (a `.ca` signals a Canadian business) and set `NEXT_PUBLIC_SITE_URL`. `npm run build` warns until you do.
+3. **Deploy on the domain** (see README). Choose `www.` or the bare domain and redirect the other.
+4. **Google Search Console:** add the property, verify with `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, then submit `https://yourdomain.ca/sitemap.xml`. Import the site into **Bing Webmaster Tools** from Search Console.
 5. **Google Business Profile (the biggest local-ranking lever):**
-   - Use your real business name. Adding keywords to the name ("…We Buy Houses Atlanta") breaks Google's guidelines and is a common reason for suspensions.
-   - If sellers don't visit an office, set it up as a **service-area business** and hide the address. Virtual offices and mailbox addresses aren't allowed.
-   - Pick the most accurate primary category available, and avoid ones that imply you're a licensed agent if you're not.
-   - Link to your website, add real photos, and list your service areas.
-   - Add the profile URL to `site.social.googleBusinessProfile` (it feeds the `sameAs` schema).
-6. **NAP consistency:** list the exact same Name, Address (or service area) and Phone on Bing Places, Apple Business Connect, Facebook, Yelp, BBB and Nextdoor. Inconsistent listings dilute local rankings.
-7. **Reviews:** ask every seller you close with for a Google review, and reply to every review. Add real, permissioned testimonials to `site.testimonials`.
-8. **Real people and photos:** add yourself and your team to `site.team` with photos in `public/images/team/`. Faces and names are strong trust signals for sellers, and for Google's E-E-A-T guidelines.
-9. **Analytics:** set `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`). Mark the `generate_lead` event as a key event (conversion) in GA4. The `/thank-you` page view also works as a conversion for Google Ads.
-10. **Legal review:** have a local real estate attorney review `content/legal/*.md` and the `site.disclosure` text for your state's wholesaling rules.
+   - Use your real business name. Adding keywords ("… We Buy Houses Edmonton") breaks Google's guidelines and is a common reason for suspensions.
+   - You don't meet sellers at an office, so set it up as a **service-area business** and hide your home address. Virtual offices and mailbox addresses aren't allowed.
+   - List your service areas (Edmonton, St. Albert, Sherwood Park, etc.), pick the most accurate category available, and avoid ones that imply you're a licensed agent.
+   - Add real photos, and link to the website. Put the profile URL in `site.social.googleBusinessProfile`.
+6. **Directory listings (citations):** list the exact same name and phone on Bing Places, Apple Business Connect, Facebook, Yellow Pages (yp.ca) and the BBB. Inconsistent listings dilute local rankings.
+7. **Reviews:** ask every seller you work with for a Google review, and reply to every review. Add real, permissioned testimonials to `site.testimonials`.
+8. **Real people and photos:** add yourself to `site.team` with a photo in `public/images/team/`. A face and a name are strong trust signals for sellers, and for Google.
+9. **Analytics:** set `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`). Mark `generate_lead` (sellers) and `buyer_signup` (investors) as key events in GA4. The `/thank-you` page view also works as a Google Ads conversion.
+10. **Legal review:** have an Alberta real estate lawyer review `site.disclosure`, `content/legal/*.md`, your purchase and assignment contracts, and how you market deals to your buyers list. RECA regulates "trading in real estate", and marketing a property you only have under contract can raise licensing questions. When you start emailing deals, your email tool must include a mailing address and an unsubscribe link in every message (CASL).
 
 ---
 
@@ -103,15 +105,14 @@ Do these in order. The first five matter most.
 
 ### Content ideas (check the keyword map first to avoid overlap)
 
-- State-specific: *How foreclosure works in {state}*, *Probate in {state}: how long it takes*, *What happens if you don't pay property taxes in {state}* (verify with a local attorney)
-- *Selling a house with foundation problems*
-- *Selling a hoarder house*
-- *How to sell a house with a reverse mortgage*
-- *Can you sell a house with a lien on it?*
-- *Selling a house with code violations in {city}*
-- *Should I fix my roof before selling?*
-- *Selling a house with squatters or unauthorized occupants*
+- *Special assessments in Alberta condos: what owners should know before selling*
+- *How to read condo documents (reserve fund study, minutes, estoppel certificate) before you sell*
+- *Selling a house with Poly-B plumbing in Edmonton*
+- *What happens if you don't pay property taxes in Edmonton* (verify with the City and a lawyer)
+- *Selling a house with a reverse mortgage (CHIP) in Alberta*
+- *Selling a home with an unpermitted basement suite*
 - *How to sell a house you inherited with siblings*
+- Neighbourhood guides for areas you work most (Mill Woods, Clareview, Castle Downs…) — only with genuinely local insight
 - Case studies of real deals (with the seller's permission): the situation, the offer math, the timeline. These are unique content that competitors can't copy.
 
 ### Adding city pages
@@ -122,9 +123,9 @@ Add a city only when you actually buy there **and** can write something genuinel
 
 Links from real local organizations move local rankings more than anything you can buy:
 
-- Chamber of commerce and local business associations
+- The Edmonton Chamber of Commerce and local business associations
 - Sponsoring a local youth team, charity event or neighborhood cleanup
-- Referral partners who may link to you: probate and estate attorneys, estate sale companies, property managers, contractors, moving companies
+- Referral partners who may link to you: estate lawyers, estate sale companies, property managers, condo management companies, contractors, moving companies
 - Local news and podcasts (offer expert commentary on the housing market)
 - Avoid paid link schemes and private blog networks; they risk penalties.
 
@@ -135,7 +136,7 @@ Links from real local organizations move local rankings more than anything you c
 The repo's `CLAUDE.md` gives Claude the rules for this codebase. Good prompts to start a session with:
 
 - *"Read CLAUDE.md and docs/seo-playbook.md. Here's my Search Console export (attached CSV of queries and pages). Find pages ranking in positions 5–20, improve their titles, descriptions and content for those queries, then run `npm run check` and the SEO audit."*
-- *"Replace the example Metro Atlanta service areas with these cities: … Here's what I know about each market: … Keep every page's copy unique and update the nearby links."*
+- *"Add an area page for {community}. Here's what I know about selling there: … Keep the copy unique, add it to the nearby links, and add it as a Target Areas option in Airtable if buyers will want it."*
 - *"Write a new seller guide targeting '{keyword}'. Check the keyword map for overlap first, link it from the most relevant situation page, add it to the keyword map, and run the checks."*
 - *"Audit production with `BASE_URL=https://www.mydomain.com npm run seo:audit` and fix whatever it finds."*
 - *"Here are three real testimonials and a photo of our team. Add them to the site."*

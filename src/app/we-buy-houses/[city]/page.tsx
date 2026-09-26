@@ -28,7 +28,7 @@ export function generateStaticParams() {
 const { name, promises } = site;
 
 function describe(l: Location): string {
-  return `Need to sell your ${l.city} house fast? We buy houses in ${l.city} and ${l.county} County for cash, as-is. No repairs or fees. Fair offer in ${promises.offerWithinHours} hours.`;
+  return `Need to sell your ${l.city} home fast? We buy houses, condos and townhouses for cash, as-is. No repairs, no commissions. Fair offer in ${promises.offerWithinHours} hours.`;
 }
 
 function cityFaqs(l: Location): Faq[] {
@@ -36,11 +36,11 @@ function cityFaqs(l: Location): Faq[] {
   return [
     {
       question: `How fast can you buy my house in ${l.city}?`,
-      answer: `We can close in as little as ${promises.closeInDays} days once the title is clear, or on any later date that suits you. Closings happen with a licensed title company or closing attorney, and you're paid at closing.`,
+      answer: `We can close in as little as ${promises.closeInDays} days once the lawyers have what they need, or on any later date that suits you. Real estate lawyers handle the closing, and you're paid through your lawyer on closing day.`,
     },
     {
-      question: `Do you buy houses outside ${l.city} in ${l.county} County?`,
-      answer: `Yes. We buy throughout ${l.county} County${nearby.length ? ` and nearby areas including ${nearby.join(", ")}` : ""}. If you're not sure whether we cover your area, send us the address and we'll let you know right away.`,
+      question: `Do you buy houses outside ${l.city}?`,
+      answer: `Yes. We buy throughout ${l.region ? `${l.region} and ` : ""}${site.market.region}${nearby.length ? `, including ${nearby.join(", ")}` : ""}. If you're not sure whether we cover your area, send us the address and we'll let you know right away.`,
     },
     {
       question: `Will you buy my ${l.city} house if it needs major repairs?`,
@@ -52,7 +52,7 @@ function cityFaqs(l: Location): Faq[] {
     },
     {
       question: `Are there fees or commissions when I sell my ${l.city} house to you?`,
-      answer: `No. There are no agent commissions or hidden fees${promises.paysClosingCosts ? ", and we pay the normal seller closing costs" : ""}. Any mortgage or liens are paid off from the sale price at closing, just like in any sale.`,
+      answer: `No. There are no agent commissions or hidden fees${promises.coversLegalFees ? ", and we cover your standard legal fees" : ""}. Your mortgage payout and any liens or property tax arrears are paid from the sale price at closing, just like in any sale.`,
     },
     {
       question: `Can I sell my ${l.city} house if I'm behind on payments?`,
@@ -66,10 +66,10 @@ export async function generateMetadata(props: PageProps<"/we-buy-houses/[city]">
   const l = getLocation(city);
   if (!l) return {};
   return pageMetadata({
-    title: `We Buy Houses in ${l.city}, ${l.stateAbbr} for Cash`,
+    title: `We Buy Houses in ${l.city}, ${l.provinceAbbr} for Cash`,
     description: describe(l),
     path: `/we-buy-houses/${l.slug}`,
-    image: { path: `/we-buy-houses/${l.slug}/opengraph-image`, alt: `We buy houses in ${l.city}, ${l.stateAbbr}` },
+    image: { path: `/we-buy-houses/${l.slug}/opengraph-image`, alt: `We buy houses in ${l.city}, ${l.provinceAbbr}` },
   });
 }
 
@@ -78,7 +78,7 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
   const l = getLocation(city);
   if (!l) notFound();
 
-  const place = `${l.city}, ${l.stateAbbr}`;
+  const place = `${l.city}, ${l.provinceAbbr}`;
   const nearby = l.nearby.map(getLocation).filter((n): n is Location => Boolean(n));
   const path = `/we-buy-houses/${l.slug}`;
 
@@ -91,7 +91,7 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
           { name: "Areas We Serve", path: "/we-buy-houses" },
           { name: l.city, path },
         ]}
-        eyebrow={`Cash home buyers in ${l.county} County`}
+        eyebrow={`Cash home buyers in ${l.city} & area`}
         title={`Sell Your House Fast in ${place}`}
         subtitle={`We buy houses in ${l.city} for cash, in any condition. Get a fair, no-obligation offer and close on the date you choose.`}
         formTitle={`Get your ${l.city} cash offer`}
@@ -106,8 +106,8 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
             <p className="mt-5 text-lg leading-relaxed text-slate-700">{l.intro}</p>
             <p className="mt-4 leading-relaxed text-slate-700">
               Selling to {name} means no listing, no open houses and no waiting to see whether a buyer&apos;s loan gets
-              approved. We make you a written offer, you decide if it works for you, and if it does we close with a
-              licensed title company or closing attorney on your timeline.
+              approved. We make you a written offer, you decide if it works for you, and if it does we close through
+              real estate lawyers on your timeline.
             </p>
           </div>
           <div className="card bg-slate-50">
@@ -147,7 +147,7 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:border-brand-300 hover:bg-brand-50"
                   >
                     <MapPin className="size-4 text-brand-500" aria-hidden="true" />
-                    {n.city}, {n.stateAbbr}
+                    {n.city}, {n.provinceAbbr}
                   </Link>
                 </li>
               ))}

@@ -28,7 +28,7 @@ export async function generateMetadata(props: PageProps<"/blog/[slug]">) {
 }
 
 function formatDate(iso: string): string {
-  return new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 }
 
 export default async function PostPage(props: PageProps<"/blog/[slug]">) {

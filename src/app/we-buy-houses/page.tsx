@@ -36,10 +36,10 @@ export default function AreasPage() {
                 <Link href={`/we-buy-houses/${l.slug}`} className="card group flex h-full flex-col transition hover:border-brand-300 hover:shadow-md">
                   <span className="flex items-center gap-2 text-sm font-medium text-slate-500">
                     <MapPin className="size-4 text-brand-500" aria-hidden="true" />
-                    {l.county} County
+                    {l.region ?? site.market.region}
                   </span>
                   <h2 className="mt-2 text-xl font-bold text-slate-900 group-hover:text-brand-700">
-                    We Buy Houses in {l.city}, {l.stateAbbr}
+                    We Buy Houses in {l.city}, {l.provinceAbbr}
                   </h2>
                   <p className="mt-2 flex-1 text-slate-600">{l.intro}</p>
                   <span className="mt-4 inline-flex items-center gap-1.5 font-semibold text-brand-600">

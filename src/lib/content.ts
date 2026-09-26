@@ -3,7 +3,7 @@
  *
  * Markdown bodies may use these placeholders, filled in from src/config/site.ts
  * so copy never drifts from your real business details:
- *   {{company}} {{legalName}} {{market}} {{region}} {{state}} {{phone}} {{email}}
+ *   {{company}} {{legalName}} {{market}} {{region}} {{province}} {{phone}} {{email}}
  *   {{siteUrl}} {{closeDays}} {{offerHours}} {{disclosure}}
  */
 import fs from "node:fs";
@@ -23,7 +23,7 @@ const replacements: Record<string, string> = {
   disclosure: site.disclosure,
   market: site.market.name,
   region: site.market.region,
-  state: site.market.state,
+  province: site.market.province,
   phone: site.phone,
   closeDays: String(site.promises.closeInDays),
   offerHours: String(site.promises.offerWithinHours),

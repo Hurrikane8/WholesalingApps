@@ -7,7 +7,7 @@ const { market, promises } = site;
 
 export const metadata = pageMetadata({
   title: "Get a Free Cash Offer on Your House",
-  description: `Request a free, no-obligation cash offer on your ${market.region} house. Sell as-is with no repairs or fees, and close in as little as ${promises.closeInDays} days.`,
+  description: `Get a free, no-obligation cash offer on your ${market.name} house, condo or townhouse. Sell as-is, pay no commissions, and close in as little as ${promises.closeInDays} days.`,
   path: "/get-cash-offer",
 });
 
