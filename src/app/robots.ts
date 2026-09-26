@@ -3,11 +3,12 @@ import { site } from "@/config/site";
 import { absoluteUrl } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
-  // Keep preview deployments, and any deployment before a real domain is set
-  // (NEXT_PUBLIC_SITE_URL), out of search results. Otherwise Google could index
-  // a temporary *.vercel.app address instead of your domain.
+  // Keep preview deployments, and the site itself until it has a real domain,
+  // out of search results, so Google never indexes a temporary *.vercel.app
+  // address instead of your domain.
   const isPreview = process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production";
-  const noDomainYet = site.url.includes("example.com");
+  const host = new URL(site.url).hostname;
+  const noDomainYet = host.endsWith("example.com") || host.endsWith(".vercel.app");
   if (isPreview || noDomainYet) {
     return { rules: { userAgent: "*", disallow: "/" } };
   }
