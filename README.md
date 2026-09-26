@@ -75,14 +75,16 @@ If Airtable ever rejects part of a record (a renamed field, a missing option), t
 
 ## 3. Deploy
 
-The easiest host is [Vercel](https://vercel.com) (free tier works):
+You don't need a domain to see the site online. [Vercel](https://vercel.com) gives every project a free `*.vercel.app` address.
 
-1. Import this GitHub repository in Vercel.
-2. Add your environment variables (from `.env.example`) under **Settings → Environment Variables**. Set `NEXT_PUBLIC_SITE_URL` to your real domain.
-3. Add your domain under **Settings → Domains**, and redirect `www` to the bare domain or vice versa.
-4. Submit test leads through the live site and confirm they reach Airtable.
+1. Merge this work into the `main` branch on GitHub (Vercel publishes `main` as the live site).
+2. Sign in to Vercel with your GitHub account, click **Add New → Project**, and import `WholesalingApps`. Keep the defaults and click **Deploy**. A few minutes later you'll have a link like `wholesaling-apps.vercel.app`.
+3. Under **Settings → Environment Variables**, add `AIRTABLE_TOKEN` and `AIRTABLE_BASE_ID` (see `.env.example`), then redeploy so the forms write to Airtable.
+4. When you have a domain: add it under **Settings → Domains**, set `NEXT_PUBLIC_SITE_URL` to it, and redeploy.
 
-Preview deployments are automatically hidden from search engines; only production is indexable.
+Until `NEXT_PUBLIC_SITE_URL` points at your real domain, robots.txt tells search engines to stay away, so Google won't index the temporary `vercel.app` address. Preview deployments of other branches are always hidden from search engines.
+
+Vercel's free Hobby plan is meant for personal, non-commercial projects. It's fine for previewing, but once the site is live for the business, plan to move to a paid plan (or another host).
 
 ## 4. Get found on Google
 
