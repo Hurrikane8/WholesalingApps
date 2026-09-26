@@ -42,10 +42,15 @@ export const site = {
     "Aurora was the original name of Manning, Alberta, the northern Alberta town where our founder grew up. The name is a nod to home.",
 
   /**
-   * REPLACE: your production URL (no trailing slash). The NEXT_PUBLIC_SITE_URL
-   * environment variable overrides this, which is handy for staging.
+   * The site's public address (no trailing slash), used for canonical URLs,
+   * share links, the sitemap and structured data. Set NEXT_PUBLIC_SITE_URL once
+   * you have a domain. Until then, on Vercel it falls back to the project's
+   * production address (e.g. your-project.vercel.app).
    */
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://www.example.com").replace(/\/$/, ""),
+  url: (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://www.example.com")
+  ).replace(/\/$/, ""),
 
   /**
    * The number sellers call or text. Use the same format everywhere (Google
