@@ -3,9 +3,10 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { SITUATION_ICONS } from "@/components/icons";
 import { locations } from "@/content/locations";
-import { faqs } from "@/content/faqs";
+import { getFaqs } from "@/content/faqs";
 import { getPosts, getSituations, renderMarkdown } from "@/lib/content";
 import { REASONS } from "@/lib/lead-options";
+import { absoluteUrl } from "@/lib/seo";
 
 // Google shows ~65 title characters and ~160 description characters.
 const MAX_TITLE = 65;
@@ -117,5 +118,19 @@ describe("markdown content", () => {
 });
 
 describe("faqs", () => {
+  const faqs = getFaqs();
   it("has unique questions", () => expect(new Set(faqs.map((f) => f.question)).size).toBe(faqs.length));
+});
+
+describe("drafts", () => {
+  it("stay out of the sitemap", async () => {
+    // Vitest isn't a production build, so drafts load here, as in a preview build.
+    const { default: sitemap } = await import("@/app/sitemap");
+    const urls = new Set(sitemap().map((entry) => entry.url));
+    const pages = [
+      ...situations.map((s) => ({ draft: s.draft, path: `/situations/${s.slug}` })),
+      ...posts.map((p) => ({ draft: p.draft, path: `/blog/${p.slug}` })),
+    ];
+    for (const page of pages) expect(urls.has(absoluteUrl(page.path)), page.path).toBe(!page.draft);
+  });
 });

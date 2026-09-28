@@ -36,7 +36,7 @@ Repairing first can make sense when the work is mostly cosmetic, you have the ca
 - You don't have months to manage contractors
 - You'd rather have certainty now than a possibly higher price later
 
-## Problems we regularly buy through
+## Problems that don't stop a sale
 
 - Foundation cracks, settling and basement water or sewer backup
 - Roof leaks, ice damming and hail damage

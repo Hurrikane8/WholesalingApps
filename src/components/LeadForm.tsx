@@ -48,8 +48,8 @@ type Props = {
 };
 
 export function LeadForm({
-  title = "Get your fair cash offer",
-  subtitle = "No obligation. No fees. Takes about 60 seconds.",
+  title = "What would you get for your place?",
+  subtitle = "Two quick steps. No obligation.",
   variant = "card",
   reason,
 }: Props) {

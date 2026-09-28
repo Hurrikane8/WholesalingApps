@@ -35,7 +35,7 @@ Every situation is different, but most couples choose one of these:
 - **No showings.** Nobody has to keep the house spotless or coordinate schedules with an ex.
 - **Certainty.** No buyer financing to fall through halfway to closing.
 - **A neutral, written number.** A clear offer is something both lawyers can review and both of you can evaluate on its own merits.
-- **Speed, or not.** Close in as little as {{closeDays}} days, or set a date that lines up with your agreement.
+- **A date that fits your agreement.** We close {{closingPhrase}}.
 
 ## What you'll need
 

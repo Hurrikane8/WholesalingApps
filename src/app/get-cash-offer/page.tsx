@@ -1,13 +1,15 @@
 import { site } from "@/config/site";
-import { faqs } from "@/content/faqs";
+import { getFaqs } from "@/content/faqs";
+import { isUnconfirmed, offerMathClause, offerTimingPhrase } from "@/lib/claims";
 import { pageMetadata } from "@/lib/seo";
 import { FaqSection, FormHero, HowItWorks, Testimonials, ValueProps } from "@/components/sections";
+import { Unconfirmed } from "@/components/preview";
 
-const { market, promises } = site;
+const { market } = site;
 
 export const metadata = pageMetadata({
-  title: "Get a Free Cash Offer on Your House",
-  description: `Get a free, no-obligation cash offer on your ${market.name} house, condo or townhouse. Sell as-is, pay no commissions, and close in as little as ${promises.closeInDays} days.`,
+  title: `Get a cash offer on your ${market.name} home`,
+  description: `Tell me about your ${market.name} house, townhouse or condo, and get a written cash offer ${offerTimingPhrase()}${offerMathClause()}. No obligation.`,
   path: "/get-cash-offer",
 });
 
@@ -15,9 +17,14 @@ export default function GetOfferPage() {
   return (
     <>
       <FormHero
-        eyebrow="Free, no-obligation offer"
-        title="Get Your Fair Cash Offer Today"
-        subtitle={`Tell us a little about your house and we'll send a written cash offer within ${promises.offerWithinHours} hours. No repairs, no fees and no pressure.`}
+        title={`Get a cash offer on your ${market.name} home.`}
+        subtitle={
+          <>
+            Tell me about the place. I&apos;ll call you, see it, and send a written offer {offerTimingPhrase()}
+            {offerMathClause()}. No obligation.
+            <Unconfirmed show={isUnconfirmed("offerWithinHours")} />
+          </>
+        }
         breadcrumbs={[
           { name: "Home", path: "/" },
           { name: "Get a Cash Offer", path: "/get-cash-offer" },
@@ -26,7 +33,7 @@ export default function GetOfferPage() {
       <ValueProps />
       <HowItWorks title="What happens after you submit" />
       <Testimonials />
-      <FaqSection items={faqs.slice(0, 6)} moreLink withSchema={false} />
+      <FaqSection items={getFaqs().slice(0, 6)} moreLink withSchema={false} />
     </>
   );
 }

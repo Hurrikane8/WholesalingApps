@@ -37,8 +37,8 @@ export const locations: Location[] = [
       "Edmonton has one of the most varied housing markets in Canada, from 1950s bungalows in mature neighbourhoods to the condo townhouse complexes built across Mill Woods, Clareview and Castle Downs in the 1970s and '80s. Many of those homes are now due for big-ticket work, and many condo complexes are facing rising fees and special assessments. We buy Edmonton homes as-is, so you can skip the repairs, the showings and the wait.",
     localDetails: [
       "We buy on both sides of the river, in every quadrant: north, south, east, west and central Edmonton.",
-      "Condo townhouses are a specialty. High condo fees, special assessments or a complex with a thin reserve fund don't scare us off.",
-      "Older homes with original Poly-B plumbing, knob-and-tube wiring, vermiculite insulation or foundation cracks are a normal purchase for us.",
+      "Condo townhouses are my current focus. High condo fees, a special assessment or a complex with a thin reserve fund don't rule out a sale.",
+      "Older homes with original Poly-B plumbing, knob-and-tube wiring, vermiculite insulation or foundation cracks can be sold as-is.",
       "Tenants in place? We can buy with the lease in place so you don't have to manage a move-out.",
     ],
     nearby: ["st-albert-ab", "sherwood-park-ab", "spruce-grove-ab", "leduc-ab", "beaumont-ab", "fort-saskatchewan-ab"],
@@ -53,7 +53,7 @@ export const locations: Location[] = [
       "St. Albert's older neighbourhoods were built out in the 1960s through the '80s, and plenty of those split-levels and bungalows are now on their original windows, furnaces and shingles. If your St. Albert home needs more work than you want to take on before listing, we'll make you a cash offer on it exactly as it sits.",
     localDetails: [
       "We buy single-family homes, half duplexes and condo townhouses throughout St. Albert.",
-      "Downsizing after decades in the same house? We can close on your timeline and you can leave behind what you don't need.",
+      "Downsizing after decades in the same house? You set the closing date, so there's time to sort and move.",
       "Inherited homes and estates are welcome. We work alongside your lawyer and the personal representative.",
     ],
     nearby: ["edmonton-ab", "spruce-grove-ab", "fort-saskatchewan-ab"],
@@ -65,7 +65,7 @@ export const locations: Location[] = [
     provinceAbbr: "AB",
     region: "Strathcona County",
     intro:
-      "Sherwood Park sits just east of Edmonton in Strathcona County, and its earliest neighbourhoods date back to the 1950s and '60s. Sellers there often call us about dated family homes, rentals they're tired of managing, or condo townhouses where the fees keep climbing.",
+      "Sherwood Park sits just east of Edmonton in Strathcona County, and its earliest neighbourhoods date back to the 1950s and '60s. Many are dated family homes, rentals their owners are tired of managing, or condo townhouses where the fees keep climbing.",
     localDetails: [
       "We buy in Sherwood Park and the surrounding parts of Strathcona County.",
       "Condo townhouses with special assessments or large upcoming repairs are welcome.",
@@ -80,7 +80,7 @@ export const locations: Location[] = [
     provinceAbbr: "AB",
     region: "Parkland County",
     intro:
-      "Spruce Grove has grown quickly along Highway 16 west of Edmonton, and that means a mix of newer builds and older homes that are starting to show their age. Whether you're behind on payments, moving for work, or just done with repairs, we can give you a firm cash number within a day or two.",
+      "Spruce Grove has grown quickly along Highway 16 west of Edmonton, and that means a mix of newer builds and older homes that are starting to show their age. Whether you're behind on payments, moving for work, or just done with repairs, a direct sale gets you a firm number without listing.",
     localDetails: [
       "We buy throughout Spruce Grove and nearby Parkland County.",
       "Half duplexes, townhouses and single-family homes are all a fit.",
@@ -98,7 +98,7 @@ export const locations: Location[] = [
       "Stony Plain is one of the older communities west of Edmonton, with established streets of bungalows and split-levels alongside newer subdivisions. We buy Stony Plain houses in any condition, including rentals, estates and homes that have sat empty.",
     localDetails: [
       "We buy in Stony Plain and the surrounding Parkland County area.",
-      "Vacant houses are a common purchase. We can move quickly before winter freeze-ups become a risk.",
+      "A vacant house can be sold as-is, ideally before winter freeze-ups become a risk.",
       "Estate and inherited properties are welcome, contents and all.",
     ],
     nearby: ["spruce-grove-ab", "edmonton-ab"],
@@ -113,7 +113,7 @@ export const locations: Location[] = [
       "Leduc sits south of Edmonton near the international airport, and a lot of its housing is tied to the energy and airport jobs nearby. When work changes, homeowners sometimes need to sell quickly. We buy Leduc houses for cash, as-is, on the closing date you choose.",
     localDetails: [
       "We buy in Leduc and the surrounding Leduc County area.",
-      "Job change or relocation? We can close fast, or wait until you're ready to move.",
+      "Job change or relocation? Pick a closing date that fits the move.",
       "Rentals with tenants in place and homes that need updating are both welcome.",
     ],
     nearby: ["beaumont-ab", "edmonton-ab"],
@@ -139,7 +139,7 @@ export const locations: Location[] = [
     city: "Fort Saskatchewan",
     provinceAbbr: "AB",
     intro:
-      "Fort Saskatchewan sits on the North Saskatchewan River northeast of Edmonton, close to Alberta's Industrial Heartland. Plenty of its homes are owned by shift workers, landlords and long-time residents, and we're a good fit when any of them need a quick, simple sale.",
+      "Fort Saskatchewan sits on the North Saskatchewan River northeast of Edmonton, close to Alberta's Industrial Heartland. Plenty of its homes are owned by shift workers, landlords and long-time residents, and a direct sale can suit any of them who need a simple one.",
     localDetails: [
       "We buy in Fort Saskatchewan and the surrounding area.",
       "Tired of being a landlord? We buy rentals with tenants in place.",

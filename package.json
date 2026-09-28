@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:preview": "cross-env SITE_ENV=preview NEXT_PUBLIC_PREVIEW_UNCONFIRMED=true next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
@@ -12,7 +13,8 @@
     "seo:audit": "node scripts/seo-audit.mjs",
     "check": "npm run lint && npm run typecheck && npm test",
     "screenshots": "node scripts/screenshots.mjs",
-    "a11y": "node scripts/a11y.mjs"
+    "a11y": "node scripts/a11y.mjs",
+    "scan:build": "node scripts/scan-build.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
@@ -31,6 +33,7 @@
     "@types/node": "^22.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "playwright": "1.56.1",

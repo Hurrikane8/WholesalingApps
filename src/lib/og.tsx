@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/config/site";
+import { isVerified } from "@/lib/claims";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
@@ -49,7 +50,8 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
           <div style={{ fontSize: title.length > 48 ? 58 : 70, fontWeight: 800, lineHeight: 1.1, marginTop: 16, maxWidth: 1000 }}>{ascii(title)}</div>
         </div>
         <div style={{ display: "flex", gap: 36, fontSize: 28, color: "#d6e6f4" }}>
-          {["No repairs", "No fees", `Close in ${site.promises.closeInDays} days`].map((t) => (
+          {/* Cards are shared beyond the site, so they carry confirmed claims only, even in preview builds. */}
+          {["Sell as-is", "No agent commission", ...(isVerified("explainsOfferMath") ? ["See the math first"] : [])].map((t) => (
             <span key={t} style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <svg width="26" height="26" viewBox="0 0 24 24">
                 <path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />

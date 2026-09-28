@@ -4,10 +4,12 @@ import { CircleCheck, MapPin } from "lucide-react";
 import { site } from "@/config/site";
 import { getLocation, locations, type Location } from "@/content/locations";
 import type { Faq } from "@/content/faqs";
+import { closingPhrase, isShown, isUnconfirmed, legalFeesSentence, offerMathClause } from "@/lib/claims";
 import { getSituations } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { serviceSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
+import { Unconfirmed } from "@/components/preview";
 import {
   ComparisonTable,
   CtaBand,
@@ -25,38 +27,42 @@ export function generateStaticParams() {
   return locations.map((l) => ({ city: l.slug }));
 }
 
-const { name, promises } = site;
+const { name } = site;
 
 function describe(l: Location): string {
-  return `Need to sell your ${l.city} home fast? We buy houses, condos and townhouses for cash, as-is. No repairs, no commissions. Fair offer in ${promises.offerWithinHours} hours.`;
+  const math = isShown("explainsOfferMath") ? " who shows you the math behind the offer" : ", with no showings";
+  return `Selling a house, townhouse or condo in ${l.city}? Sell it as-is to a local buyer${math}. No repairs, no commission.`;
 }
 
 function cityFaqs(l: Location): Faq[] {
   const nearby = l.nearby.map((slug) => getLocation(slug)?.city).filter(Boolean);
+  const legalFees = legalFeesSentence();
   return [
     {
       question: `How fast can you buy my house in ${l.city}?`,
-      answer: `We can close in as little as ${promises.closeInDays} days once the lawyers have what they need, or on any later date that suits you. Real estate lawyers handle the closing, and you're paid through your lawyer on closing day.`,
+      answer: `I close ${closingPhrase()}, once the lawyers have what they need. Real estate lawyers handle the closing, and you're paid through your lawyer on closing day.`,
+      unconfirmed: isUnconfirmed("closeInDays"),
     },
     {
       question: `Do you buy houses outside ${l.city}?`,
-      answer: `Yes. We buy throughout ${l.region ? `${l.region} and ` : ""}${site.market.region}${nearby.length ? `, including ${nearby.join(", ")}` : ""}. If you're not sure whether we cover your area, send us the address and we'll let you know right away.`,
+      answer: `Yes. I buy throughout ${l.region ? `${l.region} and ` : ""}${site.market.region}${nearby.length ? `, including ${nearby.join(", ")}` : ""}. If you're not sure whether I cover your area, send me the address and I'll let you know.`,
     },
     {
       question: `Will you buy my ${l.city} house if it needs major repairs?`,
-      answer: `Yes. We buy ${l.city} houses as-is, including homes with roof, foundation, plumbing, electrical or water-damage issues. You don't need to fix, clean or empty anything before you sell.`,
+      answer: `Yes. I buy ${l.city} homes as-is, including homes with roof, foundation, plumbing, electrical or water-damage issues. You don't need to fix, clean or empty anything before you sell.`,
     },
     {
       question: `How do you decide what to offer on a ${l.city} home?`,
-      answer: `We look at recent sales of comparable homes in ${l.city}, estimate what the house would be worth after repairs, and subtract the repair costs, our costs to buy and resell, and a modest profit. We'll walk you through the numbers.`,
+      answer: `I look at recent sales of comparable homes in ${l.city}, estimate what the place would be worth after repairs, and subtract the repairs, my costs to buy, hold and resell it, and my profit.${isShown("explainsOfferMath") ? " I walk you through the numbers." : ""}`,
     },
     {
       question: `Are there fees or commissions when I sell my ${l.city} house to you?`,
-      answer: `No. There are no agent commissions or hidden fees${promises.coversLegalFees ? ", and we cover your standard legal fees" : ""}. Your mortgage payout and any liens or property tax arrears are paid from the sale price at closing, just like in any sale.`,
+      answer: `No. There's no fee for an offer and no agent commission.${legalFees ? ` ${legalFees}` : ""} Your mortgage payout and any liens or property tax arrears are paid from the sale price at closing, as in any sale.`,
+      unconfirmed: isUnconfirmed("coversLegalFees"),
     },
     {
       question: `Can I sell my ${l.city} house if I'm behind on payments?`,
-      answer: `Often, yes. If there's enough time before a foreclosure sale, a quick cash sale can pay off the loan and protect your credit from a completed foreclosure. Reach out as early as you can so you have the most options.`,
+      answer: `Usually, yes. In Alberta you can generally sell until the court approves a sale or the lender takes title, and a sale can pay out the mortgage and stop the process. Timelines vary, so talk to a lawyer early and tell me where things stand.`,
     },
   ];
 }
@@ -93,7 +99,13 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
         ]}
         eyebrow={`Cash home buyers in ${l.city} & area`}
         title={`Sell Your House Fast in ${place}`}
-        subtitle={`We buy houses in ${l.city} for cash, in any condition. Get a fair, no-obligation offer and close on the date you choose.`}
+        subtitle={
+          <>
+            I buy houses, townhouses and condos in {l.city} as-is. Get a written, no-obligation offer{offerMathClause()}, and
+            close {closingPhrase()}.
+            <Unconfirmed flag="closeInDays" />
+          </>
+        }
         formTitle={`Get your ${l.city} cash offer`}
       />
       <ValueProps />
@@ -102,16 +114,16 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
         <div className="container-page grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
           <div>
             <p className="eyebrow">Selling in {l.city}</p>
-            <h2 className="section-title mt-2">We buy {l.city} houses as-is, for cash</h2>
+            <h2 className="section-title mt-2">I buy {l.city} homes as-is, for cash</h2>
             <p className="mt-5 text-lg leading-relaxed text-slate-700">{l.intro}</p>
             <p className="mt-4 leading-relaxed text-slate-700">
               Selling to {name} means no listing, no open houses and no waiting to see whether a buyer&apos;s loan gets
-              approved. We make you a written offer, you decide if it works for you, and if it does we close through
+              approved. I make you a written offer, you decide if it works for you, and if it does, we close through
               real estate lawyers on your timeline.
             </p>
           </div>
           <div className="card bg-slate-50">
-            <h3 className="text-lg font-bold text-slate-900">What to know about selling to us in {l.city}</h3>
+            <h3 className="text-lg font-bold text-slate-900">What to know about selling in {l.city}</h3>
             <ul className="mt-4 space-y-3">
               {l.localDetails.map((d) => (
                 <li key={d} className="flex items-start gap-3 text-slate-700">
@@ -129,8 +141,8 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
       <SituationsGrid
         situations={getSituations()}
         place={l.city}
-        title={`Whatever your situation, we can help`}
-        intro={`Homeowners in ${l.city} come to us for all kinds of reasons. Here are some of the most common, and how a direct sale can help.`}
+        title={`Selling in a hard spot in ${l.city}?`}
+        intro="Pick the one closest to yours to see your options, what to expect and how a direct sale works."
       />
       <Testimonials />
       <FaqSection items={cityFaqs(l)} title={`Selling a house in ${l.city}: FAQs`} />

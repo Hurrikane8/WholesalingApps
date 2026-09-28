@@ -1,7 +1,7 @@
 ---
 title: "Sell Your House Fast When Downsizing in Edmonton"
 description: "Downsizing or moving into seniors' housing? Sell your home as-is on your timeline, with no repairs or showings, and leave behind what you don't need."
-h1: "Downsizing? Sell Your Home on Your Timeline, Without the Hassle"
+h1: "Downsizing? Sell Your Home on Your Timeline"
 label: "Downsizing or seniors' move"
 summary: "Moving somewhere smaller or into seniors' housing? Skip the repairs and showings, and leave behind what you don't need."
 icon: Armchair
@@ -39,7 +39,7 @@ After years, or decades, in the same house, the stairs get harder, the yard and 
 - **One visit, not dozens.** A single walkthrough at a time that suits you.
 - **No repairs or updates.** We buy the home as it is.
 - **Leave what you don't need.** Take the treasures; we'll handle everything else after closing.
-- **Your timeline.** Close in as little as {{closeDays}} days, or wait until you're settled in your new place.
+- **Your timeline.** We close {{closingPhrase}}, so you can wait until you're settled in your new place.
 - **Family-friendly.** We're happy to include adult children, other family members or advisors in every conversation.
 
 ## Selling on behalf of a parent

@@ -1,41 +1,28 @@
 import Image from "next/image";
-import { FileText, HeartHandshake, MapPin, ShieldCheck } from "lucide-react";
-import { site } from "@/config/site";
+import { CircleCheck } from "lucide-react";
+import { shownPropertyTypes, site } from "@/config/site";
+import { founderDisplayName, promiseItems } from "@/lib/claims";
 import { pageMetadata } from "@/lib/seo";
 import { CtaBand, PageHeader, Testimonials } from "@/components/sections";
+import { Unconfirmed } from "@/components/preview";
 
-const { market, name } = site;
+const { market, name, founder } = site;
 
 export const metadata = pageMetadata({
-  title: `About Us: Local Cash Home Buyers in ${market.region}`,
-  description: `${name} buys houses directly from homeowners in ${market.region}. Learn who we are, how we work, and the promises we make to every seller.`,
+  title: `About ${founderDisplayName()} and ${name} in ${market.name}`,
+  description: `I'm ${founderDisplayName()}, and I run ${name}. I buy houses, townhouses, duplexes and condos directly from owners across ${market.region}, as-is. Here's how I work.`,
   path: "/about",
 });
 
-const values = [
-  {
-    icon: FileText,
-    title: "Honest numbers",
-    text: "We show you how we calculate every offer and put it in writing. If listing with an agent would net you more, we'll say so.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Upfront about how we buy",
-    text: "We tell you in writing who is buying your house, including if we plan to assign our contract to another buyer.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Respect for your situation",
-    text: "Foreclosure, loss, divorce and financial stress are hard. We keep things private, patient and free of pressure.",
-  },
-  {
-    icon: MapPin,
-    title: "Local and accountable",
-    text: `We buy in ${market.region} and close through local real estate lawyers, so you always know who you're dealing with.`,
-  },
-];
+/** "a, b and c" */
+function joinList(items: string[]): string {
+  return items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
 
 export default function AboutPage() {
+  const types = joinList(shownPropertyTypes().map((t) => t.plural.toLowerCase()));
+  const commitments = promiseItems();
+
   return (
     <>
       <PageHeader
@@ -43,74 +30,76 @@ export default function AboutPage() {
           { name: "Home", path: "/" },
           { name: "About", path: "/about" },
         ]}
-        eyebrow="About us"
-        title={`About ${name}`}
-        subtitle={`We're a local real estate investment company that buys houses directly from homeowners across ${market.region}: as-is, for cash, on their timeline.`}
+        eyebrow="About"
+        title={`Hi, I'm ${founder.firstName}.`}
+        subtitle={`I run ${name}. I buy homes directly from owners across ${market.region}: ${types}, as-is. When you call, you get me.`}
       />
 
       <section className="section">
         <div className="container-page grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div className="space-y-5 text-lg leading-relaxed text-slate-700">
-            <h2 className="section-title">Why we do this</h2>
-            <p>
-              Selling a house the traditional way works well when the home is in great shape and you have months to
-              spare. But many homeowners we meet don&apos;t have that luxury. They&apos;ve inherited a house that needs
-              work, fallen behind on payments, are going through a separation, own a condo townhouse where the fees
-              and assessments keep climbing, or are simply worn out by a rental that never stops needing attention.
-            </p>
-            <p>
-              {name} gives those homeowners a straightforward alternative. We buy houses, condos and townhouses in
-              any condition, pay cash, and close when it suits you, with no repairs, no showings and no commissions.
-            </p>
-            <p>
-              Most of the homes we buy end up with local investors who renovate them and put them back to use, as
-              updated homes to own or rent. That&apos;s good for the neighbourhood too.
-            </p>
-            {site.foundedYear && (
-              <p>
-                We&apos;ve been buying houses in {market.region} since {site.foundedYear}.
-              </p>
+            {founder.photo && (
+              <Image
+                src={founder.photo}
+                alt={founder.photoAlt || founderDisplayName()}
+                width={480}
+                height={480}
+                className="aspect-square w-full max-w-sm rounded-2xl object-cover"
+              />
             )}
+            {founder.shortBio && <p>{founder.shortBio}</p>}
+
+            <h2 className="section-title">Why &ldquo;Aurora&rdquo;</h2>
+            <p>
+              I grew up in Manning, Alberta, on the Mackenzie Highway about 73 km north of Peace River, in the County of
+              Northern Lights. The community was first known as Aurora. When it came time to incorporate, postal
+              authorities disallowed the name to avoid confusion with Aurora, Ontario, and the town was named after
+              Premier Ernest Manning instead. The business name is a nod to home.
+            </p>
+            <p className="text-sm text-slate-600">Source: The Canadian Encyclopedia, &ldquo;Manning&rdquo;.</p>
           </div>
-          <div className="card self-start bg-slate-50">
-            <h2 className="text-xl font-bold text-slate-900">Our disclosure to every seller</h2>
-            <p className="mt-3 text-slate-700">{site.disclosure}</p>
+
+          <div id="how-i-buy" className="card self-start scroll-mt-28 bg-slate-50">
+            <h2 className="text-xl font-bold text-slate-900">How I buy</h2>
             <p className="mt-3 text-slate-700">
-              Our offers are always free and carry no obligation. You&apos;re welcome to have a lawyer or trusted
-              advisor review anything before you sign.
+              I&apos;m not a realtor, and I don&apos;t list homes. I buy them. Sometimes I buy a home myself; sometimes I
+              sign a contract to buy it and assign that contract to another investor. Either way, you&apos;ll know which,
+              in writing, before you sign.
             </p>
-            {site.nameStory && (
-              <>
-                <h2 className="mt-8 text-xl font-bold text-slate-900">The story behind our name</h2>
-                <p className="mt-3 text-slate-700">{site.nameStory}</p>
-              </>
-            )}
+            <h3 className="mt-6 font-bold text-slate-900">Disclosure</h3>
+            <p className="mt-2 text-slate-700">{site.disclosure}</p>
+            <p className="mt-3 text-slate-700">
+              Offers are free and carry no obligation. Have a lawyer or a trusted advisor review anything before you sign.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="section bg-slate-50">
-        <div className="container-page">
-          <p className="eyebrow">What we stand for</p>
-          <h2 className="section-title mt-2">How we treat every homeowner</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="card">
-                <span className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                  <Icon className="size-6" aria-hidden="true" />
-                </span>
-                <h3 className="mt-4 text-lg font-bold text-slate-900">{title}</h3>
-                <p className="mt-2 text-slate-600">{text}</p>
-              </div>
-            ))}
+      {commitments.length > 0 && (
+        <section className="section bg-slate-50">
+          <div className="container-page">
+            <p className="eyebrow">Commitments</p>
+            <h2 className="section-title mt-2">What I&apos;ve committed to</h2>
+            <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {commitments.map((item) => (
+                <li key={item.flag} className="card">
+                  <CircleCheck className="size-7 text-emerald-600" aria-hidden="true" />
+                  <h3 className="mt-4 text-lg font-bold text-slate-900">
+                    {item.title}
+                    <Unconfirmed show={item.unconfirmed} />
+                  </h3>
+                  <p className="mt-2 text-slate-600">{item.sentence}</p>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {site.team.length > 0 && (
         <section className="section">
           <div className="container-page">
-            <p className="eyebrow">Our team</p>
+            <p className="eyebrow">Team</p>
             <h2 className="section-title mt-2">The people you&apos;ll work with</h2>
             <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {site.team.map((m) => (

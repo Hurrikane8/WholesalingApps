@@ -8,6 +8,7 @@ import { serviceSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
 import { CtaBand, FaqSection, FormHero, HowItWorks, SituationsGrid } from "@/components/sections";
+import { DraftBanner } from "@/components/preview";
 
 export const dynamicParams = false;
 
@@ -24,6 +25,7 @@ export async function generateMetadata(props: PageProps<"/situations/[slug]">) {
     description: s.description,
     path: `/situations/${s.slug}`,
     image: { path: `/situations/${s.slug}/opengraph-image`, alt: s.h1 },
+    noindex: s.draft,
   });
 }
 
@@ -38,6 +40,7 @@ export default async function SituationPage(props: PageProps<"/situations/[slug]
 
   return (
     <>
+      <DraftBanner draft={s.draft} />
       <JsonLd data={serviceSchema({ name: s.h1, description: s.description, path })} />
       <FormHero
         breadcrumbs={[
@@ -58,10 +61,10 @@ export default async function SituationPage(props: PageProps<"/situations/[slug]
           </article>
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <div className="card bg-brand-900 text-white">
-              <p className="text-lg font-bold">Talk it through with us</p>
+              <p className="text-lg font-bold">Talk it through with me</p>
               <p className="mt-2 text-sm text-brand-100">
-                No pressure and no obligation. We&apos;ll listen, answer your questions and explain your options,
-                even if selling to us isn&apos;t the right fit.
+                No pressure and no obligation. I&apos;ll listen, answer your questions and explain your options, even
+                if selling to me isn&apos;t the right fit.
               </p>
               <a href={`tel:${phoneHref}`} className="btn-primary mt-5 w-full">
                 <Phone className="size-5" aria-hidden="true" />
@@ -77,7 +80,7 @@ export default async function SituationPage(props: PageProps<"/situations/[slug]
 
       <HowItWorks />
       {s.faqs.length > 0 && <FaqSection items={s.faqs} title={`${s.label}: common questions`} />}
-      <SituationsGrid situations={others} title="Other situations we can help with" intro="Every seller's story is different. Here are some of the others we help with." />
+      <SituationsGrid situations={others} title="Other situations" intro="Every seller's story is different. Here are other situations where a direct sale can help." />
       <CtaBand />
     </>
   );

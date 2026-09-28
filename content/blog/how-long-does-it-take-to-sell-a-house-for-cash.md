@@ -5,7 +5,7 @@ date: 2026-09-15
 category: "Selling Options"
 ---
 
-One of the biggest reasons people sell for cash is speed. But "we close in a week" doesn't tell the whole story. Here's a realistic timeline for a cash sale in Alberta, what can speed it up or slow it down, and how it compares with listing.
+One of the biggest reasons people sell for cash is speed. But a buyer's promise of a one-week sale doesn't tell the whole story. Here's a realistic timeline for a cash sale in Alberta, what can speed it up or slow it down, and how it compares with listing.
 
 ## The typical cash sale timeline
 
@@ -13,12 +13,12 @@ One of the biggest reasons people sell for cash is speed. But "we close in a wee
 |---|---|
 | First call or form, and a few quick questions | Day 1 |
 | Walkthrough (in person or by video) | Day 1–3 |
-| Written offer | Within about {{offerHours}} hours of the walkthrough |
+| Written offer | Sent {{offerTimingPhrase}} |
 | Sign the purchase contract | Whenever you're ready |
 | Lawyers: title search, payouts, documents | About 1–2 weeks |
-| Closing | As little as {{closeDays}} days, or the date you choose |
+| Closing | We close {{closingPhrase}} |
 
-At {{company}}, we can typically make a written offer within {{offerHours}} hours and close in as little as {{closeDays}} days when the title is clear. Many sellers choose a date a few weeks out to give themselves time to move.
+With me, you get a written offer {{offerTimingPhrase}}, and we close {{closingPhrase}} once the title is clear. A date a few weeks out gives you time to move.
 
 ## What the lawyers do in the meantime
 

@@ -44,7 +44,7 @@ npm run seo:audit    # crawl the running site's sitemap and check on-page SEO (B
 
 Situations: `title` (≤ 65 chars), `description` (110–160), `h1`, `label`, `summary`, `icon` (a key of `SITUATION_ICONS` in `src/components/icons.tsx`), `reason` (one of `REASONS` in `src/lib/lead-options.ts`), `order`, `faqs: [{q, a}]`.
 Blog: `title` (≤ 65), `description` (110–160), `date` (YYYY-MM-DD), optional `updated`, `author`, `category`, `draft: true`.
-Bodies can use `{{company}} {{legalName}} {{market}} {{region}} {{province}} {{phone}} {{email}} {{siteUrl}} {{closeDays}} {{offerHours}} {{disclosure}}`. HTML comments are stripped (use them for author notes).
+Bodies can use `{{company}} {{legalName}} {{market}} {{region}} {{province}} {{phone}} {{email}} {{siteUrl}} {{disclosure}}`, and the claim phrases `{{closingPhrase}} {{offerTimingPhrase}} {{legalFeesSentence}}` (write sentences that read well with either version; `{{closeDays}}`/`{{offerHours}}` are removed and fail the build). HTML comments are stripped (use them for author notes).
 
 ## Rules
 
@@ -53,7 +53,7 @@ Bodies can use `{{company}} {{legalName}} {{market}} {{region}} {{province}} {{p
 - **Check the keyword map** in `docs/seo-playbook.md` before adding content; one primary keyword per page. Update the map when you add a page.
 - **City pages need unique local copy** (`intro`, `localDetails`); tests reject duplicates. Never mass-generate near-identical city pages.
 - **Never fabricate** testimonials, reviews, ratings, deal counts, years in business, awards, or statistics about the business. Only publish what the owner provides. `aggregateRating` schema is intentionally omitted.
-- **Keep claims consistent with `site.promises`**: don't hardcode "7 days", "24 hours" or "we cover legal fees" in copy; use the config or `{{closeDays}}`/`{{offerHours}}`.
+- **Every promise comes from `src/lib/claims.ts`** and renders only when its `site.verified` flag is true: never hardcode "7 days", "24 hours" or "legal fees covered" in copy. `npm run scan:build` fails a production build that shows an unconfirmed promise or a banned phrase (`tests/banned-phrases.mjs`). The v2 brief (`docs/aurora-v2-spec.md`) wins where it differs from this file.
 - **This is a Canadian (Alberta) business.** Use Canadian spelling (neighbourhood, mould, cheque, colour), CAD, and Alberta concepts: real estate lawyers (not title companies/escrow), Land Titles, conditions and deposits held in trust (not contingencies/earnest money), grants of probate and personal representatives, the principal residence exemption and deemed disposition (not US tax rules), Court of King's Bench foreclosure, CASL for commercial email/texts. Never introduce US-only concepts (HUD, 1031 exchanges, FHA/VA, counties as the default unit, US states).
 - **Legal/financial content is general information.** Keep provincial statements general and hedged, point to lawyers, accountants, licensed insolvency trustees and non-profit credit counsellors, and don't cite specific statutes or deadlines unless the owner has verified them.
 - **Keep the wholesaling disclosure** (`site.disclosure`) visible in the footer, terms, FAQ and about page. Keep the SMS consent wording in the seller form, the CASL consent (`src/content/consent.ts`) on the buyers list, and both in the privacy policy.

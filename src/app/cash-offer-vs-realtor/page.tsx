@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { CircleCheck } from "lucide-react";
 import { site } from "@/config/site";
+import { closingPhrase, isShown, isVerified } from "@/lib/claims";
 import { pageMetadata } from "@/lib/seo";
 import { ComparisonTable, CtaBand, FaqSection, PageHeader } from "@/components/sections";
 
-const { name, promises } = site;
+const { name } = site;
 
 export const metadata = pageMetadata({
   title: "Cash Offer vs. Listing With a Realtor: Which Nets More?",
@@ -60,16 +61,19 @@ const listAsIs: Row[] = [
   ["Price cut after inspection", -ex.asIsPriceCut],
 ];
 
+// Legal fees drop out of the cash path only once Kane confirms he pays them (spec 5.8).
 const cash: Row[] = [
   ["Cash offer (as-is)", ex.cashOffer],
   ["Repairs & updates", 0],
   ["Commission", 0],
-  ["Legal fees & mortgage discharge", promises.coversLegalFees ? 0 : -ex.legalAndDischarge],
+  ["Legal fees & mortgage discharge", isVerified("coversLegalFees") ? 0 : -ex.legalAndDischarge],
   ["Holding costs (about 2 weeks)", -ex.monthlyHolding * ex.cashMonths],
   ["Credits or price cuts", 0],
 ];
 
 const total = (rows: Row[]) => rows.reduce((sum, [, v]) => sum + v, 0);
+
+const sentenceStart = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 const faqs = [
   {
@@ -80,11 +84,11 @@ const faqs = [
   {
     question: "When does listing with an agent make more sense?",
     answer:
-      "If your house is in good condition, you aren't in a hurry, and you can afford to keep paying for it while it's on the market, listing will often get you the highest price. We'll tell you if we think that's the case.",
+      "If your house is in good condition, you aren't in a hurry, and you can afford to keep paying for it while it's on the market, listing will often get you the highest price.",
   },
   {
     question: "Can I get a cash offer and still talk to an agent?",
-    answer: "Absolutely. Our offer is free and has no obligation, so it's a useful benchmark to compare against an agent's pricing and net sheet.",
+    answer: "Yes. My offer is free and has no obligation, so it's a useful benchmark to compare against an agent's pricing and net sheet.",
   },
 ];
 
@@ -122,21 +126,21 @@ export default function ComparePage() {
           <div className="mt-10 grid gap-6 lg:grid-cols-3 lg:items-start">
             <NetSheet title="Repair, then list" rows={repairAndList} net={repairNet} time={`About ${ex.repairAndListMonths} months`} />
             <NetSheet title="List as-is with an agent" rows={listAsIs} net={asIsNet} time={`About ${ex.asIsListMonths} months`} />
-            <NetSheet title={`Sell as-is to ${name}`} rows={cash} net={cashNet} time={`As little as ${promises.closeInDays} days`} highlight />
+            <NetSheet title={`Sell as-is to ${name}`} rows={cash} net={cashNet} time={sentenceStart(closingPhrase())} highlight />
           </div>
 
           <div className="mt-6 max-w-3xl space-y-3 text-slate-600">
             <p>
               On paper, repairing and listing nets the most here, about {cad(repairNet - cashNet)} more than selling to
-              us. But it needs {cad(ex.repairs)} of your own money up front, months of managing contractors and
+              me. But it needs {cad(ex.repairs)} of your own money up front, months of managing contractors and
               showings, and a buyer whose financing and inspection conditions come through. Listing as-is avoids the
               repairs, but homes that need work tend to attract investors and bargain hunters who negotiate hard once
               the inspection is done.
             </p>
             <p>
-              If you have the cash, the time and the appetite for it, listing may be your best move, and we&apos;ll
-              tell you so. If you don&apos;t, a cash sale trades some of the price for speed, certainty and zero
-              out-of-pocket costs.
+              If you have the cash, the time and the appetite for it, listing may be your best move
+              {isShown("tellsWhenListingWins") ? <>, and I&apos;ll tell you so</> : null}. If you don&apos;t, a cash
+              sale trades some of the price for speed, certainty and no repair bills.
             </p>
           </div>
         </div>
@@ -167,8 +171,8 @@ export default function ComparePage() {
               ]}
             />
             <p className="mt-5 text-slate-600">
-              Not sure which camp you&apos;re in? Get our free offer and compare it with an agent&apos;s net sheet.
-              We&apos;ll walk you through both. See also:{" "}
+              Not sure which camp you&apos;re in? Get my offer and compare it with an agent&apos;s net sheet. See
+              also:{" "}
               <Link href="/blog/cash-offer-vs-listing-net-proceeds" className="font-semibold text-brand-600 hover:underline">
                 how to compare a cash offer with listing
               </Link>

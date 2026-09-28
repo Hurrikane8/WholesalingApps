@@ -3,9 +3,12 @@ import { getSituations } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { CtaBand, HowItWorks, PageHeader, SituationsGrid } from "@/components/sections";
 
+const intro =
+  "Foreclosure, an inheritance, a separation, tenants, repairs you can't afford, a move for work. Here's what to know about each, and how a direct sale works.";
+
 export const metadata = pageMetadata({
-  title: "Sell Your House in Any Situation",
-  description: `Facing foreclosure, an inherited house, divorce, problem tenants or costly repairs? We buy houses as-is for cash across ${site.market.region}. See how we can help.`,
+  title: `Selling your house in a difficult situation in ${site.market.name}`,
+  description: `Foreclosure, an inheritance, a separation, tenants or repairs you can't afford in ${site.market.name}? What to know about each, and how a direct sale works.`,
   path: "/situations",
 });
 
@@ -17,9 +20,9 @@ export default function SituationsPage() {
           { name: "Home", path: "/" },
           { name: "Situations", path: "/situations" },
         ]}
-        eyebrow="Situations we help with"
-        title="Sell Your House Fast, Whatever Your Situation"
-        subtitle="Life doesn't always line up with a traditional listing. These are the situations homeowners bring to us most often, and how a direct cash sale can help with each."
+        eyebrow="Situations"
+        title="When selling isn't simple"
+        subtitle={intro}
       />
       <SituationsGrid situations={getSituations()} title="Find your situation" intro="Choose the one closest to yours to learn about your options, what to expect and common questions." />
       <HowItWorks />

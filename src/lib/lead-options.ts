@@ -12,15 +12,24 @@ export const values = (options: readonly Option[]) => options.map((o) => o.value
 
 /* ─── Seller form → Seller Leads table ──────────────────────────────────── */
 
-/** Seller Leads › Property Type, and Buyers › Property Types. */
+/**
+ * Seller Leads › Property Type, and Buyers › Property Types. Which types the
+ * site shows, and in what order, is set in site.propertyTypes.
+ */
 export const PROPERTY_TYPES = [
-  { value: "Single family", label: "House (single family)" },
+  { value: "Single family", label: "House" },
   { value: "Half duplex", label: "Half duplex" },
-  { value: "Condo townhouse", label: "Townhouse (with condo fees)" },
-  { value: "Freehold townhouse", label: "Townhouse (no condo fees)" },
-  { value: "Apartment condo", label: "Apartment-style condo" },
-  { value: "Multifamily", label: "Multi-unit (duplex, fourplex…)" },
+  { value: "Condo townhouse", label: "Condo townhouse" },
+  { value: "Freehold townhouse", label: "Townhouse, no condo fees" },
+  { value: "Apartment condo", label: "Apartment condo" },
+  { value: "Multifamily", label: "Duplex to fourplex" },
 ] as const satisfies readonly Option[];
+
+export type PropertyTypeValue = (typeof PROPERTY_TYPES)[number]["value"];
+
+export function isPropertyTypeValue(value: unknown): value is PropertyTypeValue {
+  return PROPERTY_TYPES.some((t) => t.value === value);
+}
 
 /** Seller Leads › Condition. */
 export const CONDITIONS = [

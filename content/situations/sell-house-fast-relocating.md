@@ -45,4 +45,4 @@ Even a few extra months can add up to thousands of dollars.
 - **Skip the prep.** No repairs, painting, staging or keeping the place spotless for showings.
 - **Leave what won't fit.** Take what you need; we'll handle the rest.
 
-We can make you a written offer within {{offerHours}} hours and close in as little as {{closeDays}} days. Request your offer online or call {{phone}}. We can usually tell you on the first call whether a quick sale makes sense for your move.
+I send a written offer {{offerTimingPhrase}}, and we close {{closingPhrase}}. Request your offer online or call {{phone}}. We can usually tell you on the first call whether a quick sale makes sense for your move.

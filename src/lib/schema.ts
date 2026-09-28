@@ -6,6 +6,7 @@
 import { phoneHref, site } from "@/config/site";
 import type { Faq } from "@/content/faqs";
 import type { Location } from "@/content/locations";
+import { siteDescription } from "@/lib/claims";
 import { absoluteUrl } from "@/lib/seo";
 
 type Json = Record<string, unknown>;
@@ -45,7 +46,7 @@ export function localBusinessSchema(): Json {
     "@id": ORG_ID,
     name: site.name,
     legalName: site.legalName,
-    description: `${site.name} buys houses for cash in ${market.region}, in any condition and any situation, with no repairs, fees or commissions.`,
+    description: siteDescription(),
     url: site.url,
     logo: absoluteUrl("/icon.svg"),
     image: absoluteUrl("/opengraph-image"),
@@ -57,7 +58,6 @@ export function localBusinessSchema(): Json {
       { "@type": "AdministrativeArea", name: `${market.province}, Canada` },
       { "@type": "AdministrativeArea", name: market.region },
     ],
-    priceRange: "Free cash offers",
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

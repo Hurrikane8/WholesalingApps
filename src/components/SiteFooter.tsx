@@ -19,8 +19,7 @@ export function SiteFooter() {
             <span className="text-lg font-bold">{site.name}</span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed">
-            We buy houses for cash throughout {site.market.region}, in any condition and any situation. No repairs,
-            no commissions, no pressure.
+            I buy houses, townhouses, duplexes and condos directly from owners across {site.market.region}.
           </p>
           <ul className="mt-6 space-y-3 text-sm">
             <li>

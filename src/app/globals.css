@@ -25,6 +25,9 @@
   --color-accent-400: #fbbf24;
   --color-accent-500: #f59e0b;
   --color-accent-600: #d97706;
+
+  /* "Unconfirmed" and "Draft" preview tags only (spec 3.2). */
+  --color-signal: #9a5b00;
 }
 
 @layer base {
@@ -100,4 +103,23 @@
   background-image:
     radial-gradient(circle at 15% 20%, rgb(47 110 168 / 0.45), transparent 45%),
     radial-gradient(circle at 85% 80%, rgb(251 191 36 / 0.12), transparent 40%);
+}
+
+/*
+ * Preview builds only (spec 2.5): a claim Kane hasn't confirmed yet, and draft
+ * pages. Production never renders either; scan:build fails if one appears.
+ */
+.tag-unconfirmed {
+  display: inline-block;
+  margin-inline-start: 0.375rem;
+  border: 1px dashed var(--color-signal);
+  border-radius: 0.25rem;
+  background-color: #fff8e6;
+  padding: 0 0.375rem;
+  color: var(--color-signal);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  vertical-align: middle;
+  white-space: nowrap;
 }

@@ -50,7 +50,7 @@ When you sell, the buyer's funds pay out your mortgage at closing, including arr
 
 Here's how it works with us:
 
-- **We move fast.** We can make a written offer within {{offerHours}} hours and close in as little as {{closeDays}} days when the title is clear.
+- **A written offer, then your date.** I send a written offer {{offerTimingPhrase}}, and we close {{closingPhrase}} once the title is clear.
 - **We buy as-is.** If you haven't been able to afford repairs, you don't need to make any.
 - **Your lawyer handles the payout.** Your lawyer gets the official payout statement from the lender and pays it directly from the sale proceeds.
 - **Any equity is yours.** If the price is more than what you owe, the difference is paid to you through your lawyer.

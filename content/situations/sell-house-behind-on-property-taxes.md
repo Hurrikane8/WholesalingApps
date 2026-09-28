@@ -15,7 +15,7 @@ faqs:
   - q: "What if what I owe adds up to more than the house is worth?"
     a: "Some debts, such as certain judgments or builders' liens, can sometimes be negotiated. It depends on the creditor. Tell us what you're dealing with and we'll be honest about whether a sale can work, and a lawyer or licensed insolvency trustee can walk you through the alternatives."
   - q: "How fast can you close?"
-    a: "When the title work is straightforward, we can close in as little as {{closeDays}} days. If your municipality has already started collection steps, call us right away at {{phone}}."
+    a: "When the title work is straightforward, we close {{closingPhrase}}. If your municipality has already started collection steps, call us right away at {{phone}}."
 ---
 
 Falling behind on property taxes happens more often than people think: after a job loss, an illness, a death in the family, or when a home is inherited and the tax notices go to an old address. Penalties add up over time, and eventually the municipality can take steps to collect.
@@ -51,7 +51,7 @@ Tax arrears aren't the only thing that can cloud a title. At closing, the lawyer
 
 - **Title search first.** We look at everything registered on title and review it with you before closing.
 - **Paid out directly at closing** from the sale price, and you receive the rest.
-- **We move fast** when a deadline is looming, and can close in as little as {{closeDays}} days when the title is workable.
+- **Your closing date.** We close {{closingPhrase}}, once the title is workable.
 - **We buy as-is,** so you don't have to put money into the house first.
 
 Don't wait until the municipality's process runs its course. Request a no-obligation offer or call {{phone}} to talk it through.

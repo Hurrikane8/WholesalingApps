@@ -58,7 +58,7 @@ Disagreements are common, and they usually come down to money and timing. A firm
 - **We buy as-is.** No repairs, updates or cleaning, even if the home hasn't been touched in decades.
 - **Leave what you don't want.** Take the keepsakes; we'll handle the rest after closing.
 - **We work with the estate's lawyer.** We can sign a contract while the grant is being processed and close when the personal representative has authority.
-- **We move at the family's pace.** Close in as little as {{closeDays}} days or wait until everyone is ready.
+- **The family's pace.** We close {{closingPhrase}}, so there's time for everyone to be ready.
 - **Out-of-town family is no problem.** Much of the process can happen by phone and email.
 
 If you'd like to know what the house is worth as-is, request a no-obligation offer or call us at {{phone}}. For a deeper walk-through, read our [step-by-step guide to selling an inherited house](/blog/how-to-sell-an-inherited-house).

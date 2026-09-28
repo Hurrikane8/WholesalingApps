@@ -54,6 +54,6 @@ We buy properties with non-paying tenants and even with a dispute already underw
 - **No repairs or turnover work.** We buy as-is, deferred maintenance and all.
 - **No commissions or listing fees.**
 - **No vacancy period.** Rent your tenants pay stays yours right up to closing.
-- **Close fast or on your schedule.** As little as {{closeDays}} days, or time it around a lease date or a mortgage renewal.
+- **Close on your schedule.** We close {{closingPhrase}}, so you can time it around a lease date or a mortgage renewal.
 
 Ready to retire from landlording? Request a no-obligation offer or call {{phone}}.

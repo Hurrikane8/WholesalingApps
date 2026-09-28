@@ -5,6 +5,7 @@ import { articleSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
 import { CtaBand, PageHeader, PostCards, SidebarOffer } from "@/components/sections";
+import { DraftBanner } from "@/components/preview";
 
 export const dynamicParams = false;
 
@@ -24,6 +25,7 @@ export async function generateMetadata(props: PageProps<"/blog/[slug]">) {
     publishedTime: post.date,
     modifiedTime: post.updated ?? post.date,
     image: { path: `/blog/${post.slug}/opengraph-image`, alt: post.title },
+    noindex: post.draft,
   });
 }
 
@@ -42,6 +44,7 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
 
   return (
     <>
+      <DraftBanner draft={post.draft} />
       <JsonLd
         data={articleSchema({
           title: post.title,

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import {
   ArrowRight,
   BadgeDollarSign,
@@ -9,7 +10,7 @@ import {
   ClipboardCheck,
   FileText,
   HandCoins,
-  Handshake,
+  Scale,
   MapPin,
   Phone,
   Quote,
@@ -20,42 +21,60 @@ import {
 } from "lucide-react";
 import { phoneHref, site } from "@/config/site";
 import { OFFER_PATH } from "@/config/nav";
-import { comparisonRows } from "@/content/comparison";
+import { getComparisonRows } from "@/content/comparison";
 import { locations } from "@/content/locations";
 import type { Faq } from "@/content/faqs";
 import type { Post, Situation } from "@/lib/content";
 import type { Reason } from "@/lib/lead-options";
+import { closeInDaysTitle, closingPhrase, isShown, isUnconfirmed, legalFeesSentence, offerMathClause, offerTimingPhrase } from "@/lib/claims";
 import { faqSchema, type Crumb } from "@/lib/schema";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { LeadForm } from "@/components/LeadForm";
 import { situationIcon } from "@/components/icons";
-
-const { promises } = site;
+import { Unconfirmed } from "@/components/preview";
 
 /* ─── Heroes ────────────────────────────────────────────────────────────── */
 
-const DEFAULT_BULLETS = [
-  "Sell as-is. No repairs, cleaning or showings",
-  promises.coversLegalFees ? "No commissions or fees. We cover your legal fees" : "No commissions or agent fees",
-  `Close in as little as ${promises.closeInDays} days, or on your schedule`,
-  `Fair written offer within ${promises.offerWithinHours} hours, with no obligation`,
-];
+/** Every promise comes from claims.ts, so each bullet says only what's confirmed. */
+function defaultBullets(): ReactNode[] {
+  const legalFees = legalFeesSentence();
+  return [
+    "Sell as-is. No repairs, cleaning or showings",
+    legalFees ? (
+      <>
+        No agent commission. {legalFees}
+        <Unconfirmed flag="coversLegalFees" />
+      </>
+    ) : (
+      "No agent commission"
+    ),
+    <>
+      Close {closingPhrase()}
+      <Unconfirmed flag="closeInDays" />
+    </>,
+    <>
+      A written offer {offerTimingPhrase()}
+      {offerMathClause()}. No obligation.
+      <Unconfirmed flag="offerWithinHours" />
+    </>,
+  ];
+}
 
 /** Page-top hero with the H1, benefits and the lead form. */
 export function FormHero({
   eyebrow,
   title,
   subtitle,
-  bullets = DEFAULT_BULLETS,
+  bullets = defaultBullets(),
   breadcrumbs,
   reason,
   formTitle,
 }: {
   eyebrow?: string;
   title: string;
-  subtitle: string;
-  bullets?: string[];
+  subtitle: ReactNode;
+  bullets?: ReactNode[];
   breadcrumbs?: Crumb[];
   reason?: Reason;
   formTitle?: string;
@@ -81,10 +100,10 @@ export function FormHero({
         </div>
         <div className="lg:col-start-1 lg:row-start-2">
           <ul className="space-y-3">
-            {bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-base text-white sm:text-lg">
+            {bullets.map((b, i) => (
+              <li key={i} className="flex items-start gap-3 text-base text-white sm:text-lg">
                 <CircleCheck className="mt-0.5 size-6 shrink-0 text-accent-400" aria-hidden="true" />
-                {b}
+                <span>{b}</span>
               </li>
             ))}
           </ul>
@@ -130,11 +149,35 @@ export function PageHeader({
 /* ─── Trust & benefits ──────────────────────────────────────────────────── */
 
 export function ValueProps() {
-  const items = [
-    { icon: BadgeDollarSign, title: "No commissions or fees", text: promises.coversLegalFees ? "And we cover your legal fees" : "Keep more of your sale price" },
-    { icon: Wrench, title: "No repairs or cleaning", text: "We buy houses in any condition" },
-    { icon: Timer, title: `Close in ${promises.closeInDays} days`, text: "Or whenever you're ready" },
-    { icon: ShieldCheck, title: "No obligation", text: "Free offer, zero pressure" },
+  const legalFees = legalFeesSentence();
+  const closeFast = closeInDaysTitle();
+  const items: { icon: typeof Wrench; title: string; text: ReactNode }[] = [
+    {
+      icon: BadgeDollarSign,
+      title: "No agent commission",
+      text: legalFees ? (
+        <>
+          {legalFees}
+          <Unconfirmed flag="coversLegalFees" />
+        </>
+      ) : (
+        "You sell directly, so there's no listing commission"
+      ),
+    },
+    { icon: Wrench, title: "No repairs or cleaning", text: "Sell it in the condition it's in today" },
+    {
+      icon: Timer,
+      title: closeFast ?? "You pick the closing date",
+      text: closeFast ? (
+        <>
+          Or on the date you choose
+          <Unconfirmed flag="closeInDays" />
+        </>
+      ) : (
+        "Soon, or months from now"
+      ),
+    },
+    { icon: ShieldCheck, title: "No obligation", text: "A written offer, and no pressure to take it" },
   ];
   return (
     <section aria-label="Why sell to us" className="border-b border-slate-200 bg-white">
@@ -155,23 +198,28 @@ export function ValueProps() {
   );
 }
 
-export const STEPS = [
-  {
-    icon: ClipboardCheck,
-    title: "Tell us about your house",
-    text: "Fill out the short form or give us a call. It takes about a minute, and there's no cost or obligation.",
-  },
-  {
-    icon: FileText,
-    title: "Get a fair written offer",
-    text: `We take a quick look at the property, in person or by video, and send a cash offer within ${promises.offerWithinHours} hours with our math explained.`,
-  },
-  {
-    icon: CalendarCheck,
-    title: "Close on your date",
-    text: "Pick your closing date. Real estate lawyers handle the paperwork and the funds, and you get paid on closing day.",
-  },
-];
+function steps() {
+  return [
+    {
+      icon: ClipboardCheck,
+      title: "Tell me about the place",
+      text: "Fill out the short form or give me a call. It takes about a minute, and there's no cost or obligation.",
+      flag: undefined,
+    },
+    {
+      icon: FileText,
+      title: "Get a written offer",
+      text: `I look at the place, in person or by video, and send a written cash offer ${offerTimingPhrase()}${offerMathClause()}.`,
+      flag: "offerWithinHours" as const,
+    },
+    {
+      icon: CalendarCheck,
+      title: "Close on your date",
+      text: "Pick your closing date. Real estate lawyers handle the paperwork and the funds, and you get paid on closing day.",
+      flag: undefined,
+    },
+  ];
+}
 
 export function HowItWorks({ title = "Sell your house in 3 simple steps", intro, showLink = true }: { title?: string; intro?: string; showLink?: boolean }) {
   return (
@@ -185,7 +233,7 @@ export function HowItWorks({ title = "Sell your house in 3 simple steps", intro,
           </p>
         </div>
         <ol className="mt-12 grid gap-6 md:grid-cols-3">
-          {STEPS.map(({ icon: Icon, title: stepTitle, text }, i) => (
+          {steps().map(({ icon: Icon, title: stepTitle, text, flag }, i) => (
             <li key={stepTitle} className="card relative">
               <span className="absolute right-6 top-6 text-5xl font-extrabold text-slate-100" aria-hidden="true">
                 {i + 1}
@@ -197,7 +245,10 @@ export function HowItWorks({ title = "Sell your house in 3 simple steps", intro,
                 <span className="sr-only">Step {i + 1}: </span>
                 {stepTitle}
               </h3>
-              <p className="mt-2 text-slate-600">{text}</p>
+              <p className="mt-2 text-slate-600">
+                {text}
+                {flag && <Unconfirmed flag={flag} />}
+              </p>
             </li>
           ))}
         </ol>
@@ -213,19 +264,38 @@ export function HowItWorks({ title = "Sell your house in 3 simple steps", intro,
 }
 
 export function Benefits({ place = site.market.region }: { place?: string }) {
-  const items = [
-    { icon: Wrench, title: "Sell as-is", text: "No repairs, cleaning or updates. We buy the house in the condition it's in today, even with major problems." },
+  const legalFees = legalFeesSentence();
+  const items: { icon: typeof Wrench; title: string; text: ReactNode }[] = [
+    { icon: Wrench, title: "Sell as-is", text: "No repairs, cleaning or updates. Sell the place in the condition it's in today, even with major problems." },
     {
       icon: HandCoins,
-      title: "No fees or commissions",
-      text: promises.coversLegalFees
-        ? "No agent commissions and no hidden fees. We also cover your standard legal fees."
-        : "No agent commissions and no hidden fees, so you know exactly what you walk away with.",
+      title: "No agent commission",
+      text: legalFees ? (
+        <>
+          No listing commission and no fee for an offer. {legalFees}
+          <Unconfirmed flag="coversLegalFees" />
+        </>
+      ) : (
+        "No listing commission and no fee for an offer. The written offer shows what you'd walk away with."
+      ),
     },
-    { icon: CalendarCheck, title: "You pick the closing date", text: `Close in as little as ${promises.closeInDays} days, or take the time you need to pack and move.` },
-    { icon: FileText, title: "Straightforward offers", text: "We show you how we reached our number and put it in writing. No pressure and no obligation." },
-    { icon: Handshake, title: "Any situation", text: "Foreclosure, probate, divorce, tenants, liens, code violations or relocation. We've seen it before." },
-    { icon: MapPin, title: "Local to you", text: `We buy houses in ${place}, so you work with people who know the neighbourhoods and answer the phone.` },
+    {
+      icon: CalendarCheck,
+      title: "You pick the closing date",
+      text: (
+        <>
+          Close {closingPhrase()}, and take the time you need to pack and move.
+          <Unconfirmed flag="closeInDays" />
+        </>
+      ),
+    },
+    ...(isShown("explainsOfferMath")
+      ? [{ icon: FileText, title: "You see the math", text: "Your offer comes with the after-repair value, the repair estimate and the costs behind the number. No pressure and no obligation." }]
+      : []),
+    ...(isShown("tellsWhenListingWins")
+      ? [{ icon: Scale, title: "You hear it when listing wins", text: "If you'd likely net more by listing with an agent, I'll tell you, and show you the comparison." }]
+      : []),
+    { icon: MapPin, title: "Local to you", text: `I buy homes in ${place}, so you deal with one local person, not a call centre.` },
   ];
   return (
     <section className="section">
@@ -234,8 +304,8 @@ export function Benefits({ place = site.market.region }: { place?: string }) {
           <p className="eyebrow">Why sell to us</p>
           <h2 className="section-title mt-2">A simpler way to sell your house</h2>
           <p className="section-lead">
-            Listing works well for some homes. But if your house needs work, time matters, or you just want certainty,
-            a direct cash sale takes the hassle off your plate.
+            Listing works well for many homes. But if yours needs work, time matters, or you want a firm number and a
+            date you pick, a direct sale can be simpler.
           </p>
         </div>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -292,7 +362,7 @@ export function ComparisonTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {comparisonRows.map((row) => (
+              {getComparisonRows().map((row) => (
                 <tr key={row.label}>
                   <th scope="row" className="px-4 py-4 font-semibold text-slate-900 sm:px-6">
                     {row.label}
@@ -329,8 +399,8 @@ export function ComparisonTable({
 
 export function SituationsGrid({
   situations,
-  title = "We buy houses in any situation",
-  intro = "Whatever is behind your decision to sell, we've helped homeowners through it, and we'll treat yours with care and discretion.",
+  title = "Selling in a hard spot?",
+  intro = "Pick the one closest to yours to see your options, what to expect and what to ask. Whatever's behind the sale, it stays between us.",
   place,
 }: {
   situations: Situation[];
@@ -452,7 +522,10 @@ export function FaqSection({
                 <h3 className="text-base sm:text-lg">{f.question}</h3>
                 <ChevronDown className="size-5 shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
               </summary>
-              <p className="pb-5 text-slate-600">{f.answer}</p>
+              <p className="pb-5 text-slate-600">
+                {f.answer}
+                <Unconfirmed show={f.unconfirmed ?? false} />
+              </p>
             </details>
           ))}
         </div>
@@ -528,7 +601,14 @@ export function PostCards({ posts, title = "Guides for homeowners", intro }: { p
 export function PostCard({ post }: { post: Post }) {
   return (
     <Link href={`/blog/${post.slug}`} className="card group flex h-full flex-col transition hover:border-brand-300 hover:shadow-md">
-      <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">{post.category}</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">
+        {post.category}
+        {post.draft && (
+          <span className="tag-unconfirmed" data-draft="">
+            Draft
+          </span>
+        )}
+      </p>
       <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-brand-700">{post.title}</h3>
       <p className="mt-2 flex-1 text-sm text-slate-600">{post.description}</p>
       <p className="mt-4 text-xs text-slate-500">{post.readingMinutes} min read</p>
@@ -539,18 +619,23 @@ export function PostCard({ post }: { post: Post }) {
 /* ─── Calls to action ───────────────────────────────────────────────────── */
 
 export function CtaBand({
-  title = "Ready to see what we'd pay for your house?",
-  text = `Get a fair, no-obligation cash offer within ${promises.offerWithinHours} hours. No repairs, no fees, no pressure.`,
+  title = "Want to see what I'd pay for your place?",
+  text,
 }: {
   title?: string;
   text?: string;
 }) {
+  const body = text ?? `Get a written cash offer ${offerTimingPhrase()}${offerMathClause()}. No repairs, no commission and no obligation.`;
+  const unconfirmed = text === undefined && isUnconfirmed("offerWithinHours");
   return (
     <section className="hero-bg">
       <div className="container-page flex flex-col items-start justify-between gap-8 py-14 text-white lg:flex-row lg:items-center">
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
-          <p className="mt-3 text-lg text-brand-100">{text}</p>
+          <p className="mt-3 text-lg text-brand-100">
+            {body}
+            <Unconfirmed show={unconfirmed} />
+          </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-3">
           <Link href={OFFER_PATH} className="btn-primary text-lg">
@@ -572,7 +657,12 @@ export function SidebarOffer({ reason }: { reason?: Reason }) {
   return (
     <aside className="lg:sticky lg:top-28">
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
-        <LeadForm variant="plain" reason={reason} title="Get a no-obligation offer" subtitle="Fair cash price. You pick the closing date." />
+        <LeadForm
+          variant="plain"
+          reason={reason}
+          title="Get a no-obligation offer"
+          subtitle={isShown("explainsOfferMath") ? "You see the math. You pick the closing date." : "No obligation. You pick the closing date."}
+        />
       </div>
       <p className="mt-4 text-center text-sm text-slate-600">
         Or call/text{" "}

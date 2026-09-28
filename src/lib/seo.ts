@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
+import { isIndexable } from "@/lib/env";
 
 /** Absolute URL for a site path, e.g. absoluteUrl("/faq") → "https://www.example.com/faq". */
 export function absoluteUrl(path = "/"): string {
@@ -40,6 +41,15 @@ const DEFAULT_OG_IMAGE = {
 export const MAX_TITLE_LENGTH = 65;
 
 /**
+ * Robots directives: nothing is indexed until the site is live on its real
+ * domain (spec 7.1); after that, only pages marked noindex are kept out.
+ */
+export function robotsFor(noindex = false, indexable = isIndexable()): Metadata["robots"] {
+  if (!indexable) return { index: false, follow: false };
+  return noindex ? { index: false, follow: true } : undefined;
+}
+
+/**
  * Builds consistent metadata for a page: title, description, canonical URL,
  * Open Graph and Twitter cards. Every page should use this so no page ships
  * without a canonical or social preview.
@@ -58,7 +68,7 @@ export function pageMetadata(input: PageMetadataInput): Metadata {
     title: useAbsolute ? { absolute: title } : title,
     description,
     alternates: { canonical: url },
-    robots: noindex ? { index: false, follow: true } : undefined,
+    robots: robotsFor(noindex),
     openGraph: {
       type,
       url,

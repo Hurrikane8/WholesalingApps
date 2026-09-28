@@ -19,6 +19,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Scan the build (banned phrases, example.com, unconfirmed claims)
+        run: npm run scan:build
       - name: SEO audit
         run: |
           npx next start -p 3000 &

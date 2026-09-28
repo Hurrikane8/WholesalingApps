@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
 });
 
 const dealTypes = [
-  { icon: Building2, title: "Condo townhouses", text: "Our specialty: units in established complexes across the city, from move-in ready to full renovation." },
+  { icon: Building2, title: "Condo townhouses", text: "The current focus: units in established complexes across the city, from move-in ready to full renovation." },
   { icon: House, title: "Houses that need work", text: "Bungalows, split-levels and two-storeys in mature neighbourhoods, from cosmetic updates to full renovations." },
   { icon: Users, title: "Half duplexes & multi-unit", text: "Half duplexes, up-down suites and small multifamily properties for buy-and-hold investors." },
   { icon: KeyRound, title: "Rentals with tenants", text: "Occupied properties with the tenancy in place, ready to cash-flow from day one." },
@@ -28,7 +28,7 @@ const steps = [
 
 const expectations = [
   "Proof of funds or a lender letter before you make an offer",
-  "Quick answers: a yes or a no within a day or two of a showing",
+  "A quick yes or no after a showing",
   "A deposit held in a lawyer's trust account once you're committed",
   "Honest feedback when you pass, so we can send you better-matched deals",
   "Your own due diligence on every property",

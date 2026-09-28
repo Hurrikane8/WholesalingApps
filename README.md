@@ -41,7 +41,7 @@ Open http://localhost:3000.
 | `src/app/icon.svg`, `LogoMark` in `src/components/icons.tsx` | Your logo / favicon. |
 | `public/images/` | Team photos (referenced from `site.team`). |
 
-Markdown content can use placeholders like `{{company}}`, `{{phone}}` and `{{closeDays}}`, which fill in from `site.ts` automatically.
+Markdown content can use placeholders like `{{company}}` and `{{phone}}`, which fill in from `site.ts` automatically. Promises go through `{{closingPhrase}}`, `{{offerTimingPhrase}}` and `{{legalFeesSentence}}` (from `src/lib/claims.ts`), which only say something specific once the matching `site.verified` flag is on.
 
 ## 2. Connect Airtable
 

@@ -9,10 +9,10 @@ const { market } = site;
 
 export const metadata = pageMetadata({
   title: `Areas We Serve: We Buy Houses Across ${market.region}`,
-  description: `We buy houses for cash across ${market.region}, including ${locations
+  description: `I buy houses, townhouses and condos across ${market.region}, including ${locations
     .slice(0, 3)
     .map((l) => l.city)
-    .join(", ")} and more. Find your city and get a fair, no-obligation offer.`,
+    .join(", ")} and more. Find your area, or send me the address.`,
   path: "/we-buy-houses",
 });
 
@@ -26,7 +26,7 @@ export default function AreasPage() {
         ]}
         eyebrow="Service areas"
         title={`We Buy Houses Across ${market.region}`}
-        subtitle="Pick your city to see how we buy houses there, or send us your address and we'll tell you right away whether we cover it."
+        subtitle="Pick your area to see what selling there looks like, or send me the address and I'll tell you whether I buy there."
       />
       <section className="section">
         <div className="container-page">

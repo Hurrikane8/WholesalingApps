@@ -9,7 +9,7 @@ reason: "Condo fees or special assessment"
 order: 0
 faqs:
   - q: "Will you buy my condo if there's a special assessment?"
-    a: "Yes. Special assessments are one of the most common reasons condo owners call us. Tell us the amount and timing, and we'll factor it into a firm offer. Who pays an assessment in a sale depends on when it was levied and what the contract says, so we'll spell that out in writing."
+    a: "Yes. An assessment doesn't stop a sale. Tell me the amount and timing, and I'll factor it into a firm offer. Who pays an assessment in a sale depends on when it was levied and what the contract says, so we'll spell that out in writing."
   - q: "Do you buy in complexes with high condo fees?"
     a: "Yes. High fees make a unit harder to sell to buyers who need a mortgage, but they don't stop us. We look at the fees, the reserve fund and the complex's plans as part of our offer."
   - q: "Do I need to order the condo documents?"
@@ -49,8 +49,8 @@ A direct sale is often a good fit when:
 - **As-is condition.** No painting, flooring or updates first.
 - **Tenants welcome.** We can buy with the tenancy in place.
 - **Arrears and assessments handled at closing.** Unpaid fees or an assessment can be paid from the sale proceeds, and the contract will spell out exactly who pays what.
-- **You pick the date.** Close in as little as {{closeDays}} days, or later if you need time.
+- **You pick the date.** We close {{closingPhrase}}.
 
 ## Get a straight answer
 
-Tell us about your unit and your complex. We'll let you know honestly whether a cash sale or listing makes more sense, and put a written offer in front of you within {{offerHours}} hours of seeing it. Request an offer online or call {{phone}}.
+Tell us about your unit and your complex. We'll let you know honestly whether a cash sale or listing makes more sense, and send a written offer {{offerTimingPhrase}}. Request an offer online or call {{phone}}.

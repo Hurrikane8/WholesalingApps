@@ -59,6 +59,6 @@ Every policy is different, so talk with your adjuster before deciding. In genera
 - **As-is, as it sits.** No demolition, clean-up, board-up or rebuild.
 - **We work around your claim** and coordinate timing with your adjuster and lender.
 - **No commissions.**
-- **Close in as little as {{closeDays}} days,** or later if you need time to settle the claim.
+- **A closing date that fits the claim.** We close {{closingPhrase}}, so there's time to settle the claim first.
 
 Request a no-obligation offer or call {{phone}}. We'll give you a straight answer on whether a sale makes sense for your situation.

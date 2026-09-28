@@ -35,14 +35,14 @@ We buy vacant homes for all kinds of reasons: an inherited house no one wants to
 ## Your options
 
 - **Rent it out.** You'll likely need repairs first, plus a property manager if you're not local.
-- **Renovate and list it.** It can bring top dollar, but it takes cash, time and contractor management.
+- **Renovate and list it.** It can bring the highest price, but it takes cash, time and contractor management.
 - **Sell it as-is.** It stops the carrying costs and the risk right away.
 
 ## How we buy vacant houses
 
 - **As-is condition.** No repairs, no clean-out, no utility reconnection required.
 - **Out-of-town friendly.** Walkthroughs with a lockbox or local contact; sign with a lawyer or notary where you are.
-- **Fast or flexible.** Close in as little as {{closeDays}} days, or whenever you're ready.
+- **Your timing.** We close {{closingPhrase}}.
 - **Bylaw issues and arrears welcome.** We'll work through them at closing.
 
 Get the house off your list and stop the monthly bills. Request a no-obligation offer or call {{phone}}.

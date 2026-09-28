@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { site } from "@/config/site";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import { isIndexable } from "@/lib/env";
 import { breadcrumbSchema, faqSchema, localBusinessSchema } from "@/lib/schema";
 
 describe("absoluteUrl", () => {
@@ -18,7 +19,9 @@ describe("pageMetadata", () => {
     expect(m.alternates?.canonical).toBe(`${site.url}/hello`);
     expect(m.openGraph).toMatchObject({ url: `${site.url}/hello`, title: `Hello | ${site.name}` });
     expect(m.twitter).toMatchObject({ card: "summary_large_image" });
-    expect(m.robots).toBeUndefined();
+    // Tests don't run as a production build on the real domain, so nothing is indexable here.
+    expect(isIndexable()).toBe(false);
+    expect(m.robots).toEqual({ index: false, follow: false });
   });
 
   it("drops the brand suffix when the title would be too long", () => {

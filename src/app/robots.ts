@@ -1,18 +1,17 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/config/site";
+import { isIndexable } from "@/lib/env";
 import { absoluteUrl } from "@/lib/seo";
 
+/** Pages that exist but should never be crawled. */
+export const DISALLOWED_PATHS = ["/api/", "/thank-you", "/hello", "/go/", "/styleguide"];
+
 export default function robots(): MetadataRoute.Robots {
-  // Keep preview deployments, and any deployment before a real domain is set
-  // (NEXT_PUBLIC_SITE_URL), out of search results. Otherwise Google could index
-  // a temporary *.vercel.app address instead of your domain.
-  const isPreview = process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production";
-  const noDomainYet = site.url.includes("example.com");
-  if (isPreview || noDomainYet) {
+  // Until the site is live on its real domain, keep every crawler out (spec 7.1).
+  if (!isIndexable()) {
     return { rules: { userAgent: "*", disallow: "/" } };
   }
   return {
-    rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/thank-you"] },
+    rules: { userAgent: "*", allow: "/", disallow: DISALLOWED_PATHS },
     sitemap: absoluteUrl("/sitemap.xml"),
   };
 }
