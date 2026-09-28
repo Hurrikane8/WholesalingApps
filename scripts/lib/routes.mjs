@@ -50,3 +50,13 @@ export const VIEWPORTS = [
 export function launchOptions() {
   return process.env.CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH } : {};
 }
+
+/**
+ * Loads a route and waits for it to settle: the load event, then network
+ * idle for up to 5s (a stray prefetch shouldn't hang the run), then fonts.
+ */
+export async function openRoute(page, route) {
+  await page.goto(`${BASE_URL}${route}`, { waitUntil: "load" });
+  await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
+  await page.evaluate(() => document.fonts.ready);
+}

@@ -4,18 +4,18 @@ import { formatAddress, phoneHref, site } from "@/config/site";
 import { companyNav, legalNav } from "@/config/nav";
 import { locations } from "@/content/locations";
 import { getSituations } from "@/lib/content";
-import { LogoMark } from "@/components/icons";
+import { Mark } from "@/components/brand/Mark";
 
 export function SiteFooter() {
   const situations = getSituations();
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-brand-950 pb-24 text-slate-300 lg:pb-0">
+    <footer data-legacy-chrome="" className="bg-brand-950 pb-24 text-slate-300 lg:pb-0">
       <div className="container-page grid grid-cols-1 gap-10 py-14 md:grid-cols-2 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <Link href="/" className="flex items-center gap-2.5 text-white">
-            <LogoMark className="size-9" />
+            <Mark tone="snow" className="size-9" />
             <span className="text-lg font-bold">{site.name}</span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed">
@@ -79,7 +79,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-page space-y-3 py-6 text-xs leading-relaxed text-slate-400">
+        <div className="container-page space-y-3 py-6 text-sm leading-relaxed text-slate-400">
           <p>
             <strong className="text-slate-300">Disclosure:</strong> {site.disclosure}
           </p>

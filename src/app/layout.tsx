@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/inter";
 import "./globals.css";
+import { atkinson, overpass } from "./fonts";
 import { site } from "@/config/site";
 import { siteDescription } from "@/lib/claims";
 import { isIndexable, showDrafts, showUnconfirmed } from "@/lib/env";
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f2842",
+  themeColor: "#f4f7f8",
   width: "device-width",
   initialScale: 1,
 };
@@ -51,7 +51,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     // data-preview marks non-production builds, so scripts/scan-build.mjs can tell them apart.
-    <html lang="en-CA" data-preview={showUnconfirmed() || showDrafts() ? "" : undefined}>
+    <html
+      lang="en-CA"
+      className={`${overpass.variable} ${atkinson.variable}`}
+      data-preview={showUnconfirmed() || showDrafts() ? "" : undefined}
+    >
       <body className="flex min-h-screen flex-col">
         <JsonLd data={[localBusinessSchema(), websiteSchema()]} />
         <SiteHeader />

@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/config/site";
 import { isVerified } from "@/lib/claims";
+import { markElements } from "@/components/brand/mark-shapes";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
@@ -36,10 +37,8 @@ export function renderOgImage({ eyebrow, title }: { eyebrow: string; title: stri
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <svg width="64" height="64" viewBox="0 0 32 32">
-            <rect width="32" height="32" rx="8" fill="#0a1b2e" />
-            <path d="M16 6.5 5.5 15.2V26h21V15.2L16 6.5Z" fill="#fbbf24" />
-            <path d="m11.5 18.2 3.2 3.2 6-6.4" fill="none" stroke="#0a1b2e" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            {markElements({ gradientId: "ribbon", ink: "#F4F7F8" })}
           </svg>
           <div style={{ fontSize: 34, fontWeight: 700 }}>{ascii(site.name)}</div>
         </div>

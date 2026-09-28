@@ -13,7 +13,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
-import { BASE_URL, VIEWPORTS, flag, getRoutes, launchOptions, routeSlug } from "./lib/routes.mjs";
+import { VIEWPORTS, flag, getRoutes, launchOptions, routeSlug, openRoute } from "./lib/routes.mjs";
 
 const label = flag("label") || new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
 const only = flag("only")?.split(",").filter(Boolean);
@@ -37,8 +37,7 @@ for (const vp of VIEWPORTS) {
   const context = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, reducedMotion: "reduce" });
   const page = await context.newPage();
   for (const route of routes) {
-    await page.goto(`${BASE_URL}${route}`, { waitUntil: "networkidle" });
-    await page.evaluate(() => document.fonts.ready);
+    await openRoute(page, route);
     const height = await page.evaluate(() => document.documentElement.scrollHeight);
     const base = path.join(outDir, `${routeSlug(route)}-${vp.name}`);
     await page.screenshot({ path: `${base}.png`, fullPage: true });
