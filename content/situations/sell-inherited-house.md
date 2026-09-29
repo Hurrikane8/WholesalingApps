@@ -4,7 +4,6 @@ description: "Inherited a house you don't plan to keep? I buy estate homes as-is
 h1: "Selling a house you've inherited"
 label: "Inherited or estate property"
 summary: "Inherited a home you don't plan to keep? I buy as-is and work alongside the personal representative and the estate's lawyer."
-icon: Landmark
 reason: "Inherited / probate"
 order: 2
 question: "Can an estate sell a house before probate is granted in Alberta?"

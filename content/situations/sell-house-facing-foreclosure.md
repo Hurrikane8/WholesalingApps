@@ -4,7 +4,6 @@ description: "Behind on mortgage payments in Edmonton? A sale can pay out your m
 h1: "Behind on your mortgage? Sell before foreclosure narrows your options"
 label: "Facing foreclosure"
 summary: "Behind on payments? A sale can pay out the mortgage, end the foreclosure and keep whatever equity you've built."
-icon: Gavel
 reason: "Behind on payments / foreclosure"
 order: 1
 question: "Can I still sell my house if it's in foreclosure in Alberta?"

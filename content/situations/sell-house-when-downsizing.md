@@ -4,7 +4,6 @@ description: "Downsizing or moving into seniors' housing? Sell your home as-is o
 h1: "Downsizing? Sell your home on your timeline"
 label: "Downsizing or seniors' move"
 summary: "Moving somewhere smaller or into seniors' housing? Skip the repairs and showings, and close when the move suits you."
-icon: Armchair
 reason: "Downsizing"
 order: 10
 question: "Can I sell my parent's house with a power of attorney in Alberta?"

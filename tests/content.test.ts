@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { SITUATION_ICONS } from "@/components/icons";
 import { locations } from "@/content/locations";
 import { getFaqs } from "@/content/faqs";
 import { getPosts, getPropertyTypes, getSituations, renderMarkdown } from "@/lib/content";
@@ -53,7 +52,6 @@ describe("situations", () => {
     expect(s.title.length).toBeLessThanOrEqual(MAX_TITLE);
     expect(s.description.length).toBeGreaterThanOrEqual(MIN_DESCRIPTION);
     expect(s.description.length).toBeLessThanOrEqual(MAX_DESCRIPTION);
-    expect(SITUATION_ICONS).toHaveProperty(s.icon);
     expect(s.reason && REASONS.includes(s.reason)).toBeTruthy();
     expect(s.faqs.length).toBeGreaterThan(0);
     expect(s.question.endsWith("?")).toBe(true);

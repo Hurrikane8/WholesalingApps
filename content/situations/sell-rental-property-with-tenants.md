@@ -4,7 +4,6 @@ description: "Tired of being a landlord? I buy Edmonton-area rentals with tenant
 h1: "Tired of being a landlord? Sell your rental with the tenants in place"
 label: "Tired landlord / problem tenants"
 summary: "Done with late rent, repairs and midnight calls? I buy rentals with tenants in place, no move-outs required."
-icon: KeyRound
 reason: "Tired landlord / tenant issues"
 order: 5
 question: "Can I sell a rental property in Alberta with tenants living in it?"

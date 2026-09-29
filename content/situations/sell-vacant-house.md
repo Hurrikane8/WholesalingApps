@@ -4,7 +4,6 @@ description: "Paying taxes, insurance and heat on an empty house? I buy vacant E
 h1: "Sell your vacant house before it costs you more"
 label: "Vacant house"
 summary: "An empty house still costs money, and an Edmonton winter makes it riskier. I buy vacant homes as-is, even if you live out of town."
-icon: DoorOpen
 reason: "Vacant property"
 order: 8
 question: "What should I do with a vacant house in Edmonton over the winter?"

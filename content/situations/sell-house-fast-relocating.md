@@ -4,7 +4,6 @@ description: "Moving for work or family? Sell your Edmonton-area home as-is befo
 h1: "Relocating? Sell your house on your schedule"
 label: "Relocating"
 summary: "Moving for work or family? Skip long-distance showings and time the sale around your move."
-icon: Truck
 reason: "Relocating"
 order: 4
 question: "Can I sell my Edmonton house after I've already moved away?"

@@ -4,7 +4,6 @@ description: "Foundation cracks, Poly-B, an old roof or decades of wear? I buy E
 h1: "Selling a house that needs major repairs"
 label: "House needs major repairs"
 summary: "Foundation, roof, Poly-B, mould or a full reno. Skip the contractors and sell the house as it is."
-icon: Hammer
 reason: "Repairs I can't afford"
 order: 6
 question: "Can I sell a house in Alberta without fixing it first?"

@@ -4,7 +4,6 @@ description: "Separating or divorcing? A direct, as-is sale gives you one writte
 h1: "Selling a house during a separation or divorce"
 label: "Divorce or separation"
 summary: "One written number, no showings and one closing can take the house off the list of things to argue about."
-icon: HeartHandshake
 reason: "Divorce or separation"
 order: 3
 question: "Do both spouses have to agree to sell the house in Alberta?"

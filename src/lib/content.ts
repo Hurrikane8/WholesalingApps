@@ -247,8 +247,6 @@ export type Situation = {
   label: string;
   /** One or two sentences for cards. */
   summary: string;
-  /** lucide icon name; see SITUATION_ICONS in components/icons.tsx. */
-  icon: string;
   /** Pre-fills the lead form's "reason for selling"; must match one of REASONS. */
   reason?: Reason;
   order: number;
@@ -278,7 +276,6 @@ export function getSituations(): Situation[] {
         h1: str(data.h1, "h1", file),
         label: str(data.label, "label", file),
         summary: str(data.summary, "summary", file),
-        icon: typeof data.icon === "string" ? data.icon : "House",
         reason: REASONS.find((r) => r === data.reason),
         order: typeof data.order === "number" ? data.order : 99,
         question: str(data.question, "question", file),

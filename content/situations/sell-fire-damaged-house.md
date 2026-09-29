@@ -4,7 +4,6 @@ description: "Fire, flood, sewer backup or hail damage? Sell your damaged home a
 h1: "Selling a fire- or water-damaged house as-is"
 label: "Fire, water or storm damage"
 summary: "Skip the rebuild. I buy fire-, water- and storm-damaged homes as they are, on a date that works around your insurance claim."
-icon: Flame
 reason: "Fire, water or storm damage"
 order: 9
 question: "Can I sell a fire-damaged house before the insurance claim is settled?"

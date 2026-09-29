@@ -4,7 +4,6 @@ description: "Behind on property taxes, or dealing with liens or writs on title?
 h1: "Behind on property taxes? Sell before it becomes a bigger problem"
 label: "Tax arrears or liens"
 summary: "Property tax arrears, writs, builders' liens or condo caveats? A sale can pay them out at closing and clear the title."
-icon: Receipt
 reason: "Back taxes or liens"
 order: 7
 question: "Can I sell a house with property tax arrears or liens on title?"
