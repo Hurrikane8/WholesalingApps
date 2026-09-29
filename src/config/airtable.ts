@@ -76,4 +76,22 @@ export const airtable = {
       proofOfFundsUnknown: "Unknown",
     },
   },
+
+  /**
+   * Opt-outs from letters and door hangers (/hello). Only written when
+   * AIRTABLE_OPTOUT_TABLE names a table in the base. TO CONFIRM: these field
+   * names; the defaults below are a suggestion. A missing field is moved into
+   * Notes, as with the other tables.
+   */
+  optOut: {
+    fields: {
+      address: "Address", // primary field
+      name: "Name",
+      phone: "Phone",
+      email: "Email",
+      channel: "Channel",
+      notes: "Notes",
+      date: "Date",
+    },
+  },
 } as const;

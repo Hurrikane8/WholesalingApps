@@ -2,15 +2,19 @@
  * ─────────────────────────────────────────────────────────────────────────────
  *  SITE CONFIGURATION — edit this file first.
  *
- *  Everything business-specific (name, phone, market, promises) lives here and
- *  flows into every page, the structured data Google reads, the sitemap, and
- *  the lead emails. `next build` prints a warning while any placeholder is
- *  still in place.
+ *  Everything business-specific (name, phone, market, founder, promises)
+ *  lives here and flows into every page, the structured data Google reads,
+ *  the sitemap and the lead emails.
  *
- *  Service areas (city landing pages) live in `src/content/locations.ts`.
- *  Airtable field mapping lives in `src/config/airtable.ts`.
+ *  Promises only reach a page through src/lib/claims.ts, and only once their
+ *  `verified` flag is true. `next build` lists everything still unconfirmed.
+ *
+ *  Service areas: src/content/locations.ts. Airtable mapping: src/config/airtable.ts.
+ *
+ *  Imports here must be relative (no "@/" alias): next.config.ts loads this file.
  * ─────────────────────────────────────────────────────────────────────────────
  */
+import type { PropertyTypeValue } from "../lib/lead-options";
 
 export type Testimonial = {
   /** Real first name + last initial, e.g. "Denise R." Only publish real, permissioned reviews. */
@@ -30,36 +34,123 @@ export type TeamMember = {
   photo?: string;
 };
 
+export type Founder = {
+  firstName: string;
+  lastName: string;
+  role: string;
+  /** Real photos only, e.g. "/images/kane/portrait.jpg". */
+  photo: string;
+  /** e.g. "Kane on a residential street in Edmonton" */
+  photoAlt: string;
+  /** One or two sentences in Kane's words. */
+  shortBio: string;
+  /** Optional, e.g. "/brand/signature.svg", traced from Kane's real signature. */
+  signature: string;
+  linkedin: string;
+  /** Optional 60–90 s intro: MP4 (12 MB or less) + poster + WebVTT captions. */
+  video: { src: string; poster: string; captions: string };
+};
+
+/**
+ * Claims that only render once Kane confirms them. The first three are the
+ * brand pillars Kane approved in September 2026.
+ */
+export type VerifiedFlag =
+  | "explainsOfferMath"
+  | "tellsWhenListingWins"
+  | "assignmentDisclosedBeforeSigning"
+  | "showsMarginInWriting"
+  | "noRetrades"
+  | "closeInDays"
+  | "offerWithinHours"
+  | "coversLegalFees";
+
+export type PropertyTypeConfig = {
+  /** A PROPERTY_TYPES value (an Airtable choice). */
+  value: PropertyTypeValue;
+  /** Show it on the site (hub, form chips, lists). */
+  show: boolean;
+  /** Plural, for headings and lists: "Condo townhouses". */
+  plural: string;
+  /** Singular, lower-case, for sentences: "condo townhouse". */
+  singular: string;
+  /** One line under the name. */
+  note: string;
+};
+
+/** The person sellers deal with. Empty strings render nothing. */
+const founder: Founder = {
+  firstName: "Kane",
+  lastName: "", // TO CONFIRM (optional)
+  role: "Founder",
+  photo: "",
+  photoAlt: "",
+  shortBio: "", // TO CONFIRM: one or two sentences in Kane's words
+  signature: "",
+  linkedin: "",
+  video: { src: "", poster: "", captions: "" },
+};
+
+/** Flip a flag to true only after Kane confirms it. Unconfirmed claims never render in production. */
+const verified: Record<VerifiedFlag, boolean> = {
+  explainsOfferMath: true, // offers come with the ARV, repairs and costs explained
+  tellsWhenListingWins: true, // Kane says so when listing would likely net more
+  assignmentDisclosedBeforeSigning: true, // matches site.disclosure; lawyer to review the wording
+  showsMarginInWriting: false, // TO CONFIRM: written offers itemize the profit line too
+  noRetrades: false, // TO CONFIRM: no price cuts after agreement unless something new and material turns up
+  closeInDays: false, // TO CONFIRM: promises.closeInDays is reliably achievable
+  offerWithinHours: false, // TO CONFIRM: promises.offerWithinHours is reliably achievable
+  coversLegalFees: false, // TO CONFIRM: Kane pays the seller's standard legal fees
+};
+
+/**
+ * Property types shown on the site, in display order; the first is the
+ * current focus. To start or stop showing a type, flip `show`. To give a type
+ * its own page, add content/property-types/<slug>.md (docs/content-playbook.md).
+ */
+const propertyTypes: PropertyTypeConfig[] = [
+  { value: "Condo townhouse", show: true, plural: "Condo townhouses", singular: "condo townhouse", note: "Including complexes with high fees, a special assessment or big repairs coming." },
+  { value: "Single family", show: true, plural: "Houses", singular: "house", note: "Bungalows, split-levels and two-storeys, from dated to damaged." },
+  { value: "Half duplex", show: true, plural: "Half duplexes", singular: "half duplex", note: "Either side, with or without a basement suite." },
+  { value: "Freehold townhouse", show: true, plural: "Freehold townhouses", singular: "freehold townhouse", note: "Row and end units without condo fees." },
+  { value: "Apartment condo", show: true, plural: "Apartment condos", singular: "apartment condo", note: "Older buildings and units that need work." },
+  { value: "Multifamily", show: true, plural: "Duplexes to fourplexes", singular: "small multi-unit building", note: "Up-down duplexes to fourplexes, tenants in place." },
+];
+
+/**
+ * The site's public origin (no trailing slash): NEXT_PUBLIC_SITE_URL once
+ * there's a domain, else Vercel's production address, else localhost.
+ * Never read site.url in a client component; pass it down as a prop.
+ */
+export function resolveSiteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+  // `||`, not `??`: an empty variable counts as unset.
+  const vercel = (process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL)?.trim();
+  if (vercel) return `https://${vercel}`;
+  return "http://localhost:3000";
+}
+
 export const site = {
   /** Public business name, exactly as it will appear on Google Business Profile. */
   name: "Aurora Home Buyers",
-  /** Registered legal name (update once the business is registered, e.g. "Aurora Home Buyers Ltd."). */
+  /** Registered legal name. TO CONFIRM once the business is registered. */
   legalName: "Aurora Home Buyers",
-  /** Short brand promise used in social cards. */
-  tagline: "Fair cash offers. Fast, simple closings.",
-  /** Why the business is called what it is. Shown on the About page. Leave empty to hide. */
-  nameStory:
-    "Aurora was the original name of Manning, Alberta, the northern Alberta town where our founder grew up. The name is a nod to home.",
+  tagline: "Straight answers on selling your home.",
 
-  /**
-   * REPLACE: your production URL (no trailing slash). The NEXT_PUBLIC_SITE_URL
-   * environment variable overrides this, which is handy for staging.
-   */
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://www.example.com").replace(/\/$/, ""),
+  url: resolveSiteUrl(),
 
   /**
    * The number sellers call or text. Use the same format everywhere (Google
-   * Business Profile, directories, flyers). Switch it here once the Quo
-   * business line is set up.
+   * Business Profile, directories, flyers). TO CONFIRM: the long-term number.
    */
   phone: "(780) 836-5156",
-  /** Public inbox for sellers. Leave empty to hide email everywhere. Lead notifications go to LEAD_EMAIL_TO. */
+  /** Public inbox for sellers. Leave empty to hide email everywhere. Lead alerts go to LEAD_EMAIL_TO. */
   email: "",
 
   /**
-   * Physical address. Leave `street` empty if you work from home or don't meet
-   * sellers at an office (a "service-area business" on Google Business Profile);
-   * the site then shows only the city and omits the street from structured data.
+   * Physical address. Leave `street` empty for a service-area business
+   * (no public office); the site then shows only the city.
    */
   address: {
     street: "",
@@ -69,19 +160,16 @@ export const site = {
     country: "CA",
   },
 
-  /** Your primary market. Drives headlines like "Sell Your House Fast in …". */
   market: {
-    /** Used in headlines: "We buy houses in {name}". */
     name: "Edmonton",
-    /** Used in body copy for the wider area: "homeowners across {region}". */
     region: "Greater Edmonton",
     province: "Alberta",
     provinceAbbr: "AB",
-    /** Approximate centre of your market, used in LocalBusiness schema. */
+    /** Approximate centre of the market, used in LocalBusiness schema. */
     geo: { latitude: 53.5461, longitude: -113.4938 },
   },
 
-  /** Hours shown on the site and in structured data (24h clock). */
+  /** Hours shown on the site and in structured data (24h clock). TO CONFIRM. */
   hours: {
     label: "Mon–Sat, 8am–8pm",
     days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -90,30 +178,52 @@ export const site = {
   },
 
   /**
-   * The promises your copy makes. Only claim what you actually deliver —
-   * these appear in headlines, FAQs and comparison tables.
+   * The numbers behind the speed promises. They only reach a page through
+   * src/lib/claims.ts, and only when their `verified` flag is true.
    */
   promises: {
-    /** Fastest closing you can reliably do (days), lawyers included. */
     closeInDays: 7,
-    /** How quickly you send an offer after seeing the property (hours). */
     offerWithinHours: 24,
-    /** Do you pay the seller's standard real estate lawyer fees? */
-    coversLegalFees: true,
+    coversLegalFees: verified.coversLegalFees,
   },
 
   /**
-   * Transparency statement shown in the footer, terms, FAQ and About page.
-   * Being upfront about assignments builds trust. Have an Alberta real estate
-   * lawyer review it (see the RECA note in docs/seo-playbook.md).
+   * Shown in the footer of every page and on Terms, FAQ, About and How it
+   * works. Have an Alberta real estate lawyer review the wording.
    */
   disclosure:
     "We are real estate investors, not licensed real estate professionals, and we do not list homes for sale. When you accept our offer, we sign a purchase contract to buy your property. We may complete the purchase ourselves or assign our contract to another investor, and we will tell you in writing before you sign.",
 
+  founder,
+
+  /** What happens after a seller submits. Only promise what can always be kept. */
+  responsePromise: {
+    /** TO CONFIRM, e.g. "within 2 hours". Empty means no promise. */
+    duringHours: "",
+    afterHours: "the next morning",
+  },
+
+  verified,
+
+  /** TO CONFIRM: how many days a written offer stays open. */
+  offerStaysOpenDays: null as number | null,
+
+  /** Optional free Cal.com (or similar) link for booking the first call. */
+  bookingUrl: "",
+
+  /**
+   * TO CONFIRM (optional): one sentence for /hello on where letter and door
+   * hanger addresses come from, e.g. "I pick streets where I buy homes and
+   * write to every address on them." Empty leaves the sentence out.
+   */
+  letterSource: "",
+
+  propertyTypes,
+
   /** Year the business started. Leave undefined to hide "since …" copy. */
   foundedYear: undefined as number | undefined,
 
-  /** Links to your profiles. Empty strings are ignored. Used for schema `sameAs`. */
+  /** Profile links, used for schema `sameAs` once they exist. Empty strings are ignored. */
   social: {
     googleBusinessProfile: "",
     facebook: "",
@@ -123,13 +233,11 @@ export const site = {
   },
 
   /**
-   * Real reviews only — publishing invented testimonials is deceptive
-   * marketing under Canada's Competition Act. The section stays hidden until
-   * you add some.
+   * Real reviews only — invented testimonials are deceptive marketing under
+   * Canada's Competition Act. The section stays hidden until you add some.
    */
   testimonials: [] as Testimonial[],
 
-  /** Real people build trust (and E-E-A-T). The team section stays hidden until you add someone. */
   team: [] as TeamMember[],
 } as const;
 
@@ -145,11 +253,7 @@ export function formatAddress(): string {
   return [street, cityLine].filter(Boolean).join(", ");
 }
 
-/** Values still set to template placeholders — reported at build time. */
-export function placeholderWarnings(): string[] {
-  const warnings: string[] = [];
-  if (site.url.includes("example.com")) warnings.push("site.url / NEXT_PUBLIC_SITE_URL still points at example.com");
-  if (site.phone.includes("555")) warnings.push("site.phone is still a 555 placeholder number");
-  if ((site.email as string).endsWith("@example.com")) warnings.push("site.email is still an example.com address");
-  return warnings;
+/** The property types currently shown on the site, in display order. */
+export function shownPropertyTypes(): PropertyTypeConfig[] {
+  return site.propertyTypes.filter((t) => t.show);
 }

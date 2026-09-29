@@ -4,28 +4,26 @@ import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, type Crumb } from "@/lib/schema";
 
 /** Visible breadcrumbs plus matching BreadcrumbList structured data. Pass the full trail, starting with Home. */
-export function Breadcrumbs({ items, tone = "light" }: { items: Crumb[]; tone?: "light" | "dark" }) {
-  const muted = tone === "dark" ? "text-brand-200 hover:text-white" : "text-slate-500 hover:text-brand-700";
-  const current = tone === "dark" ? "text-white" : "text-slate-800";
+export function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
     <>
       <JsonLd data={breadcrumbSchema(items)} />
-      <nav aria-label="Breadcrumb" className="text-sm">
-        <ol className="flex flex-wrap items-center gap-1">
+      <nav aria-label="Breadcrumb" className="type-small">
+        <ol className="flex flex-wrap items-center gap-x-1.5">
           {items.map((item, i) => {
             const last = i === items.length - 1;
             return (
-              <li key={item.path} className="flex items-center gap-1">
+              <li key={item.path} className="flex min-h-11 items-center gap-1.5">
                 {last ? (
-                  <span aria-current="page" className={current}>
+                  <span aria-current="page" className="text-ink-2">
                     {item.name}
                   </span>
                 ) : (
                   <>
-                    <Link href={item.path} className={muted}>
+                    <Link href={item.path} className="link inline-flex min-h-11 min-w-11 items-center">
                       {item.name}
                     </Link>
-                    <ChevronRight className={`size-3.5 ${tone === "dark" ? "text-brand-300" : "text-slate-400"}`} aria-hidden="true" />
+                    <ChevronRight className="size-4 text-ink-2" aria-hidden="true" />
                   </>
                 )}
               </li>

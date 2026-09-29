@@ -1,585 +1,492 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  BadgeDollarSign,
-  CalendarCheck,
-  ChevronDown,
-  CircleCheck,
-  CircleX,
-  ClipboardCheck,
-  FileText,
-  HandCoins,
-  Handshake,
-  MapPin,
-  Phone,
-  Quote,
-  ShieldCheck,
-  Star,
-  Timer,
-  Wrench,
-} from "lucide-react";
-import { phoneHref, site } from "@/config/site";
+import type { ReactNode } from "react";
+import { ChevronDown, MessageSquare, Phone } from "lucide-react";
+import { phoneHref, shownPropertyTypes, site } from "@/config/site";
 import { OFFER_PATH } from "@/config/nav";
-import { comparisonRows } from "@/content/comparison";
 import { locations } from "@/content/locations";
-import type { Faq } from "@/content/faqs";
-import type { Post, Situation } from "@/lib/content";
+import type { Faq as FaqItem } from "@/content/faqs";
+import { propertyTypePage, type Post, type Situation } from "@/lib/content";
 import type { Reason } from "@/lib/lead-options";
-import { faqSchema, type Crumb } from "@/lib/schema";
+import { isUnconfirmed, offerMathClause, offerTimingPhrase } from "@/lib/claims";
+import type { Crumb } from "@/lib/schema";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { JsonLd } from "@/components/JsonLd";
 import { LeadForm } from "@/components/LeadForm";
-import { situationIcon } from "@/components/icons";
+import { Unconfirmed } from "@/components/preview";
+import { ButtonLink } from "@/components/ui/Button";
+import { Faq } from "@/components/ui/Faq";
+import { TextLink } from "@/components/ui/TextLink";
 
-const { promises } = site;
+/*
+ * Page building blocks (spec 3.4): sections alternate snow and frost, with at
+ * most one night section per page. Each section has one job. No icon cards,
+ * no eyebrow labels, no shadows except the lead form card.
+ */
 
-/* ─── Heroes ────────────────────────────────────────────────────────────── */
+export type Surface = "snow" | "frost" | "night";
 
-const DEFAULT_BULLETS = [
-  "Sell as-is. No repairs, cleaning or showings",
-  promises.coversLegalFees ? "No commissions or fees. We cover your legal fees" : "No commissions or agent fees",
-  `Close in as little as ${promises.closeInDays} days, or on your schedule`,
-  `Fair written offer within ${promises.offerWithinHours} hours, with no obligation`,
-];
+const SURFACES: Record<Surface, string> = {
+  snow: "bg-snow text-ink",
+  frost: "bg-frost text-ink",
+  night: "bg-night text-snow",
+};
 
-/** Page-top hero with the H1, benefits and the lead form. */
-export function FormHero({
-  eyebrow,
+/** A full-width band with the standard padding (64px phones, 96px desktop) and the content width. */
+export function Section({
+  surface = "snow",
+  id,
+  labelledBy,
+  tight = false,
+  className = "",
+  innerClassName = "",
+  children,
+}: {
+  surface?: Surface;
+  id?: string;
+  labelledBy?: string;
+  /** 48px / 64px padding instead of 64px / 96px: the home page only, to stay inside its length budget. */
+  tight?: boolean;
+  className?: string;
+  innerClassName?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      aria-labelledby={labelledBy}
+      data-surface={surface === "night" ? "night" : undefined}
+      className={`${tight ? "band-tight" : "band"} ${SURFACES[surface]} ${className}`}
+    >
+      <div className={`page-wrap ${innerClassName}`}>{children}</div>
+    </section>
+  );
+}
+
+/** An H2 with an optional intro paragraph. */
+export function SectionHeading({ id, title, intro, className = "" }: { id?: string; title: ReactNode; intro?: ReactNode; className?: string }) {
+  return (
+    <div className={className}>
+      <h2 id={id} className="type-h2">
+        {title}
+      </h2>
+      {intro && <div className="type-lead measure mt-4 text-ink-2">{intro}</div>}
+    </div>
+  );
+}
+
+/** "Call (780) 836-5156" and "Text me" as text links, with the phone and message glyphs. */
+export function CallTextLinks({ tone = "ink", className = "" }: { tone?: "ink" | "night"; className?: string }) {
+  const glyph = tone === "night" ? "text-night-ink-2" : "text-ink-2";
+  return (
+    <p className={`flex flex-wrap gap-x-6 gap-y-1 ${className}`}>
+      <TextLink href={`tel:${phoneHref}`} tone={tone} className="inline-flex min-h-11 items-center gap-2 font-semibold">
+        <Phone className={`size-5 ${glyph}`} aria-hidden="true" />
+        <span>
+          Call <span className="nums">{site.phone}</span>
+        </span>
+      </TextLink>
+      <TextLink href={`sms:${phoneHref}`} tone={tone} className="inline-flex min-h-11 items-center gap-2 font-semibold">
+        <MessageSquare className={`size-5 ${glyph}`} aria-hidden="true" />
+        Text me
+      </TextLink>
+    </p>
+  );
+}
+
+/* ─── Page tops ─────────────────────────────────────────────────────────── */
+
+/** The top of an informational page: breadcrumbs, the H1 and a lead paragraph. */
+export function PageIntro({
   title,
-  subtitle,
-  bullets = DEFAULT_BULLETS,
+  lead,
+  breadcrumbs,
+  children,
+  surface = "snow",
+}: {
+  title: ReactNode;
+  lead?: ReactNode;
+  breadcrumbs?: Crumb[];
+  children?: ReactNode;
+  surface?: Exclude<Surface, "night">;
+}) {
+  return (
+    <div className={SURFACES[surface]}>
+      <div className="page-wrap pt-6 pb-12 lg:pt-10 lg:pb-16">
+        {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
+        <h1 className={`type-h1 max-w-[22ch] ${breadcrumbs ? "mt-4" : ""}`}>{title}</h1>
+        {lead && <div className="type-lead measure mt-5 text-ink-2">{lead}</div>}
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A page top with the lead form: the H1 and lead on the left (7 of 12
+ * columns), the form card on the right. Phones: H1, lead, form, then the
+ * call and text links.
+ */
+export function FormHero({
+  title,
+  lead,
   breadcrumbs,
   reason,
+  propertyType,
   formTitle,
+  formSubtitle,
+  children,
 }: {
-  eyebrow?: string;
-  title: string;
-  subtitle: string;
-  bullets?: string[];
+  title: ReactNode;
+  lead: ReactNode;
   breadcrumbs?: Crumb[];
   reason?: Reason;
+  propertyType?: string;
   formTitle?: string;
+  formSubtitle?: string;
+  /** Extra copy under the call and text links. */
+  children?: ReactNode;
 }) {
   return (
-    <section className="hero-bg text-white">
-      <div className="container-page grid grid-cols-1 gap-8 py-10 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:gap-x-14 lg:gap-y-7 lg:py-20">
-        {/* Phones: headline → form → benefits. Desktop: headline + benefits left, form right. */}
-        <div className="lg:col-start-1 lg:row-start-1 lg:self-end">
-          {breadcrumbs && (
-            <div className="mb-6">
-              <Breadcrumbs items={breadcrumbs} tone="dark" />
-            </div>
-          )}
-          {eyebrow && <p className="text-sm font-semibold uppercase tracking-wider text-accent-300">{eyebrow}</p>}
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem] lg:leading-[1.08]">
-            {title}
-          </h1>
-          <p className="mt-5 max-w-xl text-lg text-brand-100 sm:text-xl">{subtitle}</p>
+    <div className="bg-snow text-ink">
+      <div className="page-wrap grid gap-y-8 pt-6 pb-16 lg:grid-cols-12 lg:gap-x-12 lg:pt-10 lg:pb-24">
+        <div className="lg:col-span-7 lg:row-start-1">
+          {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
+          <h1 className={`type-h1 ${breadcrumbs ? "mt-4" : ""}`}>{title}</h1>
+          <div className="type-lead measure mt-5 text-ink-2">{lead}</div>
         </div>
-        <div id="offer-form" className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
-          <LeadForm reason={reason} title={formTitle} />
+        <div className="lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1 lg:self-start">
+          <LeadForm reason={reason} propertyType={propertyType} title={formTitle} subtitle={formSubtitle} />
         </div>
-        <div className="lg:col-start-1 lg:row-start-2">
-          <ul className="space-y-3">
-            {bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-base text-white sm:text-lg">
-                <CircleCheck className="mt-0.5 size-6 shrink-0 text-accent-400" aria-hidden="true" />
-                {b}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-8 text-brand-100">
-            Prefer to talk?{" "}
-            <a href={`tel:${phoneHref}`} className="inline-flex items-center gap-1.5 font-semibold text-white underline-offset-4 hover:underline">
-              <Phone className="size-4" aria-hidden="true" />
-              Call or text {site.phone}
-            </a>
-          </p>
+        <div className="lg:col-span-7 lg:row-start-2">
+          <CallTextLinks />
+          {children}
         </div>
       </div>
-    </section>
-  );
-}
-
-/** Simpler page header for informational pages. */
-export function PageHeader({
-  eyebrow,
-  title,
-  subtitle,
-  breadcrumbs,
-}: {
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-  breadcrumbs: Crumb[];
-}) {
-  return (
-    <section className="hero-bg text-white">
-      <div className="container-page py-12 sm:py-16">
-        <Breadcrumbs items={breadcrumbs} tone="dark" />
-        {eyebrow && <p className="mt-6 text-sm font-semibold uppercase tracking-wider text-accent-300">{eyebrow}</p>}
-        <h1 className={`${eyebrow ? "mt-3" : "mt-6"} max-w-4xl text-4xl font-extrabold tracking-tight text-balance sm:text-5xl`}>
-          {title}
-        </h1>
-        {subtitle && <p className="mt-5 max-w-3xl text-lg text-brand-100 sm:text-xl">{subtitle}</p>}
-      </div>
-    </section>
-  );
-}
-
-/* ─── Trust & benefits ──────────────────────────────────────────────────── */
-
-export function ValueProps() {
-  const items = [
-    { icon: BadgeDollarSign, title: "No commissions or fees", text: promises.coversLegalFees ? "And we cover your legal fees" : "Keep more of your sale price" },
-    { icon: Wrench, title: "No repairs or cleaning", text: "We buy houses in any condition" },
-    { icon: Timer, title: `Close in ${promises.closeInDays} days`, text: "Or whenever you're ready" },
-    { icon: ShieldCheck, title: "No obligation", text: "Free offer, zero pressure" },
-  ];
-  return (
-    <section aria-label="Why sell to us" className="border-b border-slate-200 bg-white">
-      <div className="container-page grid grid-cols-1 gap-4 py-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-        {items.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex items-start gap-3">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-              <Icon className="size-6" aria-hidden="true" />
-            </span>
-            <div>
-              <p className="font-semibold text-slate-900">{title}</p>
-              <p className="text-sm text-slate-600">{text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export const STEPS = [
-  {
-    icon: ClipboardCheck,
-    title: "Tell us about your house",
-    text: "Fill out the short form or give us a call. It takes about a minute, and there's no cost or obligation.",
-  },
-  {
-    icon: FileText,
-    title: "Get a fair written offer",
-    text: `We take a quick look at the property, in person or by video, and send a cash offer within ${promises.offerWithinHours} hours with our math explained.`,
-  },
-  {
-    icon: CalendarCheck,
-    title: "Close on your date",
-    text: "Pick your closing date. Real estate lawyers handle the paperwork and the funds, and you get paid on closing day.",
-  },
-];
-
-export function HowItWorks({ title = "Sell your house in 3 simple steps", intro, showLink = true }: { title?: string; intro?: string; showLink?: boolean }) {
-  return (
-    <section className="section bg-slate-50">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow">How it works</p>
-          <h2 className="section-title mt-2">{title}</h2>
-          <p className="section-lead">
-            {intro ?? "No listing, no showings, no waiting on a buyer's bank. Here's the whole process from first call to cash in hand."}
-          </p>
-        </div>
-        <ol className="mt-12 grid gap-6 md:grid-cols-3">
-          {STEPS.map(({ icon: Icon, title: stepTitle, text }, i) => (
-            <li key={stepTitle} className="card relative">
-              <span className="absolute right-6 top-6 text-5xl font-extrabold text-slate-100" aria-hidden="true">
-                {i + 1}
-              </span>
-              <span className="flex size-12 items-center justify-center rounded-xl bg-accent-400 text-slate-900">
-                <Icon className="size-6" aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 text-xl font-bold text-slate-900">
-                <span className="sr-only">Step {i + 1}: </span>
-                {stepTitle}
-              </h3>
-              <p className="mt-2 text-slate-600">{text}</p>
-            </li>
-          ))}
-        </ol>
-        {showLink && (
-          <Link href="/how-it-works" className="mt-8 inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-800">
-            See the full process and how we calculate offers
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-        )}
-      </div>
-    </section>
-  );
-}
-
-export function Benefits({ place = site.market.region }: { place?: string }) {
-  const items = [
-    { icon: Wrench, title: "Sell as-is", text: "No repairs, cleaning or updates. We buy the house in the condition it's in today, even with major problems." },
-    {
-      icon: HandCoins,
-      title: "No fees or commissions",
-      text: promises.coversLegalFees
-        ? "No agent commissions and no hidden fees. We also cover your standard legal fees."
-        : "No agent commissions and no hidden fees, so you know exactly what you walk away with.",
-    },
-    { icon: CalendarCheck, title: "You pick the closing date", text: `Close in as little as ${promises.closeInDays} days, or take the time you need to pack and move.` },
-    { icon: FileText, title: "Straightforward offers", text: "We show you how we reached our number and put it in writing. No pressure and no obligation." },
-    { icon: Handshake, title: "Any situation", text: "Foreclosure, probate, divorce, tenants, liens, code violations or relocation. We've seen it before." },
-    { icon: MapPin, title: "Local to you", text: `We buy houses in ${place}, so you work with people who know the neighbourhoods and answer the phone.` },
-  ];
-  return (
-    <section className="section">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Why sell to us</p>
-          <h2 className="section-title mt-2">A simpler way to sell your house</h2>
-          <p className="section-lead">
-            Listing works well for some homes. But if your house needs work, time matters, or you just want certainty,
-            a direct cash sale takes the hassle off your plate.
-          </p>
-        </div>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="card">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                <Icon className="size-6" aria-hidden="true" />
-              </span>
-              <h3 className="mt-4 text-lg font-bold text-slate-900">{title}</h3>
-              <p className="mt-2 text-slate-600">{text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Comparison ────────────────────────────────────────────────────────── */
-
-export function ComparisonTable({
-  title = "Selling to us vs. listing with an agent",
-  intro,
-  showLink = true,
-}: {
-  title?: string;
-  intro?: string;
-  showLink?: boolean;
-}) {
-  return (
-    <section className="section">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Compare your options</p>
-          <h2 className="section-title mt-2">{title}</h2>
-          <p className="section-lead">
-            {intro ??
-              "Both paths can make sense. Here's an honest side-by-side so you can decide which fits your house and your timeline."}
-          </p>
-        </div>
-        <div className="mt-10 overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
-          <table className="w-full min-w-[640px] text-left text-sm sm:text-base">
-            <thead>
-              <tr className="bg-slate-50">
-                <th scope="col" className="w-1/4 px-4 py-4 font-semibold text-slate-600 sm:px-6">
-                  <span className="sr-only">Factor</span>
-                </th>
-                <th scope="col" className="bg-brand-800 px-4 py-4 font-bold text-white sm:px-6">
-                  Selling to {site.name}
-                </th>
-                <th scope="col" className="px-4 py-4 font-bold text-slate-900 sm:px-6">
-                  Listing with an agent
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200">
-              {comparisonRows.map((row) => (
-                <tr key={row.label}>
-                  <th scope="row" className="px-4 py-4 font-semibold text-slate-900 sm:px-6">
-                    {row.label}
-                  </th>
-                  <td className="bg-brand-50/60 px-4 py-4 sm:px-6">
-                    <span className="flex items-start gap-2">
-                      <CircleCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" aria-hidden="true" />
-                      {row.us}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 text-slate-600 sm:px-6">
-                    <span className="flex items-start gap-2">
-                      <CircleX className="mt-0.5 size-5 shrink-0 text-slate-400" aria-hidden="true" />
-                      {row.listing}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {showLink && (
-          <Link href="/cash-offer-vs-realtor" className="mt-8 inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-800">
-            See a full net-proceeds example
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-        )}
-      </div>
-    </section>
-  );
-}
-
-/* ─── Situations & areas ────────────────────────────────────────────────── */
-
-export function SituationsGrid({
-  situations,
-  title = "We buy houses in any situation",
-  intro = "Whatever is behind your decision to sell, we've helped homeowners through it, and we'll treat yours with care and discretion.",
-  place,
-}: {
-  situations: Situation[];
-  title?: string;
-  intro?: string;
-  place?: string;
-}) {
-  return (
-    <section className="section bg-slate-50">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Situations we help with{place ? ` in ${place}` : ""}</p>
-          <h2 className="section-title mt-2">{title}</h2>
-          <p className="section-lead">{intro}</p>
-        </div>
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {situations.map((s) => {
-            const Icon = situationIcon(s.icon);
-            return (
-              <li key={s.slug}>
-                <Link
-                  href={`/situations/${s.slug}`}
-                  className="group flex h-full gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md"
-                >
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white">
-                    <Icon className="size-6" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block font-bold text-slate-900 group-hover:text-brand-700">{s.label}</span>
-                    <span className="mt-1 block text-sm text-slate-600">{s.summary}</span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-export function AreasGrid({
-  title = `Areas we buy houses in ${site.market.region}`,
-  intro = "Don't see your city? We likely still buy there. Send us your address and we'll let you know.",
-  exclude,
-}: {
-  title?: string;
-  intro?: string;
-  exclude?: string;
-}) {
-  const list = locations.filter((l) => l.slug !== exclude);
-  return (
-    <section className="section">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Service areas</p>
-          <h2 className="section-title mt-2">{title}</h2>
-          <p className="section-lead">{intro}</p>
-        </div>
-        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {list.map((l) => (
-            <li key={l.slug}>
-              <Link
-                href={`/we-buy-houses/${l.slug}`}
-                className="flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-3 font-medium text-slate-800 hover:border-brand-300 hover:bg-brand-50"
-              >
-                <MapPin className="size-4 shrink-0 text-brand-500" aria-hidden="true" />
-                {l.city}, {l.provinceAbbr}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-/* ─── FAQ ───────────────────────────────────────────────────────────────── */
-
-export function FaqSection({
-  items,
-  title = "Frequently asked questions",
-  eyebrow = "FAQ",
-  withSchema = true,
-  moreLink = false,
-}: {
-  items: Faq[];
-  title?: string;
-  eyebrow?: string;
-  /** Emit FAQPage structured data. Only one FAQPage block per page. */
-  withSchema?: boolean;
-  moreLink?: boolean;
-}) {
-  return (
-    <section className="section">
-      {withSchema && <JsonLd data={faqSchema(items)} />}
-      <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[1fr_2fr]">
-        <div>
-          <p className="eyebrow">{eyebrow}</p>
-          <h2 className="section-title mt-2">{title}</h2>
-          <p className="mt-4 text-slate-600">
-            Have a question that isn&apos;t answered here? Call or text{" "}
-            <a href={`tel:${phoneHref}`} className="font-semibold text-brand-600 hover:underline">
-              {site.phone}
-            </a>
-            .
-          </p>
-          {moreLink && (
-            <Link href="/faq" className="mt-4 inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-800">
-              See all FAQs
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
-          )}
-        </div>
-        <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200">
-          {items.map((f) => (
-            <details key={f.question} className="group px-5 py-1 sm:px-6">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
-                <h3 className="text-base sm:text-lg">{f.question}</h3>
-                <ChevronDown className="size-5 shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
-              </summary>
-              <p className="pb-5 text-slate-600">{f.answer}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Social proof ──────────────────────────────────────────────────────── */
-
-/** Renders only when real testimonials are configured in site.testimonials. */
-export function Testimonials() {
-  if (site.testimonials.length === 0) return null;
-  return (
-    <section className="section bg-slate-50">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Homeowner stories</p>
-          <h2 className="section-title mt-2">What sellers say about working with us</h2>
-        </div>
-        <ul className="mt-10 grid gap-6 md:grid-cols-3">
-          {site.testimonials.map((t) => (
-            <li key={t.name + t.quote} className="card flex flex-col">
-              <Quote className="size-8 text-accent-400" aria-hidden="true" />
-              {t.rating && (
-                <p className="mt-3 flex gap-0.5" aria-label={`${t.rating} out of 5 stars`}>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star key={i} className={`size-4 ${i < t.rating! ? "fill-accent-400 text-accent-400" : "text-slate-300"}`} aria-hidden="true" />
-                  ))}
-                </p>
-              )}
-              <blockquote className="mt-3 flex-1 text-slate-700">&ldquo;{t.quote}&rdquo;</blockquote>
-              <p className="mt-4 font-semibold text-slate-900">{t.name}</p>
-              <p className="text-sm text-slate-500">{t.context}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Content ───────────────────────────────────────────────────────────── */
-
-export function PostCards({ posts, title = "Guides for homeowners", intro }: { posts: Post[]; title?: string; intro?: string }) {
-  if (posts.length === 0) return null;
-  return (
-    <section className="section bg-slate-50">
-      <div className="container-page">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="max-w-2xl">
-            <p className="eyebrow">Seller guides</p>
-            <h2 className="section-title mt-2">{title}</h2>
-            {intro && <p className="section-lead">{intro}</p>}
-          </div>
-          <Link href="/blog" className="inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:text-brand-800">
-            All guides
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-        </div>
-        <ul className="mt-10 grid gap-6 md:grid-cols-3">
-          {posts.map((p) => (
-            <li key={p.slug}>
-              <PostCard post={p} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-export function PostCard({ post }: { post: Post }) {
-  return (
-    <Link href={`/blog/${post.slug}`} className="card group flex h-full flex-col transition hover:border-brand-300 hover:shadow-md">
-      <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">{post.category}</p>
-      <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-brand-700">{post.title}</h3>
-      <p className="mt-2 flex-1 text-sm text-slate-600">{post.description}</p>
-      <p className="mt-4 text-xs text-slate-500">{post.readingMinutes} min read</p>
-    </Link>
+    </div>
   );
 }
 
 /* ─── Calls to action ───────────────────────────────────────────────────── */
 
-export function CtaBand({
-  title = "Ready to see what we'd pay for your house?",
-  text = `Get a fair, no-obligation cash offer within ${promises.offerWithinHours} hours. No repairs, no fees, no pressure.`,
-}: {
-  title?: string;
-  text?: string;
-}) {
+/** The default line under a final call to action. Every promise comes from claims. */
+function offerLine(): ReactNode {
   return (
-    <section className="hero-bg">
-      <div className="container-page flex flex-col items-start justify-between gap-8 py-14 text-white lg:flex-row lg:items-center">
-        <div className="max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
-          <p className="mt-3 text-lg text-brand-100">{text}</p>
-        </div>
-        <div className="flex shrink-0 flex-wrap gap-3">
-          <Link href={OFFER_PATH} className="btn-primary text-lg">
-            Get My Cash Offer
-            <ArrowRight className="size-5" aria-hidden="true" />
-          </Link>
-          <a href={`tel:${phoneHref}`} className="btn-ghost-light text-lg">
-            <Phone className="size-5" aria-hidden="true" />
-            {site.phone}
-          </a>
-        </div>
-      </div>
-    </section>
+    <>
+      Tell me about your home and I&apos;ll send a written offer {offerTimingPhrase()}
+      {offerMathClause()}. No obligation.
+      <Unconfirmed show={isUnconfirmed("offerWithinHours")} />
+    </>
   );
 }
 
-/** Sticky sidebar with the form, used beside long-form content. */
+/**
+ * The last section of a page (spec 5.3 §9): a heading, one short paragraph
+ * and the call and text links on the left; the lead form on the right.
+ */
+export function FinalCta({
+  title = "Get a straight answer on your place.",
+  text,
+  formId = "offer-bottom",
+  reason,
+  propertyType,
+  surface = "snow",
+  tight = false,
+}: {
+  title?: ReactNode;
+  text?: ReactNode;
+  /** "offer" when this is the page's only form. */
+  formId?: "offer" | "offer-bottom";
+  reason?: Reason;
+  propertyType?: string;
+  surface?: Exclude<Surface, "night">;
+  tight?: boolean;
+}) {
+  const headingId = `${formId}-heading`;
+  return (
+    <Section surface={surface} tight={tight} labelledBy={headingId} innerClassName="grid gap-y-6 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-8">
+      <div className="lg:col-span-6">
+        <h2 id={headingId} className="type-h2">
+          {title}
+        </h2>
+        <p className="measure mt-4 text-ink-2">{text ?? offerLine()}</p>
+        <CallTextLinks className="mt-4" />
+      </div>
+      <div className="lg:col-span-5 lg:col-start-8">
+        <LeadForm id={formId} reason={reason} propertyType={propertyType} />
+      </div>
+    </Section>
+  );
+}
+
+/** A call to action without a form, for pages that already have one or are long reads. */
+export function CtaBand({ title = "Want to see what I'd pay for your place?", text, surface = "snow" }: { title?: ReactNode; text?: ReactNode; surface?: Exclude<Surface, "night"> }) {
+  return (
+    <Section surface={surface} labelledBy="cta-heading">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+        <div>
+          <h2 id="cta-heading" className="type-h2">
+            {title}
+          </h2>
+          <p className="measure mt-4 text-ink-2">{text ?? offerLine()}</p>
+        </div>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+          <ButtonLink href={OFFER_PATH}>Get my offer</ButtonLink>
+          <CallTextLinks />
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/** The form beside long-form content (guides). */
 export function SidebarOffer({ reason }: { reason?: Reason }) {
   return (
-    <aside className="lg:sticky lg:top-28">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
-        <LeadForm variant="plain" reason={reason} title="Get a no-obligation offer" subtitle="Fair cash price. You pick the closing date." />
-      </div>
-      <p className="mt-4 text-center text-sm text-slate-600">
-        Or call/text{" "}
-        <a href={`tel:${phoneHref}`} className="font-semibold text-brand-600">
+    <aside aria-label="Get an offer" className="lg:sticky lg:top-24">
+      <LeadForm reason={reason} title="What would you get for your place?" />
+      <p className="type-small mt-4 text-ink-2">
+        Or call or text{" "}
+        <TextLink href={`tel:${phoneHref}`} className="nums font-semibold">
           {site.phone}
-        </a>
+        </TextLink>
+        .
       </p>
     </aside>
+  );
+}
+
+/* ─── Questions ─────────────────────────────────────────────────────────── */
+
+/** An FAQ section: the heading and a way to ask on the left, the questions on the right. */
+export function FaqSection({
+  items,
+  title = "Questions sellers ask",
+  withSchema = false,
+  moreLink = false,
+  surface = "frost",
+  id,
+  askLine = true,
+  tight = false,
+}: {
+  items: FaqItem[];
+  title?: string;
+  /** "Something else on your mind? Call or text …" under the heading. */
+  askLine?: boolean;
+  tight?: boolean;
+  /** Emit FAQPage structured data. Only /faq does (spec 7.3). */
+  withSchema?: boolean;
+  moreLink?: boolean;
+  surface?: Exclude<Surface, "night">;
+  id?: string;
+}) {
+  const headingId = `${id ?? "faq"}-heading`;
+  return (
+    <Section surface={surface} id={id} tight={tight} labelledBy={headingId} innerClassName="grid gap-y-8 lg:grid-cols-12 lg:gap-x-12">
+      <div className="max-lg:flex max-lg:flex-wrap max-lg:items-baseline max-lg:justify-between max-lg:gap-x-6 lg:col-span-4">
+        <h2 id={headingId} className="type-h2">
+          {title}
+        </h2>
+        {askLine && (
+          <p className="mt-4 text-ink-2">
+            Something else on your mind? Call or text{" "}
+            <TextLink href={`tel:${phoneHref}`} className="nums font-semibold">
+              {site.phone}
+            </TextLink>
+            .
+          </p>
+        )}
+        {moreLink && (
+          <p className={askLine ? "mt-2" : "lg:mt-3"}>
+            <TextLink href="/faq" className="inline-flex min-h-11 items-center">
+              All questions
+            </TextLink>
+          </p>
+        )}
+      </div>
+      <Faq items={items} withSchema={withSchema} className="lg:col-span-8" />
+    </Section>
+  );
+}
+
+/* ─── Lists ─────────────────────────────────────────────────────────────── */
+
+/**
+ * A heading and a list: collapsed behind the heading on phones (details and
+ * summary, no JavaScript), open as usual from 640px. The content renders
+ * twice, once per layout; only one is ever displayed.
+ */
+export function PhoneCollapsible({ title, headingLevel = 3, children }: { title: ReactNode; headingLevel?: 2 | 3; children: ReactNode }) {
+  const Heading = `h${headingLevel}` as "h2" | "h3";
+  return (
+    <>
+      <details className="group border-b border-mist sm:hidden">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-2 [&::-webkit-details-marker]:hidden">
+          <Heading className="type-h3">{title}</Heading>
+          <ChevronDown className="size-5 shrink-0 text-ink-2 transition-transform duration-150 group-open:rotate-180" aria-hidden="true" />
+        </summary>
+        <div className="pb-4">{children}</div>
+      </details>
+      <div className="max-sm:hidden">
+        <Heading className="type-h3">{title}</Heading>
+        <div className="mt-3">{children}</div>
+      </div>
+    </>
+  );
+}
+
+/** Situations as a clean two-column list: the label as a link, the summary underneath. */
+export function SituationList({ situations, headingLevel = 3 }: { situations: Situation[]; headingLevel?: 2 | 3 }) {
+  const Heading = `h${headingLevel}` as "h2" | "h3";
+  return (
+    <ul className="grid gap-x-12 sm:grid-cols-2">
+      {situations.map((s) => (
+        <li key={s.slug} className="border-t border-mist py-5">
+          <Heading className="font-display text-[1.1875rem] leading-snug font-bold">
+            <TextLink href={`/situations/${s.slug}`}>{s.label}</TextLink>
+          </Heading>
+          <p className="type-small mt-1 text-ink-2">{s.summary}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Situation labels only: wrapped onto shared lines on phones, one per line in columns from 640px. Every link is a 44px target. */
+export function SituationLinks({ situations }: { situations: Situation[] }) {
+  return (
+    <ul className="flex flex-wrap gap-x-5 sm:grid sm:grid-cols-2 sm:gap-x-8">
+      {situations.map((s) => (
+        <li key={s.slug}>
+          <TextLink href={`/situations/${s.slug}`} className="inline-flex min-h-11 items-center">
+            {s.label}
+          </TextLink>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Guides as a list: the title as a link and one line underneath. */
+export function PostList({ posts, headingLevel = 3, compactOnPhones = false }: { posts: Post[]; headingLevel?: 2 | 3 | 4; compactOnPhones?: boolean }) {
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
+  return (
+    <ul>
+      {posts.map((p) => (
+        <li key={p.slug} className={`border-t border-mist first:border-t-0 first:pt-0 ${compactOnPhones ? "py-2 sm:py-4" : "py-4"}`}>
+          <Heading className="font-display text-[1.1875rem] leading-snug font-bold">
+            <TextLink href={`/blog/${p.slug}`}>{p.title}</TextLink>
+            {p.draft && (
+              <span className="tag-unconfirmed" data-draft="">
+                Draft
+              </span>
+            )}
+          </Heading>
+          <p className={`type-small mt-1 text-ink-2 ${compactOnPhones ? "max-sm:hidden" : ""}`}>{p.description}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** The property types shown on the site: the name and the note underneath, in two columns. No cards. */
+export function PropertyTypeList({
+  headingLevel = 3,
+  compact = false,
+  compactOnPhones = false,
+}: {
+  headingLevel?: 2 | 3;
+  /** Names only, as a bulleted list. */
+  compact?: boolean;
+  /** Names in two columns on phones; the notes appear from 640px. */
+  compactOnPhones?: boolean;
+}) {
+  const Heading = `h${headingLevel}` as "h2" | "h3";
+  if (compact) {
+    return (
+      <ul className="grid list-disc gap-x-12 gap-y-1 pl-5 marker:text-line sm:grid-cols-2 lg:grid-cols-3">
+        {shownPropertyTypes().map((t) => (
+          <li key={t.value}>
+            <TypeName value={t.value} label={t.plural} className="inline-flex min-h-11 items-center" />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  return (
+    <ul className={`grid sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-3 ${compactOnPhones ? "grid-cols-2 gap-x-6" : ""}`}>
+      {shownPropertyTypes().map((t) => (
+        <li key={t.value} className={`border-t border-mist ${compactOnPhones ? "py-2 sm:py-4" : "py-4"}`}>
+          <Heading className="font-display text-[1.1875rem] leading-snug font-bold">
+            <TypeName value={t.value} label={t.plural} />
+          </Heading>
+          <p className={`type-small mt-1 text-ink-2 ${compactOnPhones ? "max-sm:hidden" : ""}`}>{t.note}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A property type's name, linked to its page when one is published. */
+function TypeName({ value, label, className }: { value: string; label: string; className?: string }) {
+  const page = propertyTypePage(value);
+  return page ? (
+    <TextLink href={`/what-we-buy/${page.slug}`} className={className}>
+      {label}
+    </TextLink>
+  ) : (
+    <>{label}</>
+  );
+}
+
+/** "I buy across Edmonton, St. Albert, …", each area linked to its page. */
+export function AreaSentence({ exclude, lead = "I buy across", className = "" }: { exclude?: string; lead?: string; className?: string }) {
+  const list = locations.filter((l) => l.slug !== exclude);
+  return (
+    <p className={`measure text-ink-2 ${className}`}>
+      {lead}{" "}
+      {list.map((l, i) => (
+        <span key={l.slug}>
+          <TextLink href={`/we-buy-houses/${l.slug}`}>{l.city}</TextLink>
+          {i < list.length - 2 ? ", " : i === list.length - 2 ? " and " : "."}
+        </span>
+      ))}
+    </p>
+  );
+}
+
+/** Areas as a list of links, for hubs and "nearby areas". */
+export function AreaList({ exclude, only }: { exclude?: string; only?: string[] }) {
+  const list = locations.filter((l) => l.slug !== exclude && (!only || only.includes(l.slug)));
+  return (
+    <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
+      {list.map((l) => (
+        <li key={l.slug} className="border-t border-mist">
+          <Link href={`/we-buy-houses/${l.slug}`} className="link flex min-h-12 items-center">
+            {l.city}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/* ─── Reviews ───────────────────────────────────────────────────────────── */
+
+/** Renders only when real, permissioned reviews are configured in site.testimonials. */
+export function Testimonials({ surface = "snow" }: { surface?: Exclude<Surface, "night"> }) {
+  if (site.testimonials.length === 0) return null;
+  return (
+    <Section surface={surface} labelledBy="reviews-heading">
+      <h2 id="reviews-heading" className="type-h2">
+        What sellers say
+      </h2>
+      <ul className="mt-8 grid gap-x-12 gap-y-8 md:grid-cols-2">
+        {site.testimonials.map((t) => (
+          <li key={t.name + t.quote} className="border-l-4 border-mist pl-5">
+            <blockquote className="measure text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
+            <p className="type-small mt-3 font-semibold text-ink">{t.name}</p>
+            <p className="type-fine text-ink-2">{t.context}</p>
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 }

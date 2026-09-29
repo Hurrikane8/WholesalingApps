@@ -2,102 +2,394 @@
 @plugin "@tailwindcss/typography";
 
 /*
- * Brand colors. Change these to re-skin the whole site.
- *   brand  – deep navy: trust, headers, dark sections
- *   accent – warm amber: calls to action (paired with dark text for contrast)
+ * Aurora Home Buyers design system (docs/aurora-v2-spec.md §3, docs/brand.md).
+ * Winter daylight: a cool snow page, deep spruce ink, one pine green for action.
+ * Every colour, radius and type style below is a token; don't add one-offs.
  */
+
+/* next/font sets --font-overpass and --font-atkinson on <html> (src/app/fonts.ts). */
+@theme inline {
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-overpass), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+}
+
 @theme {
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Surfaces */
+  --color-snow: #f4f7f8; /* page background */
+  --color-frost: #e3ecee; /* alternate sections, unselected chips */
+  --color-white: #ffffff; /* form card, ledgers, input fill */
+  --color-mist: #c9d6d9; /* decorative rules and dividers only; never text or input borders */
+  --color-line: #6f8781; /* input and control borders */
+  --color-night: #0e2a30; /* the one dark section a page may have */
 
-  --color-brand-50: #eef5fb;
-  --color-brand-100: #d6e6f4;
-  --color-brand-200: #aecde9;
-  --color-brand-300: #7eaed9;
-  --color-brand-400: #4f8cc4;
-  --color-brand-500: #2f6ea8;
-  --color-brand-600: #20568a;
-  --color-brand-700: #1a4570;
-  --color-brand-800: #15365a;
-  --color-brand-900: #0f2842;
-  --color-brand-950: #0a1b2e;
+  /* Text */
+  --color-ink: #183a31; /* primary text, headings, the logo */
+  --color-ink-2: #3f5a54; /* secondary text */
+  --color-ink-3: #4d6660; /* fine print and captions only, 14px or larger */
+  --color-night-ink-2: #b8cccb; /* secondary text on night */
 
-  --color-accent-300: #fcd34d;
-  --color-accent-400: #fbbf24;
-  --color-accent-500: #f59e0b;
-  --color-accent-600: #d97706;
+  /* Action */
+  --color-pine: #0b6b4f; /* primary buttons, selected chips */
+  --color-pine-deep: #08573f; /* hover and pressed */
+
+  /* Aurora: decorative only, never text, never large fills */
+  --color-aurora-green: #3fe0a0;
+  --color-aurora-teal: #31c6d4;
+  --color-aurora-violet: #8f7cf7;
+
+  /* States */
+  --color-focus: #4b3fc4;
+  --color-focus-night: #9ef0cf;
+  --color-error: #b3261e;
+  --color-signal: #9a5b00; /* "Unconfirmed" and "Draft" preview tags only */
+
+  /* Shape: deliberately different by role */
+  --radius-button: 10px;
+  --radius-field: 8px;
+  --radius-card: 16px;
+  --radius-ledger: 6px;
+  --radius-photo: 4px;
+
+  /* The one floating object: the lead form card */
+  --shadow-float: 0 24px 48px -24px rgb(24 58 49 / 0.35);
+
+  --ease-draw: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
   html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
   body {
-    @apply bg-white text-slate-800 antialiased;
+    background-color: var(--color-snow);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p,
+  li,
+  dd,
+  figcaption {
+    text-wrap: pretty;
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-brand-500;
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  [data-surface="night"] :focus-visible {
+    outline-color: var(--color-focus-night);
   }
   [id] {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 5.5rem;
   }
 }
 
-@utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
-}
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
 
-@layer components {
-  .container-page {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+/* Content max width 1200px; gutters 20px on phones, 32px on tablets, 48px on desktops. */
+@utility page-wrap {
+  margin-inline: auto;
+  width: 100%;
+  max-width: calc(1200px + 2 * 48px);
+  padding-inline: 20px;
+  @media (width >= 40rem) {
+    padding-inline: 32px;
   }
-  .btn-primary {
-    @apply btn bg-accent-400 text-slate-900 shadow-sm hover:bg-accent-300;
-  }
-  .btn-secondary {
-    @apply btn border border-brand-200 bg-white text-brand-800 hover:bg-brand-50;
-  }
-  .btn-ghost-light {
-    @apply btn border border-white/30 text-white hover:bg-white/10;
-  }
-  .eyebrow {
-    @apply text-sm font-semibold uppercase tracking-wider text-brand-600;
-  }
-  .section {
-    @apply py-16 sm:py-20;
-  }
-  .section-title {
-    @apply text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl;
-  }
-  .section-lead {
-    @apply mt-4 max-w-2xl text-lg text-slate-600;
-  }
-  .card {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm;
-  }
-  .field-label {
-    @apply mb-1 block text-sm font-medium text-slate-700;
-  }
-  .field-input {
-    @apply block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
-  }
-  .field-input[aria-invalid="true"] {
-    @apply border-red-500 focus:border-red-500 focus:ring-red-500/30;
-  }
-  .table-scroll {
-    @apply -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0;
+  @media (width >= 64rem) {
+    padding-inline: 48px;
   }
 }
 
+/* Section padding: 64px on phones, 96px on desktop. */
+@utility band {
+  padding-block: 4rem;
+  @media (width >= 64rem) {
+    padding-block: 6rem;
+  }
+}
+/* The home page runs nine sections inside its length budget (spec 5.20): 48px on phones, 64px on desktop. */
+@utility band-tight {
+  padding-block: 3rem;
+  @media (width >= 64rem) {
+    padding-block: 4rem;
+  }
+}
+
+/* ─── Type scale (spec 3.3) ──────────────────────────────────────────────── */
+
+@utility type-home-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 1.25rem + 1.6vw, 2.5rem);
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+@utility type-lead {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+@utility type-body {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+@utility type-small {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+/* The smallest text anywhere. */
+@utility type-fine {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+@utility nums {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+/* Prose measure. */
+@utility measure {
+  max-width: 68ch;
+}
+
+/* ─── Links and buttons (spec 3.4) ───────────────────────────────────────── */
+
+@utility link {
+  color: var(--color-ink);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  &:hover {
+    color: var(--color-pine);
+  }
+}
+@utility link-night {
+  color: var(--color-snow);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  &:hover {
+    color: var(--color-focus-night);
+  }
+}
+
+@utility button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms,
+    color 150ms,
+    box-shadow 150ms;
+  &:disabled,
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+/* A thin inset white rule: a quiet nod to a highway guide sign. */
+@utility button-primary {
+  background-color: var(--color-pine);
+  color: var(--color-white);
+  box-shadow:
+    inset 0 0 0 3px var(--color-pine),
+    inset 0 0 0 5px rgb(255 255 255 / 0.5);
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background-color: var(--color-pine-deep);
+    box-shadow:
+      inset 0 0 0 3px var(--color-pine-deep),
+      inset 0 0 0 5px rgb(255 255 255 / 0.5);
+  }
+}
+@utility button-secondary {
+  background-color: transparent;
+  color: var(--color-ink);
+  box-shadow: inset 0 0 0 2px var(--color-ink);
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background-color: rgb(24 58 49 / 0.07);
+  }
+}
+@utility button-night {
+  background-color: var(--color-snow);
+  color: var(--color-ink);
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background-color: var(--color-white);
+  }
+}
+/* Header buttons: 44px. */
+@utility button-compact {
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  font-size: 1rem;
+}
+
+/* ─── Form controls (spec 3.7) ───────────────────────────────────────────── */
+
+@utility field-control {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-field);
+  background-color: var(--color-white);
+  padding: 0.75rem 1rem;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.4;
+  &::placeholder {
+    color: var(--color-ink-3);
+    opacity: 1;
+  }
+  &[aria-invalid="true"] {
+    border: 2px solid var(--color-error);
+    padding: calc(0.75rem - 1px) calc(1rem - 1px);
+  }
+}
+
+/* ─── Motion (spec 3.9): the ribbon draw is the only unprompted motion ───── */
+
+@keyframes ribbon-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ribbon-draw {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  animation: ribbon-draw 1.6s var(--ease-draw) 300ms forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-draw {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+  *,
+  ::before,
+  ::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Preview builds only (spec 2.5): a claim Kane hasn't confirmed yet, and draft
+ * pages. Production never renders either; scan:build fails if one appears.
+ */
+.tag-unconfirmed {
+  display: inline-block;
+  margin-inline-start: 0.375rem;
+  border: 1px dashed var(--color-signal);
+  border-radius: 0.25rem;
+  background-color: #fff8e6;
+  padding: 0 0.375rem;
+  color: var(--color-signal);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: normal;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* ─── Markdown (situations, guides, legal) ───────────────────────────────── */
+
+.prose {
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-ink-2);
+  --tw-prose-links: var(--color-ink);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-ink-2);
+  --tw-prose-bullets: var(--color-line);
+  --tw-prose-hr: var(--color-mist);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-pine);
+  --tw-prose-captions: var(--color-ink-3);
+  --tw-prose-th-borders: var(--color-mist);
+  --tw-prose-td-borders: var(--color-mist);
+}
+.prose :where(h2, h3, h4):not(:where(.not-prose, .not-prose *)) {
+  font-family: var(--font-display);
+}
+.prose :where(a):not(:where(.not-prose, .not-prose *)) {
+  font-weight: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prose :where(a):not(:where(.not-prose, .not-prose *)):hover {
+  color: var(--color-pine);
+}
+/* Markdown tables sit in a focusable scroll region (src/lib/content.ts) in case one is wider than a phone. */
+.prose .table-scroll {
+  overflow-x: auto;
+  margin-block: 2em;
+}
+.prose .table-scroll table {
+  margin-block: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
 /* Blockquotes in articles are used for callouts, not quotations: no auto quote marks. */
 .prose :where(blockquote p:first-of-type)::before,
 .prose :where(blockquote p:last-of-type)::after {
   content: none;
-}
-
-.hero-bg {
-  background-color: var(--color-brand-900);
-  background-image:
-    radial-gradient(circle at 15% 20%, rgb(47 110 168 / 0.45), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgb(251 191 36 / 0.12), transparent 40%);
 }

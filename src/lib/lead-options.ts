@@ -12,15 +12,24 @@ export const values = (options: readonly Option[]) => options.map((o) => o.value
 
 /* ─── Seller form → Seller Leads table ──────────────────────────────────── */
 
-/** Seller Leads › Property Type, and Buyers › Property Types. */
+/**
+ * Seller Leads › Property Type, and Buyers › Property Types. Which types the
+ * site shows, and in what order, is set in site.propertyTypes.
+ */
 export const PROPERTY_TYPES = [
-  { value: "Single family", label: "House (single family)" },
+  { value: "Single family", label: "House" },
   { value: "Half duplex", label: "Half duplex" },
-  { value: "Condo townhouse", label: "Townhouse (with condo fees)" },
-  { value: "Freehold townhouse", label: "Townhouse (no condo fees)" },
-  { value: "Apartment condo", label: "Apartment-style condo" },
-  { value: "Multifamily", label: "Multi-unit (duplex, fourplex…)" },
+  { value: "Condo townhouse", label: "Condo townhouse" },
+  { value: "Freehold townhouse", label: "Townhouse, no condo fees" },
+  { value: "Apartment condo", label: "Apartment condo" },
+  { value: "Multifamily", label: "Duplex to fourplex" },
 ] as const satisfies readonly Option[];
+
+export type PropertyTypeValue = (typeof PROPERTY_TYPES)[number]["value"];
+
+export function isPropertyTypeValue(value: unknown): value is PropertyTypeValue {
+  return PROPERTY_TYPES.some((t) => t.value === value);
+}
 
 /** Seller Leads › Condition. */
 export const CONDITIONS = [
@@ -100,6 +109,18 @@ export const TARGET_AREAS = [
   { value: "Outside greater Edmonton", label: "Outside Greater Edmonton" },
 ] as const satisfies readonly Option[];
 
+/* ─── Opt-out form (/hello) ─────────────────────────────────────────────── */
+
+/** "How did I reach you?" Stored as text (Airtable opt-outs table, if any: Channel). */
+export const OPT_OUT_CHANNELS = [
+  { value: "Letter", label: "Letter" },
+  { value: "Door hanger", label: "Door hanger" },
+  { value: "Knock at the door", label: "Knock at the door" },
+  { value: "Text", label: "Text" },
+  { value: "Phone call", label: "Phone call" },
+  { value: "Other", label: "Other" },
+] as const satisfies readonly Option[];
+
 /**
  * Normalizes a North American (Canada/US) phone number to "(780) 555-0123",
  * or returns null if it isn't a plausible 10-digit number.
@@ -109,4 +130,10 @@ export function normalizePhone(input: string): string | null {
   if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
   if (digits.length !== 10 || !/^[2-9]\d{2}[2-9]/.test(digits)) return null;
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+/** "+17805550123" for texting APIs, or null if it isn't a plausible North American number. */
+export function toE164(input: string): string | null {
+  const phone = normalizePhone(input);
+  return phone ? `+1${phone.replace(/\D/g, "")}` : null;
 }

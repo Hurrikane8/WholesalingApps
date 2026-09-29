@@ -1,49 +1,73 @@
-import { site } from "@/config/site";
+import { closingPhrase, isShown, isUnconfirmed } from "@/lib/claims";
 
-export type ComparisonRow = { label: string; us: string; listing: string };
+/** One row of "What each path costs you" (spec 5.8): plain text in every cell, no winner column. */
+export type ComparisonRow = { label: string; repairList: string; asIs: string; cash: string; unconfirmed?: boolean };
 
-const { promises } = site;
+export const COMPARISON_PATHS = [
+  { key: "repairList", label: "Repair, then list" },
+  { key: "asIs", label: "List as-is" },
+  { key: "cash", label: "Sell to a cash buyer" },
+] as const;
 
-/** Selling to us vs. listing with an agent. Used on the home page, city pages and /cash-offer-vs-realtor. */
-export const comparisonRows: ComparisonRow[] = [
-  {
-    label: "Commissions",
-    us: "None",
-    listing: "Often a tiered percentage of the price (for example 7% on the first $100,000 and 3% on the rest), plus GST. Negotiable",
-  },
-  {
-    label: "Legal & closing costs",
-    us: promises.coversLegalFees ? "We cover your standard legal fees" : "Your usual legal fees only",
-    listing: "Your lawyer's fees, mortgage discharge costs and any condo document fees",
-  },
-  {
-    label: "Repairs & updates",
-    us: "None. We buy as-is",
-    listing: "Usually expected before listing, plus requests after the buyer's inspection",
-  },
-  {
-    label: "Showings & open houses",
-    us: "None. One walkthrough",
-    listing: "Keep the home show-ready, often on short notice",
-  },
-  {
-    label: "Time to close",
-    us: `As little as ${promises.closeInDays} days, or the date you choose`,
-    listing: "Time on market, then commonly 30–60 days to possession",
-  },
-  {
-    label: "Conditions",
-    us: "No mortgage approval or appraisal needed",
-    listing: "Deals can collapse if financing, inspection or condo document conditions aren't met",
-  },
-  {
-    label: "Holding costs",
-    us: "End on the closing date you pick",
-    listing: "Keep paying mortgage, property taxes, condo fees, insurance and utilities until it sells",
-  },
-  {
-    label: "Clean-out",
-    us: "Take what you want, leave the rest",
-    listing: "Empty and clean the home yourself",
-  },
-];
+const sentenceStart = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
+/**
+ * The three ways to sell, side by side, for /cash-offer-vs-realtor. Neutral:
+ * each path's costs in plain words. Built from claims, so the cash column
+ * only promises what's confirmed.
+ */
+export function getComparisonRows(): ComparisonRow[] {
+  const legalCovered = isShown("coversLegalFees");
+  return [
+    {
+      label: "The price you get",
+      repairList: "The highest, once the work is done and a buyer's financing comes through",
+      asIs: "Lower: buyers price in the repairs, and often ask for more off after the inspection",
+      cash: "Lower again: the buyer takes on the repairs, the costs and the risk",
+    },
+    {
+      label: "Repairs",
+      repairList: "You pay for them up front and manage the work",
+      asIs: "None before listing, but a price cut or credit after the inspection is common",
+      cash: "None. The home is sold as-is",
+    },
+    {
+      label: "Commission and GST",
+      repairList: "Often 7% on the first $100,000 and 3% on the rest, plus GST. Negotiable",
+      asIs: "The same structure, on a lower price",
+      cash: "None",
+    },
+    {
+      label: "Legal fees",
+      repairList: "Your lawyer's fees and the mortgage discharge",
+      asIs: "Your lawyer's fees and the mortgage discharge",
+      cash: legalCovered ? "I pay your standard legal fees" : "Your lawyer's fees and the mortgage discharge",
+      unconfirmed: isUnconfirmed("coversLegalFees"),
+    },
+    {
+      label: "Carrying costs",
+      repairList: "Mortgage, taxes, condo fees, insurance and utilities through the repairs and the sale",
+      asIs: "The same, for the months on the market",
+      cash: "Until the closing date you choose",
+    },
+    {
+      label: "Conditions and risk",
+      repairList: "Financing, inspection and condo document conditions can end a deal",
+      asIs: "The same, and as-is homes tend to draw harder renegotiation",
+      cash: "No mortgage approval or appraisal. The contract sets out any conditions and the dates they come off",
+    },
+    {
+      label: "Time",
+      repairList: "The repairs, then time on the market, then often 30 to 60 days to possession",
+      asIs: "Time on the market, then often 30 to 60 days to possession",
+      cash: sentenceStart(closingPhrase()),
+      unconfirmed: isUnconfirmed("closeInDays"),
+    },
+    {
+      label: "Your effort",
+      repairList: "Contractors, staging, showings and negotiating",
+      asIs: "Showings, negotiating and inspection requests",
+      cash: "One visit, then the paperwork with your lawyer",
+    },
+  ];
+}

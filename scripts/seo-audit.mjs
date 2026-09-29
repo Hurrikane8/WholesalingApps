@@ -11,6 +11,10 @@
  * meta description (70–160 chars, unique), canonical matches the URL, not
  * noindexed, Open Graph + Twitter tags, exactly one <h1>, valid JSON-LD,
  * images have alt text, and every internal link resolves.
+ *
+ * A build that isn't indexable (anything but production on the real domain,
+ * spec 7.1) serves a robots.txt that disallows everything; then every page
+ * must be noindex instead.
  */
 
 const BASE_URL = (process.env.BASE_URL || "http://localhost:3000").replace(/\/$/, "");
@@ -58,7 +62,9 @@ async function main() {
   if (urls.length === 0) throw new Error("Sitemap has no URLs");
 
   const robots = await get(`${BASE_URL}/robots.txt`);
+  const hidden = robots.status === 200 && /^\s*disallow:\s*\/\s*$/im.test(robots.text);
   if (robots.status !== 200) err("/robots.txt", `HTTP ${robots.status}`);
+  else if (hidden) console.log("robots.txt disallows everything: this build isn't indexable, so every page must be noindex.\n");
   else if (!/sitemap:/i.test(robots.text)) warn("/robots.txt", "no Sitemap line (expected on production builds)");
 
   const titles = new Map();
@@ -99,7 +105,9 @@ async function main() {
     else if (new URL(canonical).pathname !== path) err(path, `canonical points elsewhere: ${canonical}`);
 
     const robotsMeta = meta("robots") ?? "";
-    if (/noindex/i.test(robotsMeta)) err(path, "page in sitemap is noindex");
+    if (hidden) {
+      if (!/noindex/i.test(robotsMeta)) err(path, "robots.txt hides the site, but the page isn't noindex");
+    } else if (/noindex/i.test(robotsMeta)) err(path, "page in sitemap is noindex");
 
     for (const key of ["og:title", "og:description", "og:url", "og:image", "twitter:card"]) {
       if (!meta(key)) err(path, `missing ${key}`);
@@ -143,7 +151,8 @@ async function main() {
     const res = await get(`${BASE_URL}${href}`);
     if (res.status >= 400) err(href, `internal link returns HTTP ${res.status}`);
     else if (res.status >= 300) warn(href, `internal link redirects to ${res.location}; link to the final URL instead`);
-    else if (!sitemapPaths.has(href) && !["/thank-you"].includes(href) && !href.startsWith("/api/")) {
+    // Noindex pages that are linked on purpose but kept out of the sitemap (spec 5.11, 5.13).
+    else if (!sitemapPaths.has(href) && !["/thank-you", "/hello"].includes(href) && !href.startsWith("/api/")) {
       warn(href, "linked page is not in the sitemap");
     }
   }

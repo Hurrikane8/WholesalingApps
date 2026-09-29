@@ -1,28 +1,41 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import { OFFER_PATH } from "@/config/nav";
+import { phoneHref, site } from "@/config/site";
+import { SiteShell } from "@/components/chrome/Shell";
+import { ButtonLink } from "@/components/ui/Button";
+import { TextLink } from "@/components/ui/TextLink";
 
+export const metadata: Metadata = { title: "Page not found", robots: { index: false, follow: true } };
+
+/**
+ * The 404 (spec 5.19). The root not-found renders inside the root layout only,
+ * outside the route groups, so it brings its own site chrome.
+ */
 export default function NotFound() {
   return (
-    <section className="section">
-      <div className="container-page max-w-2xl text-center">
-        <p className="eyebrow">404</p>
-        <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">We couldn&apos;t find that page</h1>
-        <p className="mt-4 text-lg text-slate-600">The page may have moved. Here are some helpful places to start:</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link href={OFFER_PATH} className="btn-primary">
-            Get a cash offer
-          </Link>
-          <Link href="/" className="btn-secondary">
-            Home
-          </Link>
-          <Link href="/we-buy-houses" className="btn-secondary">
-            Areas we serve
-          </Link>
-          <Link href="/faq" className="btn-secondary">
-            FAQ
-          </Link>
+    <SiteShell>
+      <div className="page-wrap py-16 text-center lg:py-24">
+        <h1 className="type-h1">That page isn&apos;t here.</h1>
+        <p className="type-lead mx-auto mt-5 max-w-[40ch] text-ink-2">It may have moved. Try one of these, or call me.</p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <ButtonLink href={OFFER_PATH}>Get my offer</ButtonLink>
+          <ButtonLink href="/how-it-works" variant="secondary">
+            How it works
+          </ButtonLink>
         </div>
+        <p className="mt-6">
+          <TextLink href="/" className="inline-flex min-h-11 items-center">
+            Home page
+          </TextLink>
+        </p>
+        <p className="mt-2 text-ink-2">
+          Call or text{" "}
+          <TextLink href={`tel:${phoneHref}`} className="nums font-semibold">
+            {site.phone}
+          </TextLink>
+          .
+        </p>
       </div>
-    </section>
+    </SiteShell>
   );
 }

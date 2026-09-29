@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/inter";
 import "./globals.css";
+import { atkinson, overpass } from "./fonts";
 import { site } from "@/config/site";
+import { siteDescription } from "@/lib/claims";
+import { isIndexable, showDrafts, showUnconfirmed } from "@/lib/env";
 import { localBusinessSchema, websiteSchema } from "@/lib/schema";
 import { Analytics } from "@/components/Analytics";
+import { AttributionCapture } from "@/components/AttributionCapture";
+import { ClickTracker } from "@/components/ClickTracker";
 import { JsonLd } from "@/components/JsonLd";
-import { MobileCtaBar } from "@/components/MobileCtaBar";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 
-const defaultTitle = `Sell Your House Fast for Cash in ${site.market.name}, ${site.market.provinceAbbr}`;
-const defaultDescription = `Sell your ${site.market.name} house, condo or townhouse fast for a fair cash offer. No repairs, no commissions. Close in as little as ${site.promises.closeInDays} days or on your schedule.`;
+const defaultTitle = `Sell your ${site.market.name} home as-is for cash`;
+const defaultDescription = siteDescription();
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -29,6 +30,8 @@ export const metadata: Metadata = {
     url: site.url,
   },
   twitter: { card: "summary_large_image" },
+  // Belt and braces with robots.txt: nothing is indexed until the site is live on its real domain.
+  robots: isIndexable() ? undefined : { index: false, follow: false },
   formatDetection: { telephone: true },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
@@ -39,22 +42,25 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f2842",
+  themeColor: "#f4f7f8",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-CA">
-      <body className="flex min-h-screen flex-col">
+    // data-preview marks non-production builds, so scripts/scan-build.mjs can tell them apart.
+    <html
+      lang="en-CA"
+      className={`${overpass.variable} ${atkinson.variable}`}
+      data-preview={showUnconfirmed() || showDrafts() ? "" : undefined}
+    >
+      <body>
         <JsonLd data={[localBusinessSchema(), websiteSchema()]} />
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        <MobileCtaBar />
+        {/* The header, footer and sticky actions come from the (site) and (focus) layouts. */}
+        {children}
+        <AttributionCapture />
+        <ClickTracker />
         <Analytics />
       </body>
     </html>

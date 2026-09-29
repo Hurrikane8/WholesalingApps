@@ -1,13 +1,8 @@
 import type { NextConfig } from "next";
-import { placeholderWarnings } from "./src/config/site";
-
-// Remind whoever is building the site to finish src/config/site.ts before launch.
-const warnings = placeholderWarnings();
-if (warnings.length) {
-  console.warn(
-    `\n⚠️  Site config still has placeholder values (edit src/config/site.ts):\n${warnings.map((w) => `   - ${w}`).join("\n")}\n`,
-  );
-}
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { campaignRedirects } from "./src/config/campaigns";
+import { deployEnv, isIndexable } from "./src/lib/env";
+import { launchFindings, placeholderWarnings } from "./src/lib/launch";
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -15,6 +10,25 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
 ];
+
+const list = (items: string[]) => items.map((i) => `   - ${i}`).join("\n");
+
+/**
+ * Runs once per build: lists everything still unconfirmed, and applies the
+ * launch guard (spec 4.10). A production build for the real domain fails
+ * unless leads have a durable home and Kane gets an alert.
+ */
+function buildChecks() {
+  const warnings = placeholderWarnings();
+  if (warnings.length) console.warn(`\n⚠️  Still to confirm (src/config/site.ts):\n${list(warnings)}\n`);
+
+  const findings = launchFindings();
+  if (!findings.length) return;
+  if (deployEnv() === "production" && isIndexable()) {
+    throw new Error(`Launch guard: this production build is for the live domain, but it isn't ready to take leads:\n${list(findings)}\n`);
+  }
+  console.warn(`\n⚠️  Launch guard (a warning on this build; it fails a production build on the real domain):\n${list(findings)}\n`);
+}
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -32,8 +46,16 @@ const nextConfig: NextConfig = {
       { source: "/cash-offer", destination: "/get-cash-offer", permanent: true },
       { source: "/areas", destination: "/we-buy-houses", permanent: true },
       { source: "/locations", destination: "/we-buy-houses", permanent: true },
+      // The condo townhouse page moved from the situations to the property types (spec 5.1).
+      { source: "/situations/sell-condo-townhouse", destination: "/what-we-buy/condo-townhouses", permanent: true },
+      // Letter and door-hanger short links (src/config/campaigns.ts).
+      ...campaignRedirects(),
     ];
   },
 };
 
-export default nextConfig;
+export default function config(phase: string): NextConfig {
+  // `next typegen` (npm run typecheck) loads the config in the build phase too; only `next build` needs the checks.
+  if (phase === PHASE_PRODUCTION_BUILD && !process.argv.includes("typegen")) buildChecks();
+  return nextConfig;
+}

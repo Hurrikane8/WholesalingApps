@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
+import { isIndexable } from "@/lib/env";
 
 /** Absolute URL for a site path, e.g. absoluteUrl("/faq") → "https://www.example.com/faq". */
 export function absoluteUrl(path = "/"): string {
@@ -27,17 +28,25 @@ type PageMetadataInput = {
   modifiedTime?: string;
   /** Use the title exactly as given (no " | Brand" suffix). */
   absoluteTitle?: boolean;
-  /** Social card image path. Defaults to the site-wide /opengraph-image. */
-  image?: { path: string; alt: string };
-};
-
-const DEFAULT_OG_IMAGE = {
-  path: "/opengraph-image",
-  alt: `${site.name}: we buy houses for cash in ${site.market.region}`,
+  /**
+   * The page's segment has its own opengraph-image file. Next then adds the
+   * image itself, with the hashed URL it serves it at; a hand-written path
+   * would 404. Every other page uses the site-wide /opengraph-image.
+   */
+  ownImage?: boolean;
 };
 
 /** Google typically shows about 60–65 characters of a title before truncating. */
 export const MAX_TITLE_LENGTH = 65;
+
+/**
+ * Robots directives: nothing is indexed until the site is live on its real
+ * domain (spec 7.1); after that, only pages marked noindex are kept out.
+ */
+export function robotsFor(noindex = false, indexable = isIndexable()): Metadata["robots"] {
+  if (!indexable) return { index: false, follow: false };
+  return noindex ? { index: false, follow: true } : undefined;
+}
 
 /**
  * Builds consistent metadata for a page: title, description, canonical URL,
@@ -45,10 +54,10 @@ export const MAX_TITLE_LENGTH = 65;
  * without a canonical or social preview.
  */
 export function pageMetadata(input: PageMetadataInput): Metadata {
-  const { title, description, path, noindex, type = "website", publishedTime, modifiedTime, absoluteTitle } = input;
+  const { title, description, path, noindex, type = "website", publishedTime, modifiedTime, absoluteTitle, ownImage } = input;
+  // A page's openGraph replaces its parent's, so without its own card it has to name the site-wide one.
+  const images = ownImage ? {} : { images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${site.name}: sell your ${site.market.name} home as-is` }] };
   const url = absoluteUrl(path);
-  const image = input.image ?? DEFAULT_OG_IMAGE;
-  const ogImage = { url: image.path, width: 1200, height: 630, alt: image.alt };
   // Drop the " | Brand" suffix when it would push the title past what Google displays.
   const branded = `${title} | ${site.name}`;
   const useAbsolute = absoluteTitle || branded.length > MAX_TITLE_LENGTH;
@@ -58,7 +67,7 @@ export function pageMetadata(input: PageMetadataInput): Metadata {
     title: useAbsolute ? { absolute: title } : title,
     description,
     alternates: { canonical: url },
-    robots: noindex ? { index: false, follow: true } : undefined,
+    robots: robotsFor(noindex),
     openGraph: {
       type,
       url,
@@ -66,14 +75,14 @@ export function pageMetadata(input: PageMetadataInput): Metadata {
       description,
       siteName: site.name,
       locale: "en_CA",
-      images: [ogImage],
+      ...images,
       ...(type === "article" ? { publishedTime, modifiedTime } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: socialTitle,
       description,
-      images: [ogImage],
+      ...images,
     },
   };
 }

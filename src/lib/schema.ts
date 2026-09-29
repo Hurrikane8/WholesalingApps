@@ -3,14 +3,17 @@
  * engines use these to understand who the business is, where it operates and
  * what each page is about. Validate changes at https://validator.schema.org.
  */
-import { phoneHref, site } from "@/config/site";
+import { phoneHref, shownPropertyTypes, site } from "@/config/site";
 import type { Faq } from "@/content/faqs";
-import type { Location } from "@/content/locations";
+import { locations, type Location } from "@/content/locations";
+import { founderDisplayName, siteDescription } from "@/lib/claims";
 import { absoluteUrl } from "@/lib/seo";
 
 type Json = Record<string, unknown>;
 
 export const ORG_ID = `${site.url}/#organization`;
+/** Kane: output in full on /about, referenced by @id everywhere else (spec 7.3). */
+export const PERSON_ID = `${site.url}/#kane`;
 const WEBSITE_ID = `${site.url}/#website`;
 
 function sameAs(): string[] {
@@ -45,19 +48,17 @@ export function localBusinessSchema(): Json {
     "@id": ORG_ID,
     name: site.name,
     legalName: site.legalName,
-    description: `${site.name} buys houses for cash in ${market.region}, in any condition and any situation, with no repairs, fees or commissions.`,
+    description: siteDescription(),
+    slogan: site.tagline,
     url: site.url,
-    logo: absoluteUrl("/icon.svg"),
+    logo: absoluteUrl("/brand/logo.png"),
     image: absoluteUrl("/opengraph-image"),
     telephone: phoneHref,
     ...(site.email ? { email: site.email } : {}),
     address: postalAddress(),
     geo: { "@type": "GeoCoordinates", ...market.geo },
-    areaServed: [
-      { "@type": "AdministrativeArea", name: `${market.province}, Canada` },
-      { "@type": "AdministrativeArea", name: market.region },
-    ],
-    priceRange: "Free cash offers",
+    founder: { "@id": PERSON_ID },
+    areaServed: locations.map((l) => ({ "@type": "City", name: `${l.city}, ${l.provinceAbbr}` })),
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -69,12 +70,10 @@ export function localBusinessSchema(): Json {
     ...(site.foundedYear ? { foundingDate: String(site.foundedYear) } : {}),
     ...(sameAs().length ? { sameAs: sameAs() } : {}),
     knowsAbout: [
-      "Selling a house for cash",
+      ...shownPropertyTypes().map((t) => `Selling ${t.plural.toLowerCase()} in ${market.region}`),
       "Selling a house as-is",
-      "Selling a condo townhouse",
-      "Avoiding foreclosure in Alberta",
       "Selling inherited and estate property",
-      "Selling rental property with tenants",
+      "Selling a rental property with tenants",
     ],
     contactPoint: {
       "@type": "ContactPoint",
@@ -83,6 +82,22 @@ export function localBusinessSchema(): Json {
       areaServed: "CA",
       availableLanguage: "English",
     },
+  };
+}
+
+/** The founder as a Person. Only facts from site.founder; nothing that implies a licence. */
+export function personSchema(): Json {
+  const { founder } = site;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: founderDisplayName(),
+    jobTitle: founder.role,
+    worksFor: { "@id": ORG_ID },
+    url: absoluteUrl("/about"),
+    ...(founder.photo ? { image: absoluteUrl(founder.photo) } : {}),
+    ...(founder.linkedin ? { sameAs: [founder.linkedin] } : {}),
   };
 }
 
@@ -153,6 +168,23 @@ export function serviceSchema(opts: { name: string; description: string; path: s
   };
 }
 
+/**
+ * A property type page (spec 7.3): a direct home purchase, provided by the
+ * business, across the market. Nothing that implies a licence.
+ */
+export function propertyTypeServiceSchema(opts: { name: string; description: string; path: string }): Json {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: opts.name,
+    serviceType: "Direct home purchase",
+    description: opts.description,
+    url: absoluteUrl(opts.path),
+    provider: { "@id": ORG_ID },
+    areaServed: { "@type": "AdministrativeArea", name: site.market.region },
+  };
+}
+
 export function articleSchema(opts: {
   title: string;
   description: string;
@@ -173,7 +205,10 @@ export function articleSchema(opts: {
     datePublished: opts.datePublished,
     dateModified: opts.dateModified ?? opts.datePublished,
     image: absoluteUrl(opts.image ?? "/opengraph-image"),
-    author: opts.author ? { "@type": "Person", name: opts.author } : { "@id": ORG_ID },
+    // Guides are by Kane unless a post names another author (spec 7.3).
+    author: opts.author
+      ? { "@type": "Person", name: opts.author }
+      : { "@type": "Person", "@id": PERSON_ID, name: founderDisplayName(), url: absoluteUrl("/about") },
     publisher: { "@id": ORG_ID },
     inLanguage: "en-CA",
   };
