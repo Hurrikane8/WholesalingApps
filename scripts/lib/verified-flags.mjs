@@ -19,3 +19,18 @@ export function readVerifiedFlags(root = process.cwd()) {
   if (Object.keys(flags).length === 0) throw new Error("No flags found in site.verified");
   return flags;
 }
+
+/**
+ * Reads `site.disclosure` from src/config/site.ts, so scan-build can check
+ * that it appears on the pages spec 9 lists. tests/claims.test.ts checks the
+ * result matches site.disclosure.
+ *
+ * @param {string} [root] repository root
+ * @returns {string}
+ */
+export function readDisclosure(root = process.cwd()) {
+  const source = fs.readFileSync(path.join(root, "src/config/site.ts"), "utf8");
+  const match = source.match(/\n\s*disclosure:\s*\n?\s*"((?:[^"\\]|\\.)*)"/);
+  if (!match) throw new Error('Couldn\'t find `disclosure: "…"` in src/config/site.ts');
+  return match[1].replace(/\\"/g, '"');
+}

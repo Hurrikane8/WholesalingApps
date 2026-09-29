@@ -249,6 +249,11 @@ export type Situation = {
   /** Pre-fills the lead form's "reason for selling"; must match one of REASONS. */
   reason?: Reason;
   order: number;
+  /** The StraightAnswer callout (spec 6.4): the question, and a 40–60 word answer. */
+  question: string;
+  answer: string;
+  /** Guide slugs to link to under "Related guides". */
+  guides: string[];
   faqs: { question: string; answer: string }[];
   body: string;
   /** Rendered only outside production, with a Draft banner; never in the sitemap. */
@@ -273,6 +278,9 @@ export function getSituations(): Situation[] {
         icon: typeof data.icon === "string" ? data.icon : "House",
         reason: REASONS.find((r) => r === data.reason),
         order: typeof data.order === "number" ? data.order : 99,
+        question: str(data.question, "question", file),
+        answer: str(data.answer, "answer", file),
+        guides: Array.isArray(data.guides) ? data.guides.filter((g): g is string => typeof g === "string") : [],
         faqs: faqs.map((f: { q?: unknown; a?: unknown }, i: number) => ({
           question: str(f.q, `faqs[${i}].q`, file),
           answer: str(f.a, `faqs[${i}].a`, file),
@@ -299,6 +307,9 @@ export type Post = {
   updated?: string;
   author?: string;
   category: string;
+  /** Optional StraightAnswer callout (spec 6.4): both or neither. */
+  question?: string;
+  answer?: string;
   readingMinutes: number;
   body: string;
   /** Rendered only outside production, with a Draft banner; never in the sitemap. */
@@ -321,6 +332,8 @@ export function getPosts(): Post[] {
         updated: data.updated ? isoDate(data.updated, "updated", file) : undefined,
         author: typeof data.author === "string" && data.author ? data.author : undefined,
         category: typeof data.category === "string" ? data.category : "Guides",
+        question: data.question ? str(data.question, "question", file) : undefined,
+        answer: data.answer ? str(data.answer, "answer", file) : undefined,
         readingMinutes: Math.max(1, Math.round(words / 230)),
         body,
         draft,

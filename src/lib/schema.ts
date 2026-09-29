@@ -208,7 +208,10 @@ export function articleSchema(opts: {
     datePublished: opts.datePublished,
     dateModified: opts.dateModified ?? opts.datePublished,
     image: absoluteUrl(opts.image ?? "/opengraph-image"),
-    author: opts.author ? { "@type": "Person", name: opts.author } : { "@id": ORG_ID },
+    // Guides are by Kane unless a post names another author (spec 7.3).
+    author: opts.author
+      ? { "@type": "Person", name: opts.author }
+      : { "@type": "Person", "@id": PERSON_ID, name: founderDisplayName(), url: absoluteUrl("/about") },
     publisher: { "@id": ORG_ID },
     inLanguage: "en-CA",
   };

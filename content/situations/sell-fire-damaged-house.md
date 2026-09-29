@@ -1,24 +1,27 @@
 ---
-title: "Sell a Fire or Water Damaged House As-Is in Edmonton"
-description: "Fire, flood, sewer backup or hail damage? Sell your damaged home as-is for cash, with no repairs or clean-up. We work around your insurance claim."
-h1: "Sell Your Fire- or Water-Damaged House As-Is"
+title: "Selling a fire- or water-damaged house in Edmonton"
+description: "Fire, flood, sewer backup or hail damage? Sell your damaged home as-is, with no repairs or clean-up, on a date that works around your insurance claim."
+h1: "Selling a fire- or water-damaged house as-is"
 label: "Fire, water or storm damage"
-summary: "Skip the rebuild. We buy fire-, water- and storm-damaged homes as they are, and work around your insurance claim."
+summary: "Skip the rebuild. I buy fire-, water- and storm-damaged homes as they are, on a date that works around your insurance claim."
 icon: Flame
 reason: "Fire, water or storm damage"
 order: 9
+question: "Can I sell a fire-damaged house before the insurance claim is settled?"
+answer: "Often, yes, but talk to your adjuster and your lender first. How a sale affects the claim depends on your policy, and a mortgage lender usually has an interest in insurance money for the building. Document the damage, prevent further damage, and pick a closing date that leaves room to settle the claim."
+guides: [selling-a-house-as-is, how-cash-home-buyers-calculate-offers, how-to-spot-a-legitimate-cash-home-buyer]
 faqs:
   - q: "Can I sell before my insurance claim is settled?"
     a: "Often, yes, but talk to your insurance adjuster and your lender first so you understand how a sale affects your claim. If you have a mortgage, the lender may have a say in how insurance money for the building is paid out."
   - q: "Do I need to clean up or remove debris?"
-    a: "No. We buy the house as it sits after the damage. Remove any belongings you want to keep, if it's safe to do so, and leave the rest."
+    a: "No. I buy the house as it sits after the damage. Remove any belongings you want to keep, if it's safe to do so. What stays behind is agreed in the contract."
   - q: "Do I have to tell buyers about the damage?"
-    a: "Yes, you should be upfront about known damage. It doesn't change our interest, and we'll see it on the walkthrough anyway."
+    a: "Yes, be upfront about known damage. It doesn't put me off, and I'll see it when I visit anyway."
   - q: "Do you buy houses with mould after water damage?"
-    a: "Yes. Mould is common after leaks, floods and sewer backups, and we factor remediation into our offer so you don't have to deal with it."
+    a: "Yes. Mould often follows leaks, floods and sewer backups. The cost of dealing with it goes into the repair estimate on my written offer, so you don't have to."
 ---
 
-After a fire, a burst pipe, a sewer backup or a hailstorm, the damage to the house is only part of the problem. There's the insurance claim, the adjuster visits, the contractor quotes, the smell, the mould risk and the question of where you're going to live while it all gets sorted out. For many owners, rebuilding just isn't worth it.
+After a fire, a burst pipe, a sewer backup or a hailstorm, the damage to the house is only part of the problem. There's the insurance claim, the adjuster visits, the contractor quotes, the smell, the mould risk and the question of where you'll live while it's sorted out. For some owners, rebuilding just isn't worth it.
 
 ## First things first after a fire or flood
 
@@ -32,21 +35,21 @@ After a fire, a burst pipe, a sewer backup or a hailstorm, the damage to the hou
 
 Rebuilding can make sense when the damage is limited, insurance covers most of the cost, and you want to stay. Selling as-is often makes more sense when:
 
-- The repair estimate is close to, or more than, the insurance payout
-- Restoration contractors are booked out for months
-- You've already found somewhere else to live
-- The home was a rental or an inherited property you didn't plan to keep
-- You simply don't want to manage a major rebuild
+- the repair estimate is close to, or more than, the insurance payout;
+- restoration contractors are booked out for months;
+- you've already found somewhere else to live;
+- the home was a rental or an inherited property you didn't plan to keep;
+- you don't want to manage a major rebuild.
 
 ## How insurance fits in
 
 Every policy is different, so talk with your adjuster before deciding. In general:
 
-- Your claim is based on your policy and the damage, so ask your adjuster exactly how a sale affects it before you sign anything.
-- If you have a mortgage, the lender usually has an interest in insurance money paid for the building.
-- At closing, the mortgage is paid out from the sale price, which can simplify how any remaining insurance funds are released.
+- your claim is based on your policy and the damage, so ask your adjuster exactly how a sale affects it before you sign anything;
+- if you have a mortgage, the lender usually has an interest in insurance money paid for the building;
+- at closing, the mortgage is paid out from the sale price, which can simplify how any remaining insurance funds are released.
 
-## Damage we buy
+## Damage that doesn't stop a sale
 
 - Fire and smoke damage, from partial to total losses
 - Burst pipes, flooding and sewer backups
@@ -54,11 +57,13 @@ Every policy is different, so talk with your adjuster before deciding. In genera
 - Hail, wind and tree damage
 - Foundation damage from water or shifting soil
 
-## Why sell to {{company}}
+## Selling to me
 
-- **As-is, as it sits.** No demolition, clean-up, board-up or rebuild.
-- **We work around your claim** and coordinate timing with your adjuster and lender.
-- **No commissions.**
+- **As it sits.** No demolition, clean-up, board-up or rebuild.
+- **Around your claim.** I'll work to the timing your adjuster and lender need.
+- **No commission.**
 - **A closing date that fits the claim.** We close {{closingPhrase}}, so there's time to settle the claim first.
 
-Request a no-obligation offer or call {{phone}}. We'll give you a straight answer on whether a sale makes sense for your situation.
+Request an offer or call me at {{phone}}. I'll tell you straight whether a sale makes sense for your situation.
+
+*General information, not legal or insurance advice. Your adjuster and a lawyer can advise on your policy and your claim.*

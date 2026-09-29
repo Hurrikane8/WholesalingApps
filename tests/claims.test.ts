@@ -26,7 +26,7 @@ import { getComparisonRows } from "@/content/comparison";
 import { samples } from "@/content/samples";
 import { placeholderWarnings } from "@/lib/launch";
 import { BANNED_PHRASES, findBanned, findUnverifiedPromises } from "./banned-phrases.mjs";
-import { readVerifiedFlags } from "../scripts/lib/verified-flags.mjs";
+import { readDisclosure, readVerifiedFlags } from "../scripts/lib/verified-flags.mjs";
 
 const FLAGS = Object.keys(site.verified) as VerifiedFlag[];
 const original = { ...site.verified };
@@ -206,6 +206,7 @@ describe("other claims", () => {
 
 describe("scan-build's copy of the flags", () => {
   it("matches site.verified", () => expect(readVerifiedFlags()).toEqual(original));
+  it("reads site.disclosure for the build scan", () => expect(readDisclosure()).toBe(site.disclosure));
 });
 
 /* ─── Repository scans ──────────────────────────────────────────────────── */

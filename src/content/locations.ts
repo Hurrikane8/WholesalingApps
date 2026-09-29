@@ -16,7 +16,10 @@ export type Location = {
   slug: string;
   city: string;
   provinceAbbr: string;
-  /** Surrounding municipality or area, e.g. "Strathcona County". Optional. */
+  /**
+   * The municipality the community is part of, when it isn't its own (Sherwood Park is in Strathcona County).
+   * Leave it out for cities and towns: St. Albert isn't part of Sturgeon County, nor Leduc of Leduc County.
+   */
   region?: string;
   /** One unique paragraph about selling a house in this community. */
   intro: string;
@@ -34,12 +37,12 @@ export const locations: Location[] = [
     city: "Edmonton",
     provinceAbbr: "AB",
     intro:
-      "Edmonton has one of the most varied housing markets in Canada, from 1950s bungalows in mature neighbourhoods to the condo townhouse complexes built across Mill Woods, Clareview and Castle Downs in the 1970s and '80s. Many of those homes are now due for big-ticket work, and many condo complexes are facing rising fees and special assessments. We buy Edmonton homes as-is, so you can skip the repairs, the showings and the wait.",
+      "Edmonton's housing runs from 1950s bungalows in mature neighbourhoods to the condo townhouse complexes built across Mill Woods, Clareview and Castle Downs in the 1970s and '80s. Many of those homes are due for big-ticket work, and many older complexes face rising fees and special assessments. I buy Edmonton homes as-is, so you can skip the repairs, the showings and the wait.",
     localDetails: [
-      "We buy on both sides of the river, in every quadrant: north, south, east, west and central Edmonton.",
+      "I buy on both sides of the river, in every quadrant of the city.",
       "Condo townhouses are my current focus. High condo fees, a special assessment or a complex with a thin reserve fund don't rule out a sale.",
       "Older homes with original Poly-B plumbing, knob-and-tube wiring, vermiculite insulation or foundation cracks can be sold as-is.",
-      "Tenants in place? We can buy with the lease in place so you don't have to manage a move-out.",
+      "Tenants in place? I can buy with the lease in place, so you don't have to manage a move-out.",
     ],
     nearby: ["st-albert-ab", "sherwood-park-ab", "spruce-grove-ab", "leduc-ab", "beaumont-ab", "fort-saskatchewan-ab"],
     geo: { latitude: 53.5461, longitude: -113.4938 },
@@ -48,13 +51,12 @@ export const locations: Location[] = [
     slug: "st-albert-ab",
     city: "St. Albert",
     provinceAbbr: "AB",
-    region: "Sturgeon County",
     intro:
-      "St. Albert's older neighbourhoods were built out in the 1960s through the '80s, and plenty of those split-levels and bungalows are now on their original windows, furnaces and shingles. If your St. Albert home needs more work than you want to take on before listing, we'll make you a cash offer on it exactly as it sits.",
+      "Much of St. Albert was built out from the 1960s through the '80s, and many of those split-levels and bungalows still have their original windows, furnaces and shingles. If your St. Albert home needs more work than you want to take on before listing, I'll make you an offer on it as it sits, with the repair estimate laid out.",
     localDetails: [
-      "We buy single-family homes, half duplexes and condo townhouses throughout St. Albert.",
+      "Split-levels, bungalows, half duplexes and condo townhouses across St. Albert all fit.",
       "Downsizing after decades in the same house? You set the closing date, so there's time to sort and move.",
-      "Inherited homes and estates are welcome. We work alongside your lawyer and the personal representative.",
+      "Selling an estate? I work alongside the personal representative and the estate's lawyer.",
     ],
     nearby: ["edmonton-ab", "spruce-grove-ab", "fort-saskatchewan-ab"],
     geo: { latitude: 53.6305, longitude: -113.6256 },
@@ -65,10 +67,10 @@ export const locations: Location[] = [
     provinceAbbr: "AB",
     region: "Strathcona County",
     intro:
-      "Sherwood Park sits just east of Edmonton in Strathcona County, and its earliest neighbourhoods date back to the 1950s and '60s. Many are dated family homes, rentals their owners are tired of managing, or condo townhouses where the fees keep climbing.",
+      "Sherwood Park is the urban centre of Strathcona County, just east of Edmonton, and its first neighbourhoods date back to the 1950s and '60s. Sellers there are often dealing with a dated family home, a rental they're tired of managing, or a condo townhouse where the fees keep climbing.",
     localDetails: [
-      "We buy in Sherwood Park and the surrounding parts of Strathcona County.",
-      "Condo townhouses with special assessments or large upcoming repairs are welcome.",
+      "I buy in Sherwood Park and the surrounding parts of Strathcona County.",
+      "A condo townhouse with a special assessment or big repairs coming can still sell; the assessment goes into the math.",
       "Relocating for work? Close before you leave or after you've moved. You pick the date.",
     ],
     nearby: ["edmonton-ab", "fort-saskatchewan-ab", "beaumont-ab"],
@@ -78,13 +80,12 @@ export const locations: Location[] = [
     slug: "spruce-grove-ab",
     city: "Spruce Grove",
     provinceAbbr: "AB",
-    region: "Parkland County",
     intro:
-      "Spruce Grove has grown quickly along Highway 16 west of Edmonton, and that means a mix of newer builds and older homes that are starting to show their age. Whether you're behind on payments, moving for work, or just done with repairs, a direct sale gets you a firm number without listing.",
+      "Spruce Grove has grown along Highway 16 west of Edmonton, so it has a mix of newer builds and older homes that are starting to show their age. Whether you're behind on payments, moving for work or done with repairs, a direct sale gives you a written number without listing.",
     localDetails: [
-      "We buy throughout Spruce Grove and nearby Parkland County.",
-      "Half duplexes, townhouses and single-family homes are all a fit.",
-      "Houses that need roofing, flooring, basement or mechanical work are welcome as-is.",
+      "I buy throughout Spruce Grove and in nearby Parkland County communities.",
+      "Half duplexes, townhouses and single-family homes all fit.",
+      "Houses that need roofing, flooring, basement or mechanical work can be sold as-is.",
     ],
     nearby: ["stony-plain-ab", "st-albert-ab", "edmonton-ab"],
     geo: { latitude: 53.545, longitude: -113.9008 },
@@ -93,13 +94,12 @@ export const locations: Location[] = [
     slug: "stony-plain-ab",
     city: "Stony Plain",
     provinceAbbr: "AB",
-    region: "Parkland County",
     intro:
-      "Stony Plain is one of the older communities west of Edmonton, with established streets of bungalows and split-levels alongside newer subdivisions. We buy Stony Plain houses in any condition, including rentals, estates and homes that have sat empty.",
+      "Stony Plain is one of the older towns west of Edmonton, with established streets of bungalows and split-levels alongside newer subdivisions. I buy Stony Plain homes as-is, including rentals, estates and houses that have sat empty.",
     localDetails: [
-      "We buy in Stony Plain and the surrounding Parkland County area.",
+      "I buy in Stony Plain and on its edges toward Spruce Grove.",
       "A vacant house can be sold as-is, ideally before winter freeze-ups become a risk.",
-      "Estate and inherited properties are welcome, contents and all.",
+      "An inherited house can be sold with the furniture still inside; what stays is agreed in the contract.",
     ],
     nearby: ["spruce-grove-ab", "edmonton-ab"],
     geo: { latitude: 53.5264, longitude: -114.0068 },
@@ -108,13 +108,12 @@ export const locations: Location[] = [
     slug: "leduc-ab",
     city: "Leduc",
     provinceAbbr: "AB",
-    region: "Leduc County",
     intro:
-      "Leduc sits south of Edmonton near the international airport, and a lot of its housing is tied to the energy and airport jobs nearby. When work changes, homeowners sometimes need to sell quickly. We buy Leduc houses for cash, as-is, on the closing date you choose.",
+      "Leduc sits south of Edmonton, next to the international airport and the Nisku business park, and many homeowners there work in energy, trades or at the airport. When work changes, the timing of a sale matters. I buy Leduc houses as-is, on the closing date you choose.",
     localDetails: [
-      "We buy in Leduc and the surrounding Leduc County area.",
+      "I buy in Leduc and the surrounding area south of Edmonton.",
       "Job change or relocation? Pick a closing date that fits the move.",
-      "Rentals with tenants in place and homes that need updating are both welcome.",
+      "Rentals with tenants in place and homes that need updating both fit.",
     ],
     nearby: ["beaumont-ab", "edmonton-ab"],
     geo: { latitude: 53.2594, longitude: -113.5492 },
@@ -123,13 +122,12 @@ export const locations: Location[] = [
     slug: "beaumont-ab",
     city: "Beaumont",
     provinceAbbr: "AB",
-    region: "Leduc County",
     intro:
-      "Beaumont is a growing community just southeast of Edmonton, with a mix of established homes near the old town centre and newer neighbourhoods on the edges. If you need to sell a Beaumont home without listing, whether because of a separation, a move or a house that needs work, we can help.",
+      "Beaumont is a growing city just southeast of Edmonton, with established homes near its old town centre and newer neighbourhoods on the edges. If you need to sell a Beaumont home without listing, whether because of a separation, a move or a house that needs work, a direct sale is one option to compare.",
     localDetails: [
-      "We buy throughout Beaumont and nearby areas south of Edmonton.",
-      "Going through a separation? A single, clear cash offer can simplify dividing the home.",
-      "Single-family homes, half duplexes and townhouses are all welcome.",
+      "I buy throughout Beaumont.",
+      "Going through a separation? One written offer, with the math laid out, gives you both the same number to look at.",
+      "Single-family homes, half duplexes and townhouses all fit.",
     ],
     nearby: ["leduc-ab", "edmonton-ab", "sherwood-park-ab"],
     geo: { latitude: 53.3572, longitude: -113.4147 },
@@ -139,11 +137,11 @@ export const locations: Location[] = [
     city: "Fort Saskatchewan",
     provinceAbbr: "AB",
     intro:
-      "Fort Saskatchewan sits on the North Saskatchewan River northeast of Edmonton, close to Alberta's Industrial Heartland. Plenty of its homes are owned by shift workers, landlords and long-time residents, and a direct sale can suit any of them who need a simple one.",
+      "Fort Saskatchewan sits on the North Saskatchewan River northeast of Edmonton, next to Alberta's Industrial Heartland. Its homes belong to shift workers, landlords and long-time residents alike, and a direct sale can suit any of them who need a simple one.",
     localDetails: [
-      "We buy in Fort Saskatchewan and the surrounding area.",
-      "Tired of being a landlord? We buy rentals with tenants in place.",
-      "Older homes with foundation, roof or basement issues are welcome as-is.",
+      "I buy in Fort Saskatchewan and the surrounding area.",
+      "Tired of being a landlord? I buy rentals with the tenants in place.",
+      "Older homes with foundation, roof or basement issues can be sold as-is.",
     ],
     nearby: ["sherwood-park-ab", "st-albert-ab", "edmonton-ab"],
     geo: { latitude: 53.7125, longitude: -113.2131 },

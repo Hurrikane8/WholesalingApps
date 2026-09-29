@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { getSituation, getSituations, renderMarkdown } from "@/lib/content";
+import { getPosts, getSituation, getSituations, renderMarkdown } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { serviceSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
-import { FaqSection, FinalCta, FormHero } from "@/components/sections";
+import { FaqSection, FinalCta, FormHero, PostList } from "@/components/sections";
+import { StraightAnswer } from "@/components/ui/StraightAnswer";
 import { DraftBanner } from "@/components/preview";
 
 export const dynamicParams = false;
@@ -33,6 +34,7 @@ export default async function SituationPage(props: PageProps<"/situations/[slug]
 
   const path = `/situations/${s.slug}`;
   const { html } = renderMarkdown(s.body);
+  const guides = s.guides.map((slug) => getPosts().find((p) => p.slug === slug)).filter((p) => p !== undefined);
 
   return (
     <>
@@ -50,9 +52,24 @@ export default async function SituationPage(props: PageProps<"/situations/[slug]
       />
 
       <div className="border-t border-mist bg-snow">
-        <article className="page-wrap py-16 lg:py-24">
-          <Prose html={html} />
-        </article>
+        <div className="page-wrap py-16 lg:py-24">
+          <StraightAnswer question={s.question} className="measure">
+            <p>{s.answer}</p>
+          </StraightAnswer>
+          <article className="mt-12">
+            <Prose html={html} />
+          </article>
+          {guides.length > 0 && (
+            <section aria-labelledby="guides-heading" className="measure mt-14 border-t border-mist pt-10">
+              <h2 id="guides-heading" className="type-h3">
+                Related guides
+              </h2>
+              <div className="mt-4">
+                <PostList posts={guides} />
+              </div>
+            </section>
+          )}
+        </div>
       </div>
 
       {s.faqs.length > 0 && <FaqSection items={s.faqs} title={`${s.label}: questions sellers ask`} />}

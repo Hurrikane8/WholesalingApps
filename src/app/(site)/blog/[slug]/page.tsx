@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
-import { founderDisplayName } from "@/lib/claims";
+import Image from "next/image";
+import { site } from "@/config/site";
+import { founderDisplayName, offerMathClause } from "@/lib/claims";
 import { getPost, getPosts, renderMarkdown } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { articleSchema } from "@/lib/schema";
@@ -7,6 +9,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
 import { PageIntro, PostList, Section, SidebarOffer } from "@/components/sections";
 import { DraftBanner } from "@/components/preview";
+import { ButtonLink } from "@/components/ui/Button";
+import { StraightAnswer } from "@/components/ui/StraightAnswer";
 
 export const dynamicParams = false;
 
@@ -41,7 +45,11 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
 
   const path = `/blog/${post.slug}`;
   const { html, headings } = renderMarkdown(post.body);
-  const related = getPosts().filter((p) => p.slug !== post.slug).slice(0, 3);
+  // Related guides: the same category first, then the newest.
+  const others = getPosts().filter((p) => p.slug !== post.slug);
+  const related = [...others.filter((p) => p.category === post.category), ...others.filter((p) => p.category !== post.category)].slice(0, 3);
+  // Phones get a call to action after the third section, just before the fourth H2.
+  const [before, after] = splitAtHeading(html, 4);
 
   return (
     <>
@@ -67,6 +75,9 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
         lead={post.description}
       >
         <p className="type-small mt-5 text-ink-2">
+          {!post.author && site.founder.photo && (
+            <Image src={site.founder.photo} alt="" width={32} height={32} sizes="32px" className="mr-2 inline-block size-8 rounded-full object-cover align-middle" />
+          )}
           By {post.author ?? founderDisplayName()}.{" "}
           {post.updated ? (
             <>
@@ -83,6 +94,11 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
       <div className="border-t border-mist bg-snow">
         <div className="page-wrap grid gap-12 py-12 lg:grid-cols-12 lg:py-16">
           <article className="min-w-0 lg:col-span-7">
+            {post.question && post.answer && (
+              <StraightAnswer question={post.question} className="mb-10">
+                <p>{post.answer}</p>
+              </StraightAnswer>
+            )}
             {headings.length > 2 && (
               <nav aria-label="In this guide" className="mb-10 border-l-4 border-mist pl-5">
                 <h2 className="type-h3">In this guide</h2>
@@ -97,7 +113,22 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
                 </ul>
               </nav>
             )}
-            <Prose html={html} />
+            <Prose html={before} />
+            {after && (
+              <>
+                {/* Desktop has the sticky form beside the article instead. */}
+                <aside aria-label="Get an offer" className="measure my-10 border-l-4 border-pine bg-frost px-5 py-5 lg:hidden">
+                  <p className="type-h3">Want the numbers for your place?</p>
+                  <p className="mt-2 text-ink-2">
+                    Tell me about it and I&apos;ll send a written offer{offerMathClause()}. No obligation.
+                  </p>
+                  <ButtonLink href="#offer" className="mt-4">
+                    Get my offer
+                  </ButtonLink>
+                </aside>
+                <Prose html={after} />
+              </>
+            )}
           </article>
           <div className="lg:col-span-4 lg:col-start-9">
             <SidebarOffer />
@@ -116,4 +147,14 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
       )}
     </>
   );
+}
+
+/** Splits rendered HTML just before its nth <h2>, so something can sit between sections. */
+function splitAtHeading(html: string, n: number): [string, string] {
+  let index = -1;
+  for (let i = 0; i < n; i++) {
+    index = html.indexOf("<h2", index + 1);
+    if (index === -1) return [html, ""];
+  }
+  return [html.slice(0, index), html.slice(index)];
 }

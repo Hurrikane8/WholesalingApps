@@ -1,11 +1,14 @@
 ---
-title: "How to Spot a Legitimate Cash Home Buyer: 9 Red Flags"
+title: "How to spot a legitimate cash home buyer: 9 red flags"
 description: "Not every 'we buy houses' company is the same. Learn the red flags, the questions to ask, and how to protect yourself when selling your home for cash."
-date: 2026-06-16
-category: "Seller Protection"
+date: 2026-09-26
+updated: 2026-09-29
+category: "Seller protection"
+question: "How can I tell if a cash home buyer is legitimate?"
+answer: "A legitimate buyer puts the offer in writing, never asks you for money, closes through real estate lawyers, gives you time to get advice, and tells you up front whether they'll buy the home themselves or assign the contract. Be wary of pressure to sign today or to transfer your title before you're paid."
 ---
 
-Cash home buyers can be a great option when you need to sell quickly or sell a home that needs work. But there are bad actors out there too, and sellers dealing with foreclosure, a death in the family or financial stress are often their targets. Here's how to tell a legitimate buyer from one to avoid.
+Selling to a cash buyer can make sense when you need a firm date or the home needs work. But there are bad actors out there too, and sellers dealing with foreclosure, a death in the family or financial stress are often their targets. Here's how to tell a legitimate buyer from one to avoid.
 
 ## Red flag 1: They won't put the offer in writing
 
@@ -37,7 +40,7 @@ A contract with a long condition period and a token deposit lets a buyer tie up 
 
 ## Red flag 8: They're vague about who's actually buying
 
-Some companies sign a contract with you and then **assign** it to a different investor, who actually completes the purchase. That's legal and common (it's how many cash sales work), but **you deserve to know up front.** Ask directly, and ask whether they're licensed. In Alberta, real estate trading is regulated by the Real Estate Council of Alberta (RECA). Here's [how wholesaling works](/blog/what-is-a-real-estate-wholesaler).
+Some buyers sign a contract with you and then **assign** it to a different investor, who completes the purchase. Assignment is a normal part of how some investors work, but **you deserve to know before you sign.** Ask directly, and ask whether they act for you or for themselves: a buyer purchasing for their own account isn't your agent, so get your own advice from a lawyer. Real estate professionals in Alberta are licensed by the Real Estate Council of Alberta (RECA). Here's [how wholesaling works](/blog/what-is-a-real-estate-wholesaler).
 
 ## Red flag 9: No real presence or track record
 
@@ -53,4 +56,4 @@ Look for a local phone number, real people with real names, a proper website, an
 6. Will you buy the home yourself, or might you assign the contract?
 7. Can I have my own lawyer review the contract before I sign?
 
-A legitimate buyer will answer all of these clearly. At {{company}}, we welcome every one of them. [Request an offer](/get-cash-offer) and ask away.
+A legitimate buyer will answer all of these clearly. I'll answer every one of them, in writing. [Ask me for an offer](/get-cash-offer), or read [who I am and how I buy](/about#how-i-buy).

@@ -1,18 +1,21 @@
 ---
-title: "What Is a Real Estate Wholesaler? A Guide for Alberta Sellers"
+title: "What is a real estate wholesaler? A guide for Alberta sellers"
 description: "An honest look at real estate wholesaling in Alberta: how contract assignments work, the pros and cons for sellers, and how to protect yourself."
-date: 2026-06-02
-category: "Seller Protection"
+date: 2026-09-26
+updated: 2026-09-29
+category: "Seller protection"
+question: "What does it mean if a buyer assigns my purchase contract?"
+answer: "The buyer who signed with you transfers the contract to another investor, who completes the purchase on the same terms. Your price doesn't change: the investor pays the assigning buyer a fee on top of it. You should know before you sign whether your contract may be assigned, and have a lawyer review it."
 ---
 
-If you've received a "we buy houses" flyer, text or knock on the door, there's a good chance it came from a real estate wholesaler. Wholesaling is common, often misunderstood, and worth understanding before you sign anything. Here's an honest look at how it works and what it means for you as a seller.
+If you've received a "we buy houses" flyer, text or knock on the door, it may have come from a real estate wholesaler. Wholesaling is often misunderstood, and worth understanding before you sign anything. Here's a plain look at how it works and what it means for you as a seller. I'm a buyer who sometimes assigns contracts, so I'll be specific about how I do it at the end.
 
 ## What a wholesaler does
 
 A wholesaler finds homeowners who want to sell, usually quickly or as-is, and signs a contract to buy their property. Then, instead of always completing the purchase themselves, the wholesaler may:
 
-- **Assign the contract** to another investor (the "end buyer"), who pays the wholesaler a fee for it, or
-- **Complete the purchase** and resell the property, sometimes on the same day
+- **assign the contract** to another investor (the "end buyer"), who pays the wholesaler a fee for it; or
+- **complete the purchase** and resell the property, sometimes on the same day.
 
 The end buyer is typically a local investor who plans to renovate and resell the home, or keep it as a rental.
 
@@ -27,7 +30,7 @@ Your price doesn't change because of the assignment. The fee is paid by the end 
 
 ## Why sellers work with wholesalers
 
-- **Speed and simplicity.** Wholesalers work with networks of cash investors who can close quickly.
+- **Simplicity and a firm date.** Wholesalers work with investors who buy with cash, without a financing condition.
 - **As-is sales.** Homes needing major work, or with tenants, arrears or messy situations, can still find a buyer.
 - **No commission or showings.**
 
@@ -52,8 +55,10 @@ In Alberta, trading in real estate on behalf of others is regulated by the **Rea
 5. Which lawyer will act for you?
 6. Are you licensed with RECA, and if not, how does your business work within Alberta's rules?
 
-## How {{company}} handles it
+## How I handle it
 
-We believe you should know exactly who you're dealing with. {{disclosure}}
+I think you should know exactly who you're dealing with. Sometimes I buy a home myself; sometimes I sign a contract to buy it and assign that contract to another investor. Either way, you'll know which, in writing, before you sign.
 
-Have questions about how a sale with us would work? [Request an offer](/get-cash-offer) or call {{phone}}, and we'll walk you through it.
+The formal disclosure: {{disclosure}}
+
+Have questions about how a sale to me would work? [Ask me for an offer](/get-cash-offer) or call {{phone}}, and I'll walk you through it.

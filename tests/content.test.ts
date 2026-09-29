@@ -56,6 +56,16 @@ describe("situations", () => {
     expect(SITUATION_ICONS).toHaveProperty(s.icon);
     expect(s.reason && REASONS.includes(s.reason)).toBeTruthy();
     expect(s.faqs.length).toBeGreaterThan(0);
+    expect(s.question.endsWith("?")).toBe(true);
+    expect(words(s.answer)).toBeGreaterThanOrEqual(40);
+    expect(words(s.answer)).toBeLessThanOrEqual(60);
+    expect(s.guides.length).toBeGreaterThan(0);
+    for (const slug of s.guides) expect(posts.some((p) => p.slug === slug), `guide ${slug}`).toBe(true);
+  });
+
+  it("has the ten situations in the brief (the condo page moved to the property types)", () => {
+    expect(situations.filter((s) => !s.draft)).toHaveLength(10);
+    expect(situations.some((s) => s.slug === "sell-condo-townhouse")).toBe(false);
   });
 
   it("has unique titles, descriptions and H1s", () => {
@@ -109,6 +119,18 @@ describe("blog posts", () => {
     expect(p.description.length).toBeGreaterThanOrEqual(MIN_DESCRIPTION);
     expect(p.description.length).toBeLessThanOrEqual(MAX_DESCRIPTION);
     expect(p.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    // Dates come from the file's first commit (spec 6.5), so none can be in the future.
+    const today = new Date().toISOString().slice(0, 10);
+    expect(p.date <= today, `date ${p.date}`).toBe(true);
+    if (p.updated) {
+      expect(p.updated <= today, `updated ${p.updated}`).toBe(true);
+      expect(p.updated >= p.date).toBe(true);
+    }
+    expect(Boolean(p.question) === Boolean(p.answer), "question and answer go together").toBe(true);
+    if (p.answer) {
+      expect(words(p.answer)).toBeGreaterThanOrEqual(40);
+      expect(words(p.answer)).toBeLessThanOrEqual(60);
+    }
   });
 });
 

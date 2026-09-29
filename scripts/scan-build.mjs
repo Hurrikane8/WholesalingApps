@@ -5,6 +5,9 @@
  *
  *   - banned phrases and patterns (tests/banned-phrases.mjs, spec 2.3);
  *   - `example.com`;
+ *   - a page without the wholesaling disclosure (site.disclosure) in its
+ *     footer, or /terms, /faq, /about and /how-it-works without it in the page
+ *     body as well (spec 9);
  *   - in a production build: an "Unconfirmed" or "Draft" tag, or promise text
  *     whose flag in site.verified is off ("24 hours", "close in 7 days",
  *     "I pay your standard legal fees"…).
@@ -17,7 +20,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { findBanned, findUnverifiedPromises } from "../tests/banned-phrases.mjs";
-import { readVerifiedFlags } from "./lib/verified-flags.mjs";
+import { readDisclosure, readVerifiedFlags } from "./lib/verified-flags.mjs";
 
 const APP_DIR = path.join(process.cwd(), ".next", "server", "app");
 
@@ -52,6 +55,18 @@ function toText(html) {
 
 const isPreview = /<html\b[^>]*\sdata-preview\b/.test(fs.readFileSync(path.join(APP_DIR, "index.html"), "utf8"));
 const verified = readVerifiedFlags();
+const disclosure = readDisclosure().replace(/\s+/g, " ").trim();
+
+/** Pages that must show the disclosure in the body too, on top of the footer (spec 9). */
+const DISCLOSURE_PAGES = new Set(["terms.html", "faq.html", "about.html", "how-it-works.html"]);
+/** Framework error shells without the site chrome. */
+const NO_CHROME = new Set(["_global-error.html"]);
+
+/** How many times the disclosure is on the rendered page (scripts, such as the RSC payload, left out). */
+function disclosureCount(html) {
+  const visible = toText(html.replace(/<script\b[\s\S]*?<\/script>/gi, "")).replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'");
+  return visible.split(disclosure).length - 1;
+}
 
 /** @type {{ file: string, rule: string, snippet: string }[]} */
 const problems = [];
@@ -76,6 +91,17 @@ for (const file of outputFiles(APP_DIR)) {
 
   for (const m of raw.matchAll(/example\.com/gi)) {
     report("example.com", raw.slice(Math.max(0, m.index - 60), m.index + 40).replace(/\s+/g, " "));
+  }
+
+  if (file.endsWith(".html")) {
+    const name = path.relative(APP_DIR, file);
+    // In production /styleguide is a 404: its prerendered file is an empty shell, and visitors get the 404 page, which has the footer.
+    const skip = NO_CHROME.has(name) || (!isPreview && name === "styleguide.html");
+    const needed = DISCLOSURE_PAGES.has(name) ? 2 : skip ? 0 : 1;
+    const found = disclosureCount(raw);
+    if (found < needed) {
+      report("disclosure missing", needed === 2 ? `expected in the page body and the footer, found ${found}` : "expected in the footer");
+    }
   }
 
   if (!isPreview) {
