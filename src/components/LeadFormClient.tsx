@@ -1,5 +1,6 @@
 "use client";
 
+import { Turnstile } from "@/components/Turnstile";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
@@ -79,6 +80,7 @@ export function LeadFormClient(props: LeadFormClientProps) {
   const [status, setStatus] = useState<"idle" | "submitting" | "undelivered" | "error">("idle");
   const [formError, setFormError] = useState("");
   const startedAt = useRef(0);
+  const turnstileToken = useRef("");
   const submissionId = useRef("");
   const addressRef = useRef<HTMLInputElement>(null);
   const step2Heading = useRef<HTMLHeadingElement>(null);
@@ -153,6 +155,7 @@ export function LeadFormClient(props: LeadFormClientProps) {
           firstTouch,
           lastTouch,
           startedAt: startedAt.current,
+          turnstileToken: turnstileToken.current,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fieldErrors?: Errors };
@@ -403,6 +406,7 @@ export function LeadFormClient(props: LeadFormClientProps) {
             </p>
           </div>
         )}
+        <Turnstile onToken={(token) => (turnstileToken.current = token)} />
       </form>
     </div>
   );

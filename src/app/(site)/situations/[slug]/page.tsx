@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
 import { FaqSection, FinalCta, FormHero, PostList } from "@/components/sections";
 import { StraightAnswer } from "@/components/ui/StraightAnswer";
+import { TextLink } from "@/components/ui/TextLink";
 import { DraftBanner } from "@/components/preview";
 
 export const dynamicParams = false;
@@ -19,10 +20,10 @@ export async function generateMetadata(props: PageProps<"/situations/[slug]">) {
   const s = getSituation(slug);
   if (!s) return {};
   return pageMetadata({
+    ownImage: true,
     title: s.title,
     description: s.description,
     path: `/situations/${s.slug}`,
-    image: { path: `/situations/${s.slug}/opengraph-image`, alt: s.h1 },
     noindex: s.draft,
   });
 }
@@ -67,6 +68,9 @@ export default async function SituationPage(props: PageProps<"/situations/[slug]
               <div className="mt-4">
                 <PostList posts={guides} />
               </div>
+              <p className="mt-4 text-ink-2">
+                Every kind of home I buy, from condo townhouses to fourplexes: <TextLink href="/what-we-buy">what I buy</TextLink>.
+              </p>
             </section>
           )}
         </div>

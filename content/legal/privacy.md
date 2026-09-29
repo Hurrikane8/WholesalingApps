@@ -1,5 +1,5 @@
 ---
-title: Privacy Policy
+title: Privacy policy
 updated: 2026-09-29
 ---
 

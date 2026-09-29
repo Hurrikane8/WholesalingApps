@@ -13,5 +13,5 @@ export function generateStaticParams() {
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const s = getSituation(slug);
-  return renderOgImage({ eyebrow: s?.label ?? "Situations", title: s?.h1 ?? "When selling isn't simple" });
+  return renderOgImage({ title: s?.h1 ?? "When selling isn't simple" });
 }

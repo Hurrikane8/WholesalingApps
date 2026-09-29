@@ -64,6 +64,6 @@ Add it up, and a listing often takes months from decision to closing, longer if 
 
 ## The bottom line
 
-With a cash sale, the biggest variable is usually the title and the paperwork, not the buyer, and you can choose a later date if you need more time.
+With a cash sale, the biggest variable is usually the title and the paperwork, not the buyer, and you can choose a later date if you need more time. If a deadline is driving the sale, see [facing foreclosure](/situations/sell-house-facing-foreclosure) or [relocating](/situations/sell-house-fast-relocating).
 
 Want to know what a timeline could look like for your home? [Ask me for an offer](/get-cash-offer) or call {{phone}}.

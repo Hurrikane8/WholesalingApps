@@ -83,6 +83,7 @@ export function StickyActions({ phone, phoneHref, offerHref, focus = false, demo
   return (
     <div
       data-hidden={hidden ? "" : undefined}
+      data-track-location="sticky"
       className={`${position} border-t border-mist bg-snow/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur transition duration-150 data-hidden:invisible data-hidden:translate-y-full data-hidden:opacity-0`}
     >
       <div className={`mx-auto grid max-w-md gap-2 ${focus ? "grid-cols-2" : "grid-cols-[auto_auto_1fr]"}`}>

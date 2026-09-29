@@ -12,6 +12,7 @@ answer: "Usually, yes. Many half duplexes have their own title, so one side can 
 sample: house
 related: [sell-rental-property-with-tenants, sell-house-that-needs-repairs, sell-inherited-house]
 # TO CONFIRM (Kane, #13): publish this page? Drafts show only in preview builds and stay out of the sitemap.
+guides: [how-cash-home-buyers-calculate-offers, selling-a-house-as-is, what-is-a-real-estate-wholesaler]
 draft: true
 faqs:
   - q: "Do you buy half duplexes with a basement suite?"

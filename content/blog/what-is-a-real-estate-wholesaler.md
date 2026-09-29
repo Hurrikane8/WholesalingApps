@@ -61,4 +61,6 @@ I think you should know exactly who you're dealing with. Sometimes I buy a home 
 
 The formal disclosure: {{disclosure}}
 
+Whichever buyer you talk to, compare their offer with what you'd likely net by listing; the [cash vs. listing calculator](/cash-offer-vs-realtor#calculator) does the math. If you're a landlord, see [selling a rental with tenants in place](/situations/sell-rental-property-with-tenants).
+
 Have questions about how a sale to me would work? [Ask me for an offer](/get-cash-offer) or call {{phone}}, and I'll walk you through it.

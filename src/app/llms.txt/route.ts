@@ -2,7 +2,7 @@ import { shownPropertyTypes, site } from "@/config/site";
 import { getFaqs } from "@/content/faqs";
 import { locations } from "@/content/locations";
 import { closingPhrase, founderDisplayName, legalFeesSentence, offerTimingPhrase, promiseItems } from "@/lib/claims";
-import { getPosts, getSituations } from "@/lib/content";
+import { getPosts, getPropertyTypes, getSituations } from "@/lib/content";
 import { absoluteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
@@ -19,7 +19,9 @@ export function GET() {
   const lines = [
     `# ${site.name}`,
     "",
-    `> ${site.name} is ${founderDisplayName()}'s business: one local real estate investor who buys houses, townhouses, duplexes and condos as-is, directly from owners across ${market.region}, ${market.province}, Canada.`,
+    `> ${site.name} is ${founderDisplayName()}'s business: one local real estate investor who buys houses, townhouses, duplexes and condos as-is, directly from owners across ${market.region}, ${market.province}, Canada. ${site.tagline}`,
+    "",
+    `${founderDisplayName()} is not a realtor and doesn't list homes; he buys them. He either buys a home himself or assigns his purchase contract to another investor (see the disclosure below).`,
     "",
     `- Founder: ${founderDisplayName()}`,
     `- Phone (call or text): ${site.phone}`,
@@ -30,18 +32,23 @@ export function GET() {
     "",
     "## Commitments",
     ...promiseItems().map((item) => `- ${item.title}: ${item.sentence}`),
-    `- Written offers are sent ${offerTimingPhrase()}, and closings happen ${closingPhrase()}.`,
+    `- Timing, in ${founderDisplayName()}'s words: "I send a written offer ${offerTimingPhrase()}, and we close ${closingPhrase()}."`,
     ...(legalFees ? [`- ${legalFees}`] : []),
     "",
     "## Property types",
-    ...shownPropertyTypes().map((t) => `- ${t.plural}: ${t.note}`),
+    `All of them: ${absoluteUrl("/what-we-buy")}`,
+    ...shownPropertyTypes().map((t) => {
+      const page = getPropertyTypes().find((p) => p.leadValue === t.value && !p.draft);
+      return page ? `- [${t.plural}](${absoluteUrl(`/what-we-buy/${page.slug}`)}): ${t.note}` : `- ${t.plural}: ${t.note}`;
+    }),
     "",
     "## Areas served",
     ...locations.map((l) => `- [${l.city}, ${l.provinceAbbr}](${absoluteUrl(`/we-buy-houses/${l.slug}`)})${l.region ? ` (${l.region})` : ""}`),
     "",
     "## Key pages",
-    `- [How it works](${absoluteUrl("/how-it-works")}): the process and how offers are calculated`,
-    `- [Cash offer vs. listing with a realtor](${absoluteUrl("/cash-offer-vs-realtor")}): side-by-side costs with a worked example`,
+    `- [How it works](${absoluteUrl("/how-it-works")}): the process, how offers are calculated, and what the seller signs`,
+    `- [Cash offer vs. listing with a realtor](${absoluteUrl("/cash-offer-vs-realtor")}): a net proceeds calculator and a side-by-side of the costs`,
+    `- [What I buy](${absoluteUrl("/what-we-buy")}): the property types`,
     `- [FAQ](${absoluteUrl("/faq")})`,
     `- [About](${absoluteUrl("/about")})`,
     "",

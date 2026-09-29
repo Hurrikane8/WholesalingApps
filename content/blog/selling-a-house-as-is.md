@@ -62,4 +62,4 @@ Repairing first may be better when the work is cosmetic, you have the budget and
 3. **Read the contract.** Look at the conditions, the deposit, and when the conditions come off.
 4. **Compare offers,** and compare them against what you'd net by listing. The guide to [comparing a cash offer with listing](/blog/cash-offer-vs-listing-net-proceeds) walks through it, and the [calculator](/cash-offer-vs-realtor#calculator) does the math.
 
-Curious what your home would bring as-is? [Ask me for an offer](/get-cash-offer). The condition sets the price, the math comes with it, and there's no obligation.
+More on selling a home that needs work: [selling a house that needs repairs](/situations/sell-house-that-needs-repairs). Curious what your home would bring as-is? [Ask me for an offer](/get-cash-offer). The condition sets the price, the math comes with it, and there's no obligation.

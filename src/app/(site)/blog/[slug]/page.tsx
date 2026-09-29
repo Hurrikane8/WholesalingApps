@@ -23,13 +23,13 @@ export async function generateMetadata(props: PageProps<"/blog/[slug]">) {
   const post = getPost(slug);
   if (!post) return {};
   return pageMetadata({
+    ownImage: true,
     title: post.title,
     description: post.description,
     path: `/blog/${post.slug}`,
     type: "article",
     publishedTime: post.date,
     modifiedTime: post.updated ?? post.date,
-    image: { path: `/blog/${post.slug}/opengraph-image`, alt: post.title },
     noindex: post.draft,
   });
 }

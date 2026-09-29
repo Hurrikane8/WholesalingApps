@@ -3,9 +3,9 @@
  * engines use these to understand who the business is, where it operates and
  * what each page is about. Validate changes at https://validator.schema.org.
  */
-import { phoneHref, site } from "@/config/site";
+import { phoneHref, shownPropertyTypes, site } from "@/config/site";
 import type { Faq } from "@/content/faqs";
-import type { Location } from "@/content/locations";
+import { locations, type Location } from "@/content/locations";
 import { founderDisplayName, siteDescription } from "@/lib/claims";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -49,17 +49,16 @@ export function localBusinessSchema(): Json {
     name: site.name,
     legalName: site.legalName,
     description: siteDescription(),
+    slogan: site.tagline,
     url: site.url,
-    logo: absoluteUrl("/icon.svg"),
+    logo: absoluteUrl("/brand/logo.png"),
     image: absoluteUrl("/opengraph-image"),
     telephone: phoneHref,
     ...(site.email ? { email: site.email } : {}),
     address: postalAddress(),
     geo: { "@type": "GeoCoordinates", ...market.geo },
-    areaServed: [
-      { "@type": "AdministrativeArea", name: `${market.province}, Canada` },
-      { "@type": "AdministrativeArea", name: market.region },
-    ],
+    founder: { "@id": PERSON_ID },
+    areaServed: locations.map((l) => ({ "@type": "City", name: `${l.city}, ${l.provinceAbbr}` })),
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -71,12 +70,10 @@ export function localBusinessSchema(): Json {
     ...(site.foundedYear ? { foundingDate: String(site.foundedYear) } : {}),
     ...(sameAs().length ? { sameAs: sameAs() } : {}),
     knowsAbout: [
-      "Selling a house for cash",
+      ...shownPropertyTypes().map((t) => `Selling ${t.plural.toLowerCase()} in ${market.region}`),
       "Selling a house as-is",
-      "Selling a condo townhouse",
-      "Avoiding foreclosure in Alberta",
       "Selling inherited and estate property",
-      "Selling rental property with tenants",
+      "Selling a rental property with tenants",
     ],
     contactPoint: {
       "@type": "ContactPoint",

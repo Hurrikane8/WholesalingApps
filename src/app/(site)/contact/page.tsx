@@ -87,7 +87,7 @@ export default function ContactPage() {
           {site.bookingUrl && (
             <div className="mt-8">
               <p className="text-ink-2">Rather talk at a set time?</p>
-              <ButtonLink href={site.bookingUrl} variant="secondary" className="mt-3">
+              <ButtonLink href={site.bookingUrl} variant="secondary" className="mt-3" data-track="booking_click" data-track-location="contact">
                 Book a call
               </ButtonLink>
             </div>

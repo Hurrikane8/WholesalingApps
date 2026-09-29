@@ -180,6 +180,8 @@ export type PropertyType = {
   sample: "house" | "condo";
   /** Situation slugs to link to. */
   related: string[];
+  /** Guide slugs to link to under "Related guides" (drafts drop out in production). */
+  guides: string[];
   faqs: { question: string; answer: string }[];
   body: string;
   /** Rendered only outside production, with a Draft banner; never in the sitemap. */
@@ -211,6 +213,7 @@ export function getPropertyTypes(): PropertyType[] {
         answer: str(data.answer, "answer", file),
         sample: data.sample === "condo" ? ("condo" as const) : ("house" as const),
         related: Array.isArray(data.related) ? data.related.filter((r): r is string => typeof r === "string") : [],
+        guides: Array.isArray(data.guides) ? data.guides.filter((g): g is string => typeof g === "string") : [],
         faqs: faqs.map((f: { q?: unknown; a?: unknown }, i: number) => ({
           question: str(f.q, `faqs[${i}].q`, file),
           answer: str(f.a, `faqs[${i}].a`, file),

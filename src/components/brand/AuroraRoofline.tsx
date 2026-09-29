@@ -14,7 +14,7 @@ import { useId } from "react";
 const GROUND = 218;
 
 /** Left to right: the one continuous horizon path. */
-const HORIZON = [
+export const HORIZON = [
   `M0 ${GROUND}`,
   // 1. 1950s bungalow: low hip roof and a chimney
   "H48 V186 H38 L96 166 H160 V150 H172 V166 H184 L242 186 H232 V218",
@@ -34,7 +34,7 @@ const HORIZON = [
 
 /** Small details at 1.5px: windows on about a third of the homes, entry canopies, the duplex's mirrored doors, a garage door. */
 const rect = (x: number, y: number, w: number, h: number) => `M${x} ${y} h${w} v${h} h${-w} Z`;
-const DETAILS = [
+export const DETAILS = [
   // Two-storey windows
   rect(324, 160, 18, 16),
   rect(386, 160, 18, 16),
@@ -52,7 +52,7 @@ const DETAILS = [
 ].join(" ");
 
 /** The ribbon: lower left to upper right, two soft waves, clear of every roof. */
-const RIBBON = "M-20 104 C160 70 300 100 480 84 S780 44 960 58 S1280 16 1460 20";
+export const RIBBON = "M-20 104 C160 70 300 100 480 84 S780 44 960 58 S1280 16 1460 20";
 
 function RibbonGradient({ id, night = false }: { id: string; night?: boolean }) {
   // On night the ribbon runs at full opacity (spec 3.6).

@@ -11,6 +11,7 @@ question: "Can I sell my condo townhouse as-is if there's a special assessment?"
 answer: "Yes. A special assessment doesn't stop a sale; it changes the math. Tell me the amount and the date on the notice. The contract will say who pays it, and my written offer shows it as its own line, so you can see exactly how it affects your price."
 sample: condo
 related: [sell-rental-property-with-tenants, sell-house-that-needs-repairs, sell-house-fast-relocating]
+guides: [selling-condo-special-assessment-alberta, condo-documents-alberta, how-cash-home-buyers-calculate-offers, cash-offer-vs-listing-net-proceeds]
 draft: false
 faqs:
   - q: "Do you buy in complexes with high condo fees?"

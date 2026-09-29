@@ -7,6 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { serviceSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
 import { Unconfirmed } from "@/components/preview";
+import { TextLink } from "@/components/ui/TextLink";
 import { AreaList, FaqSection, FormHero, PropertyTypeList, Section } from "@/components/sections";
 
 export const dynamicParams = false;
@@ -58,10 +59,10 @@ export async function generateMetadata(props: PageProps<"/we-buy-houses/[city]">
   const l = getLocation(city);
   if (!l) return {};
   return pageMetadata({
+    ownImage: true,
     title: `We buy houses in ${l.city}, ${l.provinceAbbr}, as-is`,
     description: describe(l),
     path: `/we-buy-houses/${l.slug}`,
-    image: { path: `/we-buy-houses/${l.slug}/opengraph-image`, alt: `We buy houses in ${l.city}, ${l.provinceAbbr}` },
   });
 }
 
@@ -112,6 +113,11 @@ export default async function CityPage(props: PageProps<"/we-buy-houses/[city]">
         <div className="mt-6">
           <PropertyTypeList compact />
         </div>
+        <p className="mt-4">
+          <TextLink href="/what-we-buy" className="inline-flex min-h-11 items-center font-semibold">
+            More on what I buy
+          </TextLink>
+        </p>
       </Section>
 
       <FaqSection items={cityFaqs(l)} title={`Selling a home in ${l.city}: questions`} />

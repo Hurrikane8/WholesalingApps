@@ -12,6 +12,7 @@
  *      the seller's confirmation (src/lib/notify).
  */
 import { z } from "zod";
+import { passesTurnstile, turnstileFailedMessage } from "@/lib/turnstile";
 import { site } from "@/config/site";
 import { deployEnv, type DeployEnv } from "@/lib/env";
 import {
@@ -114,6 +115,9 @@ export async function handleLeadRequest(request: Request, deps: Deps = {}): Prom
 
   // Pretend spam succeeded so bots don't learn what tripped the filter.
   if (isLikelySpam(parsed.data, now)) return json({ ok: true });
+  if (!(await passesTurnstile(read.body, request, env, deps.fetchImpl ?? fetch))) {
+    return json({ ok: false, error: turnstileFailedMessage(site.phone) }, 400);
+  }
   if (isDuplicateSubmission(parsed.data.submissionId, now)) return json({ ok: true, duplicate: true });
 
   const lead = toLead(parsed.data, request.headers.get("user-agent") ?? "", new Date(now));

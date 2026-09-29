@@ -181,6 +181,38 @@ describe("markdown content", () => {
   });
 });
 
+describe("internal links (spec 7.7)", () => {
+  const published = <T extends { draft: boolean }>(items: T[]) => items.filter((i) => !i.draft);
+  const draftRoutes = new Set([
+    ...situations.filter((s) => s.draft).map((s) => `/situations/${s.slug}`),
+    ...posts.filter((p) => p.draft).map((p) => `/blog/${p.slug}`),
+    ...propertyTypes.filter((t) => t.draft).map((t) => `/what-we-buy/${t.slug}`),
+  ]);
+  const publishedGuide = (slug: string) => posts.some((p) => p.slug === slug && !p.draft);
+
+  it.each(published(propertyTypes).map((t) => [t.slug, t]))("property type %s links two situations and a published guide", (_, t) => {
+    expect(t.related.length).toBeGreaterThanOrEqual(2);
+    expect(t.guides.some(publishedGuide)).toBe(true);
+  });
+
+  it.each(published(situations).map((s) => [s.slug, s]))("situation %s links a published guide", (_, s) => {
+    expect(s.guides.some(publishedGuide)).toBe(true);
+  });
+
+  it.each(published(posts).map((p) => [p.slug, p]))("guide %s links the calculator and a situation or property type", (_, p) => {
+    const links = internalLinks(renderMarkdown(p.body).html);
+    expect(links).toContain("/cash-offer-vs-realtor");
+    expect(links.some((l) => l.startsWith("/situations/") || l.startsWith("/what-we-buy/"))).toBe(true);
+  });
+
+  it("never links a published page to a draft", () => {
+    const docs = [...published(situations), ...published(posts), ...published(propertyTypes)];
+    for (const doc of docs) {
+      for (const link of internalLinks(renderMarkdown(doc.body).html)) expect(draftRoutes.has(link), `${doc.slug} → ${link}`).toBe(false);
+    }
+  });
+});
+
 describe("faqs", () => {
   const faqs = getFaqs();
   it("has unique questions", () => expect(new Set(faqs.map((f) => f.question)).size).toBe(faqs.length));

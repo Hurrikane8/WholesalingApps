@@ -4,6 +4,7 @@
  * webhooks such as the Sheets "Buyers" tab, and the owner email).
  */
 import { z } from "zod";
+import { passesTurnstile, turnstileFailedMessage } from "@/lib/turnstile";
 import { site } from "@/config/site";
 import { airtable } from "@/config/airtable";
 import { BUYER_CONSENT_TEXT } from "@/content/consent";
@@ -82,6 +83,9 @@ export async function handleBuyerRequest(
     return json({ ok: false, error: "Please fix the fields marked below.", fieldErrors: fieldErrors(parsed.error.issues) }, 400);
   }
   if (isLikelySpam(parsed.data, now)) return json({ ok: true });
+  if (!(await passesTurnstile(read.body, request, env, deps.fetchImpl ?? fetch))) {
+    return json({ ok: false, error: turnstileFailedMessage(site.phone) }, 400);
+  }
 
   const buyer = toBuyer(parsed.data, request.headers.get("user-agent") ?? "", new Date(now));
   const result = await deliver("buyer_signup", buyer, { env, fetchImpl: deps.fetchImpl ?? fetch });

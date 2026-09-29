@@ -7,6 +7,7 @@ import { isIndexable, showDrafts, showUnconfirmed } from "@/lib/env";
 import { localBusinessSchema, websiteSchema } from "@/lib/schema";
 import { Analytics } from "@/components/Analytics";
 import { AttributionCapture } from "@/components/AttributionCapture";
+import { ClickTracker } from "@/components/ClickTracker";
 import { JsonLd } from "@/components/JsonLd";
 
 const defaultTitle = `Sell your ${site.market.name} home as-is for cash`;
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* The header, footer and sticky actions come from the (site) and (focus) layouts. */}
         {children}
         <AttributionCapture />
+        <ClickTracker />
         <Analytics />
       </body>
     </html>

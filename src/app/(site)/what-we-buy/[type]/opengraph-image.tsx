@@ -12,5 +12,5 @@ export function generateStaticParams() {
 export default async function Image({ params }: { params: Promise<{ type: string }> }) {
   const { type } = await params;
   const t = getPropertyType(type);
-  return renderOgImage({ eyebrow: t?.label ?? "What I buy", title: t?.h1 ?? "What I buy in Greater Edmonton" });
+  return renderOgImage({ title: t?.h1 ?? "What I buy in Greater Edmonton" });
 }

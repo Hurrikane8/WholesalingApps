@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { getPropertyType, getPropertyTypes, getSituations, renderMarkdown } from "@/lib/content";
+import { getPosts, getPropertyType, getPropertyTypes, getSituations, renderMarkdown } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { propertyTypeServiceSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
 import { DraftBanner } from "@/components/preview";
-import { FaqSection, FinalCta, FormHero, Section, SituationList } from "@/components/sections";
+import { FaqSection, FinalCta, FormHero, PostList, Section, SituationList } from "@/components/sections";
 import { SampleOffer } from "@/components/ui/SampleOffer";
 import { StraightAnswer } from "@/components/ui/StraightAnswer";
 
@@ -20,10 +20,10 @@ export async function generateMetadata(props: PageProps<"/what-we-buy/[type]">) 
   const t = getPropertyType(type);
   if (!t) return {};
   return pageMetadata({
+    ownImage: true,
     title: t.title,
     description: t.description,
     path: `/what-we-buy/${t.slug}`,
-    image: { path: `/what-we-buy/${t.slug}/opengraph-image`, alt: t.h1 },
     noindex: t.draft,
   });
 }
@@ -36,6 +36,11 @@ export default async function PropertyTypePage(props: PageProps<"/what-we-buy/[t
 
   const path = `/what-we-buy/${t.slug}`;
   const { html } = renderMarkdown(t.body);
+  // Related guides: drafts aren't loaded in production, so they drop out on their own; the page shows up to three.
+  const guides = t.guides
+    .map((slug) => getPosts().find((p) => p.slug === slug))
+    .filter((p) => p !== undefined)
+    .slice(0, 3);
   const related = t.related.map((slug) => getSituations().find((s) => s.slug === slug)).filter((s) => s !== undefined);
 
   return (
@@ -61,6 +66,16 @@ export default async function PropertyTypePage(props: PageProps<"/what-we-buy/[t
           <article className="mt-12">
             <Prose html={html} />
           </article>
+          {guides.length > 0 && (
+            <section aria-labelledby="guides-heading" className="measure mt-14 border-t border-mist pt-10">
+              <h2 id="guides-heading" className="type-h3">
+                Related guides
+              </h2>
+              <div className="mt-4">
+                <PostList posts={guides} />
+              </div>
+            </section>
+          )}
         </div>
       </div>
 

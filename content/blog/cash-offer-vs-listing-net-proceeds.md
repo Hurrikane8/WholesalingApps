@@ -101,4 +101,4 @@ A reputable buyer will answer every one of these clearly and in writing.
 
 If your home is in good shape and you have time, listing will often get you the most money, and I'll tell you so. If it needs work, time is short, or you value certainty, a cash sale trades some of the price for a firm number and a date you choose. The only way to know is to compare real numbers side by side.
 
-Want a real number to compare? [Ask me for an offer](/get-cash-offer), and I'll walk you through the math either way.
+If your home needs work, see [selling a house that needs repairs](/situations/sell-house-that-needs-repairs); if it's a condo townhouse, see [selling a condo townhouse](/what-we-buy/condo-townhouses). Want a real number to compare? [Ask me for an offer](/get-cash-offer), and I'll walk you through the math either way.

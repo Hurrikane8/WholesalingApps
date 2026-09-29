@@ -19,10 +19,13 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - name: Scan the build (banned phrases, example.com, unconfirmed claims)
+      - name: Scan the build (banned phrases, example.com, unconfirmed claims, the disclosure)
         run: npm run scan:build
-      - name: SEO audit
+      - name: Install Chromium for the accessibility check
+        run: npx playwright install --with-deps chromium
+      - name: SEO audit and accessibility check
         run: |
           npx next start -p 3000 &
           for i in $(seq 1 30); do curl -sf http://localhost:3000/ > /dev/null && break; sleep 1; done
           npm run seo:audit
+          npm run a11y

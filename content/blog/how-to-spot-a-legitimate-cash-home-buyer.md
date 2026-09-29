@@ -56,4 +56,4 @@ Look for a local phone number, real people with real names, a proper website, an
 6. Will you buy the home yourself, or might you assign the contract?
 7. Can I have my own lawyer review the contract before I sign?
 
-A legitimate buyer will answer all of these clearly. I'll answer every one of them, in writing. [Ask me for an offer](/get-cash-offer), or read [who I am and how I buy](/about#how-i-buy).
+A legitimate buyer will answer all of these clearly, and will show you how their offer compares with listing; the [cash vs. listing calculator](/cash-offer-vs-realtor#calculator) lets you check. If you're behind on payments, read [selling before foreclosure](/situations/sell-house-facing-foreclosure) first: that's where the worst schemes aim. I'll answer every one of these questions, in writing. [Ask me for an offer](/get-cash-offer), or read [who I am and how I buy](/about#how-i-buy).

@@ -1,5 +1,6 @@
 "use client";
 
+import { Turnstile } from "@/components/Turnstile";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { OPT_OUT_CHANNELS, normalizePhone } from "@/lib/lead-options";
 import { trackEvent } from "@/lib/analytics";
@@ -23,6 +24,7 @@ export function OptOutForm({ phone, phoneHref }: { phone: string; phoneHref: str
   const [formError, setFormError] = useState("");
   const [doneAddress, setDoneAddress] = useState("");
   const startedAt = useRef(0);
+  const turnstileToken = useRef("");
   const doneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export function OptOutForm({ phone, phoneHref }: { phone: string; phoneHref: str
       const res = await fetch("/api/opt-out", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, page: window.location.pathname, firstTouch, lastTouch, startedAt: startedAt.current }),
+        body: JSON.stringify({ ...values, page: window.location.pathname, firstTouch, lastTouch, startedAt: startedAt.current, turnstileToken: turnstileToken.current }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fieldErrors?: Record<string, string> };
       if (!res.ok || !data.ok) {
@@ -123,6 +125,7 @@ export function OptOutForm({ phone, phoneHref }: { phone: string; phoneHref: str
       <Button type="submit" variant="secondary" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending…" : "Take me off your list"}
       </Button>
+      <Turnstile onToken={(token) => (turnstileToken.current = token)} />
     </form>
   );
 }

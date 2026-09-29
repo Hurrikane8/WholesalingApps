@@ -1,5 +1,6 @@
 "use client";
 
+import { Turnstile } from "@/components/Turnstile";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { FINANCING, PROPERTY_TYPES, STRATEGIES, TARGET_AREAS, normalizePhone } from "@/lib/lead-options";
@@ -70,6 +71,7 @@ export function BuyerForm({ phone, phoneHref }: { phone: string; phoneHref: stri
   const [status, setStatus] = useState<"idle" | "submitting" | "error" | "done">("idle");
   const [formError, setFormError] = useState("");
   const startedAt = useRef(0);
+  const turnstileToken = useRef("");
   const doneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -117,6 +119,7 @@ export function BuyerForm({ phone, phoneHref }: { phone: string; phoneHref: stri
           referrer: document.referrer,
           utm: readAttribution(),
           startedAt: startedAt.current,
+          turnstileToken: turnstileToken.current,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fieldErrors?: Record<string, string> };
@@ -229,6 +232,7 @@ export function BuyerForm({ phone, phoneHref }: { phone: string; phoneHref: stri
       <Button type="submit" className="mt-6 w-full sm:w-auto" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending…" : "Join the buyers list"}
       </Button>
+      <Turnstile onToken={(token) => (turnstileToken.current = token)} />
     </form>
   );
 }

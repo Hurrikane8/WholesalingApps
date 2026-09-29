@@ -1,5 +1,5 @@
 ---
-title: Terms of Use
+title: Terms of use
 updated: 2026-09-26
 ---
 

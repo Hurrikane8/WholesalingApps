@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import { trackEvent } from "@/lib/analytics";
 import { buttonClass } from "@/components/ui/Button";
 
 /** What LeadFormClient saves in sessionStorage on success: a first name and a few choices, nothing else. */
@@ -69,10 +68,10 @@ export function HandyList() {
   );
 }
 
-/** "Book a call", tracked as booking_click. */
+/** "Book a call", tracked as booking_click by the ClickTracker. */
 export function BookingLink({ href }: { href: string }) {
   return (
-    <a href={href} className={buttonClass("secondary")} onClick={() => trackEvent("booking_click", { page_type: "thank_you" })}>
+    <a href={href} className={buttonClass("secondary")} data-track="booking_click" data-track-location="thank_you">
       Book a call
     </a>
   );

@@ -4,6 +4,7 @@
  * same durable-delivery rules as seller leads.
  */
 import { z } from "zod";
+import { passesTurnstile, turnstileFailedMessage } from "@/lib/turnstile";
 import { site } from "@/config/site";
 import { deployEnv, type DeployEnv } from "@/lib/env";
 import { clientIp, fieldErrors, isLikelySpam, json, rateLimit, readJson, type Env, type Fetch } from "@/lib/delivery";
@@ -71,6 +72,9 @@ export async function handleOptOutRequest(
     return json({ ok: false, error: "Please fix the fields marked below.", fieldErrors: fieldErrors(parsed.error.issues) }, 400);
   }
   if (isLikelySpam(parsed.data, now)) return json({ ok: true });
+  if (!(await passesTurnstile(read.body, request, env, deps.fetchImpl ?? fetch))) {
+    return json({ ok: false, error: turnstileFailedMessage(site.phone) }, 400);
+  }
 
   const optOut = toOptOut(parsed.data, new Date(now));
   const result = await deliver("opt_out", optOut, { env, fetchImpl: deps.fetchImpl ?? fetch });

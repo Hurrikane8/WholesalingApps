@@ -71,4 +71,4 @@ In Canada, when someone passes away they're generally treated as having sold the
 
 Selling an inherited house is a process, not a single decision. Protect the property, get the right authority in place, keep the family informed, and choose the selling method that fits the house and the people involved.
 
-If you'd like a written offer to compare with your other options, [ask me for one](/get-cash-offer) or call {{phone}}. I'll work alongside the estate's lawyer.
+To compare what the estate would net by listing with a direct sale, try the [cash vs. listing calculator](/cash-offer-vs-realtor#calculator). If you'd like a written offer to compare with your other options, [ask me for one](/get-cash-offer) or call {{phone}}. I'll work alongside the estate's lawyer.

@@ -151,7 +151,8 @@ async function main() {
     const res = await get(`${BASE_URL}${href}`);
     if (res.status >= 400) err(href, `internal link returns HTTP ${res.status}`);
     else if (res.status >= 300) warn(href, `internal link redirects to ${res.location}; link to the final URL instead`);
-    else if (!sitemapPaths.has(href) && !["/thank-you"].includes(href) && !href.startsWith("/api/")) {
+    // Noindex pages that are linked on purpose but kept out of the sitemap (spec 5.11, 5.13).
+    else if (!sitemapPaths.has(href) && !["/thank-you", "/hello"].includes(href) && !href.startsWith("/api/")) {
       warn(href, "linked page is not in the sitemap");
     }
   }

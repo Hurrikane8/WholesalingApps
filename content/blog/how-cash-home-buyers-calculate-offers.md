@@ -87,4 +87,4 @@ That can look low next to $425,000. But remember what the seller *doesn't* pay i
 3. **Get more than one opinion.** Compare offers, and compare them against a realtor's estimate of what you'd net by listing.
 4. **Ask each buyer to explain their numbers.** A buyer who won't show their math is a buyer to be careful with.
 
-My written offers lay out the after-repair value, the repair estimate and my costs, so you can check my work. See [how I calculate an offer](/how-it-works#how-i-calculate), or [ask me for one](/get-cash-offer). It's free, and there's no obligation.
+For a home that needs a lot of work, see [selling a house that needs repairs](/situations/sell-house-that-needs-repairs). My written offers lay out the after-repair value, the repair estimate and my costs, so you can check my work. See [how I calculate an offer](/how-it-works#how-i-calculate), or [ask me for one](/get-cash-offer). It's free, and there's no obligation.
