@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { site } from "@/config/site";
 import { homeFaqs } from "@/content/faqs";
-import { founderDisplayName, heroHeadline, isShown, isUnconfirmed, responseLine, siteDescription } from "@/lib/claims";
+import { founderDisplayName, heroHeadline, isShown, isUnconfirmed, isVerified, responseLine, siteDescription } from "@/lib/claims";
 import { getPosts, getSituations } from "@/lib/content";
 import { formatMoney, roundTo } from "@/lib/format";
 import { EXAMPLE, netSheet } from "@/lib/net-sheet";
@@ -56,14 +56,14 @@ function heroLead(): string {
 
 /** The night section's numbers, computed from the calculator's worked example, never typed in. */
 function listingExample() {
-  const legalCovered = isShown("coversLegalFees");
-  const sheet = netSheet(EXAMPLE, legalCovered);
+  // As in the calculator, legal fees leave the cash path only once Kane confirms he pays them.
+  const sheet = netSheet(EXAMPLE, isVerified("coversLegalFees"));
   const cash = sheet.cash!;
   return {
     sheet,
     cash,
     difference: roundTo(sheet.asIs.net - cash.net, 500),
-    unconfirmed: isUnconfirmed("coversLegalFees") || isUnconfirmed("tellsWhenListingWins"),
+    unconfirmed: isUnconfirmed("tellsWhenListingWins"),
   };
 }
 

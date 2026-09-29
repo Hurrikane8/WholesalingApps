@@ -1,27 +1,23 @@
 import { site } from "@/config/site";
 import { COMPARISON_PATHS, getComparisonRows } from "@/content/comparison";
 import type { Faq } from "@/content/faqs";
-import { isShown, isUnconfirmed } from "@/lib/claims";
+import { isShown, isUnconfirmed, isVerified } from "@/lib/claims";
 import { formatMoney } from "@/lib/format";
-import { EXAMPLE, netSheet, type Path } from "@/lib/net-sheet";
+import { EXAMPLE } from "@/lib/net-sheet";
 import { pageMetadata } from "@/lib/seo";
 import { Unconfirmed } from "@/components/preview";
 import { FaqSection, FinalCta, PageIntro, Section, SectionHeading } from "@/components/sections";
-import { Ledger } from "@/components/ui/Ledger";
-import { NetBars } from "@/components/ui/NetBars";
+import { NetProceedsCalculator } from "@/components/calculator/NetProceedsCalculator";
 import { TextLink } from "@/components/ui/TextLink";
 
 const { market } = site;
 
 export const metadata = pageMetadata({
-  title: "Cash offer vs. realtor in Alberta: which nets more?",
+  title: "Cash offer vs. realtor in Alberta: net proceeds calculator",
   description:
-    "Compare a cash sale with listing through an Alberta realtor: commission and GST, repairs, legal fees, carrying costs and time, with a worked example.",
+    "Compare a cash sale with listing through an Alberta realtor, with your own numbers: commission and GST, repairs, legal fees, carrying costs and time.",
   path: "/cash-offer-vs-realtor",
 });
-
-const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
-const months = (n: number) => (n < 1 ? "About two weeks" : `About ${WORDS[n] ?? n} months`);
 
 function comparisonFaqs(): Faq[] {
   return [
@@ -42,24 +38,8 @@ function comparisonFaqs(): Faq[] {
   ];
 }
 
-function PathLedger({ title, path }: { title: string; path: Path }) {
-  const [price, ...costs] = path.rows;
-  return (
-    <Ledger
-      title={title}
-      sample
-      headingLevel={4}
-      rows={[price, ...costs.filter((r) => r.amount !== 0)].map((r) => ({ label: r.label, amount: r.amount }))}
-      total={{ label: "Net", amount: path.net, note: `${months(path.months)}. Before your mortgage payout.` }}
-    />
-  );
-}
-
-/** Cash offer vs. listing (spec 5.8). The interactive calculator arrives in #calculator in Phase 5; until then, the worked example. */
+/** Cash offer vs. listing (spec 5.8): the calculator, a neutral cost table, and when each path usually wins. */
 export default function ComparePage() {
-  const legalCovered = isShown("coversLegalFees");
-  const sheet = netSheet(EXAMPLE, legalCovered);
-  const cash = sheet.cash!;
   const rows = getComparisonRows();
 
   return (
@@ -74,37 +54,16 @@ export default function ComparePage() {
         surface="frost"
       />
 
-      <Section id="calculator" labelledBy="example-heading">
+      <Section id="calculator" labelledBy="calculator-heading">
         <SectionHeading
-          id="example-heading"
-          title="A worked example"
-          intro={
-            <>
-              Take a {market.name} home that would sell for {formatMoney(EXAMPLE.arv)} once it&apos;s fixed up, but needs about {formatMoney(EXAMPLE.repairs)}{" "}
-              of work today. Here are three ways it could go.
-              <Unconfirmed show={isUnconfirmed("coversLegalFees")} />
-            </>
-          }
+          id="calculator-heading"
+          title="Run your own numbers"
+          intro={`The example is filled in: ${/^[aeiou]/i.test(market.name) ? "an" : "a"} ${market.name} home worth ${formatMoney(EXAMPLE.arv)} once it's fixed up, that needs about ${formatMoney(EXAMPLE.repairs)} of work today. Change any amount to match your place.`}
         />
-        <div className="mt-10 grid gap-6 lg:grid-cols-3 lg:items-start">
-          <PathLedger title="Repair, then list" path={sheet.repairList} />
-          <PathLedger title="List as-is" path={sheet.asIs} />
-          <PathLedger title={`Take a ${formatMoney(cash.rows[0].amount)} cash offer`} path={cash} />
+        <div className="mt-10">
+          {/* Legal fees leave the cash path only once Kane confirms he pays them (spec 5.8). */}
+          <NetProceedsCalculator legalCovered={isVerified("coversLegalFees")} />
         </div>
-        <NetBars
-          className="mt-10 max-w-2xl"
-          bars={[
-            { label: "Repair, then list", amount: sheet.repairList.net },
-            { label: "List as-is", amount: sheet.asIs.net },
-            { label: "Cash offer", amount: cash.net },
-          ]}
-        />
-        <p className="measure mt-8">
-          In this scenario, a cash offer above <span className="nums font-semibold">{formatMoney(sheet.breakEven)}</span> would beat listing as-is. Repairing
-          and listing nets the most on paper, but it needs {formatMoney(EXAMPLE.repairs)} of your own money up front, months of contractors and showings, and a
-          buyer whose financing and inspection conditions come through.
-        </p>
-        <p className="type-fine mt-4 text-ink-3">Illustrative numbers, not a real property. An estimate for comparing options, not financial or legal advice.</p>
       </Section>
 
       <Section surface="frost" labelledBy="costs-heading">
