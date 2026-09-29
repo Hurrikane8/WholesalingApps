@@ -5,7 +5,7 @@ import { phoneHref, shownPropertyTypes, site } from "@/config/site";
 import { OFFER_PATH } from "@/config/nav";
 import { locations } from "@/content/locations";
 import type { Faq as FaqItem } from "@/content/faqs";
-import type { Post, Situation } from "@/lib/content";
+import { propertyTypePage, type Post, type Situation } from "@/lib/content";
 import type { Reason } from "@/lib/lead-options";
 import { isUnconfirmed, offerMathClause, offerTimingPhrase } from "@/lib/claims";
 import type { Crumb } from "@/lib/schema";
@@ -401,9 +401,11 @@ export function PropertyTypeList({
   const Heading = `h${headingLevel}` as "h2" | "h3";
   if (compact) {
     return (
-      <ul className="grid list-disc gap-x-12 gap-y-2 pl-5 marker:text-line sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid list-disc gap-x-12 gap-y-1 pl-5 marker:text-line sm:grid-cols-2 lg:grid-cols-3">
         {shownPropertyTypes().map((t) => (
-          <li key={t.value}>{t.plural}</li>
+          <li key={t.value}>
+            <TypeName value={t.value} label={t.plural} className="inline-flex min-h-11 items-center" />
+          </li>
         ))}
       </ul>
     );
@@ -412,11 +414,25 @@ export function PropertyTypeList({
     <ul className={`grid sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-3 ${compactOnPhones ? "grid-cols-2 gap-x-6" : ""}`}>
       {shownPropertyTypes().map((t) => (
         <li key={t.value} className={`border-t border-mist ${compactOnPhones ? "py-2 sm:py-4" : "py-4"}`}>
-          <Heading className="font-display text-[1.1875rem] leading-snug font-bold">{t.plural}</Heading>
+          <Heading className="font-display text-[1.1875rem] leading-snug font-bold">
+            <TypeName value={t.value} label={t.plural} />
+          </Heading>
           <p className={`type-small mt-1 text-ink-2 ${compactOnPhones ? "max-sm:hidden" : ""}`}>{t.note}</p>
         </li>
       ))}
     </ul>
+  );
+}
+
+/** A property type's name, linked to its page when one is published. */
+function TypeName({ value, label, className }: { value: string; label: string; className?: string }) {
+  const page = propertyTypePage(value);
+  return page ? (
+    <TextLink href={`/what-we-buy/${page.slug}`} className={className}>
+      {label}
+    </TextLink>
+  ) : (
+    <>{label}</>
   );
 }
 

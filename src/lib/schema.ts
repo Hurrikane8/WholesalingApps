@@ -171,6 +171,23 @@ export function serviceSchema(opts: { name: string; description: string; path: s
   };
 }
 
+/**
+ * A property type page (spec 7.3): a direct home purchase, provided by the
+ * business, across the market. Nothing that implies a licence.
+ */
+export function propertyTypeServiceSchema(opts: { name: string; description: string; path: string }): Json {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: opts.name,
+    serviceType: "Direct home purchase",
+    description: opts.description,
+    url: absoluteUrl(opts.path),
+    provider: { "@id": ORG_ID },
+    areaServed: { "@type": "AdministrativeArea", name: site.market.region },
+  };
+}
+
 export function articleSchema(opts: {
   title: string;
   description: string;

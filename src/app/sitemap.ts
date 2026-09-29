@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locations } from "@/content/locations";
-import { getPosts, getSituations } from "@/lib/content";
+import { getPosts, getPropertyTypes, getSituations } from "@/lib/content";
 import { absoluteUrl } from "@/lib/seo";
 
 /** Every indexable page. New pages must be added here (the SEO audit checks this). Drafts never go in. */
@@ -16,6 +16,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/get-cash-offer", 0.9),
     page("/how-it-works", 0.8),
     page("/what-we-buy", 0.8),
+    ...getPropertyTypes()
+      .filter((t) => !t.draft)
+      .map((t) => page(`/what-we-buy/${t.slug}`, t.featured ? 0.9 : 0.8)),
     page("/we-buy-houses", 0.9, "weekly"),
     ...locations.map((l) => page(`/we-buy-houses/${l.slug}`, 0.9)),
     page("/situations", 0.8),

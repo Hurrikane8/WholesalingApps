@@ -1,10 +1,12 @@
 import { OFFER_PATH } from "@/config/nav";
 import { shownPropertyTypes, site } from "@/config/site";
 import { isShown, isUnconfirmed } from "@/lib/claims";
+import { propertyTypePage } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { Unconfirmed } from "@/components/preview";
 import { FinalCta, PageIntro, Section } from "@/components/sections";
 import { ButtonLink } from "@/components/ui/Button";
+import { TextLink } from "@/components/ui/TextLink";
 
 const { market } = site;
 
@@ -35,17 +37,32 @@ export default function WhatWeBuyPage() {
 
       <div className="bg-snow pb-16 lg:pb-24">
         <ul className="page-wrap">
-          {types.map((t) => (
-            <li key={t.value} className="grid gap-4 border-t border-mist py-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-12">
-              <div>
-                <h2 className="type-h3">{t.plural}</h2>
-                <p className="measure mt-2 text-ink-2">{t.note}</p>
-              </div>
-              <ButtonLink href={`${OFFER_PATH}?type=${encodeURIComponent(t.value)}`} variant="secondary" className="justify-self-start">
-                Get an offer on {withArticle(t.singular)}
-              </ButtonLink>
-            </li>
-          ))}
+          {types.map((t) => {
+            const page = propertyTypePage(t.value);
+            return (
+              <li key={t.value} className="grid gap-4 border-t border-mist py-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-12">
+                <div>
+                  <h2 className="type-h3">{t.plural}</h2>
+                  <p className="measure mt-2 text-ink-2">{t.note}</p>
+                  {page && (
+                    <p className="mt-1">
+                      <TextLink href={`/what-we-buy/${page.slug}`} className="inline-flex min-h-11 items-center font-semibold">
+                        Selling {withArticle(t.singular)}
+                      </TextLink>
+                      {page.draft && (
+                        <span className="tag-unconfirmed" data-draft="">
+                          Draft
+                        </span>
+                      )}
+                    </p>
+                  )}
+                </div>
+                <ButtonLink href={`${OFFER_PATH}?type=${encodeURIComponent(t.value)}`} variant="secondary" className="justify-self-start">
+                  Get an offer on {withArticle(t.singular)}
+                </ButtonLink>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -56,8 +73,8 @@ export default function WhatWeBuyPage() {
             <Unconfirmed show={isUnconfirmed("tellsWhenListingWins")} />
           </h2>
           <p className="measure mt-5">
-            If your home is move-in ready and you have time to sell, listing will probably net you more, and I&apos;ll say so. If it&apos;s outside the areas
-            I buy in, I&apos;ll tell you that too.
+            If your home is move-in ready and you have time to sell, listing will probably net you more, and I&apos;ll say so. If it&apos;s outside the areas I
+            buy in, I&apos;ll tell you that too.
           </p>
         </Section>
       )}

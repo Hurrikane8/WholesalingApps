@@ -46,6 +46,8 @@ const nextConfig: NextConfig = {
       { source: "/cash-offer", destination: "/get-cash-offer", permanent: true },
       { source: "/areas", destination: "/we-buy-houses", permanent: true },
       { source: "/locations", destination: "/we-buy-houses", permanent: true },
+      // The condo townhouse page moved from the situations to the property types (spec 5.1).
+      { source: "/situations/sell-condo-townhouse", destination: "/what-we-buy/condo-townhouses", permanent: true },
       // Letter and door-hanger short links (src/config/campaigns.ts).
       ...campaignRedirects(),
     ];

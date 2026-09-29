@@ -1,5 +1,5 @@
 /**
- * Loads Markdown content from /content (blog posts and seller-situation pages).
+ * Loads Markdown content from /content (property types, seller situations, guides and legal pages).
  *
  * Markdown may use these placeholders, filled in from src/config/site.ts so
  * copy never drifts from the real business details:
@@ -24,7 +24,7 @@ import { Marked } from "marked";
 import { site } from "@/config/site";
 import { closingPhrase, isUnconfirmed, legalFeesSentence, offerTimingPhrase, type VerifiedFlag } from "@/lib/claims";
 import { showDrafts } from "@/lib/env";
-import { REASONS, type Reason } from "@/lib/lead-options";
+import { PROPERTY_TYPES, REASONS, type PropertyTypeValue, type Reason } from "@/lib/lead-options";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -155,6 +155,81 @@ export function getMarkdownPage(name: string): { data: Record<string, unknown>; 
   const raw = fs.readFileSync(path.join(CONTENT_DIR, `${name}.md`), "utf8");
   const { data, content } = matter(raw);
   return { data, html: renderMarkdown(content).html };
+}
+
+/* ─── Property types (spec 5.7) ─────────────────────────────────────────── */
+
+export type PropertyType = {
+  slug: string;
+  /** SEO title, 65 characters or fewer. */
+  title: string;
+  description: string;
+  h1: string;
+  /** "Condo townhouses" */
+  label: string;
+  /** A PROPERTY_TYPES value (an Airtable choice); preselects the form. */
+  leadValue: PropertyTypeValue;
+  /** One or two sentences, used in lists. */
+  summary: string;
+  order: number;
+  featured: boolean;
+  /** The StraightAnswer callout: the question, and a 40–60 word answer. */
+  question: string;
+  answer: string;
+  /** Which sample ledger to show. */
+  sample: "house" | "condo";
+  /** Situation slugs to link to. */
+  related: string[];
+  faqs: { question: string; answer: string }[];
+  body: string;
+  /** Rendered only outside production, with a Draft banner; never in the sitemap. */
+  draft: boolean;
+};
+
+let propertyTypesCache: PropertyType[] | undefined;
+
+/** content/property-types/*.md, in display order. Drafts only when showDrafts(). */
+export function getPropertyTypes(): PropertyType[] {
+  if (propertyTypesCache) return propertyTypesCache;
+  propertyTypesCache = readCollection("property-types")
+    .map(({ slug, data, body, draft }) => {
+      const file = `property-types/${slug}.md`;
+      const leadValue = PROPERTY_TYPES.find((t) => t.value === data.leadValue)?.value;
+      if (!leadValue) throw new Error(`content/${file}: "leadValue" must be one of ${PROPERTY_TYPES.map((t) => t.value).join(", ")}`);
+      const faqs = Array.isArray(data.faqs) ? data.faqs : [];
+      return {
+        slug,
+        title: str(data.title, "title", file),
+        description: str(data.description, "description", file),
+        h1: str(data.h1, "h1", file),
+        label: str(data.label, "label", file),
+        leadValue,
+        summary: str(data.summary, "summary", file),
+        order: typeof data.order === "number" ? data.order : 99,
+        featured: data.featured === true,
+        question: str(data.question, "question", file),
+        answer: str(data.answer, "answer", file),
+        sample: data.sample === "condo" ? ("condo" as const) : ("house" as const),
+        related: Array.isArray(data.related) ? data.related.filter((r): r is string => typeof r === "string") : [],
+        faqs: faqs.map((f: { q?: unknown; a?: unknown }, i: number) => ({
+          question: str(f.q, `faqs[${i}].q`, file),
+          answer: str(f.a, `faqs[${i}].a`, file),
+        })),
+        body,
+        draft,
+      };
+    })
+    .sort((a, b) => a.order - b.order || a.label.localeCompare(b.label));
+  return propertyTypesCache;
+}
+
+export function getPropertyType(slug: string): PropertyType | undefined {
+  return getPropertyTypes().find((t) => t.slug === slug);
+}
+
+/** The page for a property type value (e.g. "Condo townhouse"), if one is published. */
+export function propertyTypePage(value: string): PropertyType | undefined {
+  return getPropertyTypes().find((t) => t.leadValue === value);
 }
 
 /* ─── Seller situations ─────────────────────────────────────────────────── */

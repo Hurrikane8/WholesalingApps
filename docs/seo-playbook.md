@@ -49,7 +49,10 @@ Each page has one job. Don't create a second page targeting the same primary key
 | `/we-buy-houses/edmonton-ab` | we buy houses Edmonton | cash for houses Edmonton |
 | `/we-buy-houses/{area}` | we buy houses {area} | sell my house fast {area}, cash home buyers {area} |
 | `/get-cash-offer` | cash offer for my house Edmonton | get a cash offer on my home |
-| `/situations/sell-condo-townhouse` | sell condo townhouse Edmonton | sell condo with special assessment, high condo fees |
+| `/how-it-works` | how selling a house for cash works | how cash offers are calculated |
+| `/what-we-buy` | homes I buy in Edmonton | types of homes cash buyers buy |
+| `/what-we-buy/condo-townhouses` | sell condo townhouse Edmonton | sell condo with special assessment, high condo fees, condo fee arrears |
+| `/what-we-buy/half-duplexes` (draft) | sell half duplex Edmonton | sell one side of a duplex, basement suite |
 | `/situations/sell-house-facing-foreclosure` | avoid foreclosure Alberta | behind on mortgage payments Edmonton |
 | `/situations/sell-inherited-house` | sell inherited house Edmonton | sell estate property, probate house sale Alberta |
 | `/situations/sell-house-during-divorce` | sell house during divorce Alberta | separation house sale |
