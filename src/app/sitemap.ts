@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/", 1, "weekly"),
     page("/get-cash-offer", 0.9),
     page("/how-it-works", 0.8),
+    page("/what-we-buy", 0.8),
     page("/we-buy-houses", 0.9, "weekly"),
     ...locations.map((l) => page(`/we-buy-houses/${l.slug}`, 0.9)),
     page("/situations", 0.8),

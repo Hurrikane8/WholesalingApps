@@ -8,9 +8,6 @@ import { localBusinessSchema, websiteSchema } from "@/lib/schema";
 import { Analytics } from "@/components/Analytics";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { JsonLd } from "@/components/JsonLd";
-import { MobileCtaBar } from "@/components/MobileCtaBar";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 
 const defaultTitle = `Sell your ${site.market.name} home as-is for cash`;
 const defaultDescription = siteDescription();
@@ -57,14 +54,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${overpass.variable} ${atkinson.variable}`}
       data-preview={showUnconfirmed() || showDrafts() ? "" : undefined}
     >
-      <body className="flex min-h-screen flex-col">
+      <body>
         <JsonLd data={[localBusinessSchema(), websiteSchema()]} />
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        <MobileCtaBar />
+        {/* The header, footer and sticky actions come from the (site) and (focus) layouts. */}
+        {children}
         <AttributionCapture />
         <Analytics />
       </body>

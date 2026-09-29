@@ -25,7 +25,7 @@ export function FounderNote({
   const { founder } = site;
   const Heading = `h${headingLevel}` as "h2" | "h3";
   return (
-    <div className={`grid gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-8 ${className}`}>
+    <div className={`grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-8 ${className}`}>
       {founder.photo ? (
         <Image
           src={founder.photo}
@@ -36,7 +36,7 @@ export function FounderNote({
           className={`rounded-photo object-cover ${compact ? "w-[120px]" : "w-full max-w-[240px]"}`}
         />
       ) : (
-        <Mark className={compact ? "size-14" : "size-20"} />
+        <Mark className={compact ? "size-12 sm:size-14" : "size-12 sm:size-20"} />
       )}
       <div className="min-w-0">
         <Heading className={compact ? "type-h3 text-ink" : "type-h2 text-ink"}>Hi, I&apos;m {founder.firstName}.</Heading>

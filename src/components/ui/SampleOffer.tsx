@@ -8,7 +8,18 @@ import { Unconfirmed } from "@/components/preview";
  * The profit line is itemized only once written offers itemize it
  * (showsMarginInWriting); otherwise costs and profit share one line.
  */
-export function SampleOffer({ id = "house", headingLevel = 3, className = "" }: { id?: Sample["id"]; headingLevel?: 2 | 3 | 4; className?: string }) {
+export function SampleOffer({
+  id = "house",
+  headingLevel = 3,
+  notesFromSm = false,
+  className = "",
+}: {
+  id?: Sample["id"];
+  headingLevel?: 2 | 3 | 4;
+  /** Hide the row notes on phones (the home page, for its length budget). */
+  notesFromSm?: boolean;
+  className?: string;
+}) {
   const sample = samples[id];
   const profitTag = isUnconfirmed("showsMarginInWriting");
   const rows = sampleOfferRows(sample).map((row) => ({
@@ -32,6 +43,7 @@ export function SampleOffer({ id = "house", headingLevel = 3, className = "" }: 
       sample
       caption={SAMPLE_CAPTION}
       headingLevel={headingLevel}
+      notesFromSm={notesFromSm}
       className={className}
     />
   );

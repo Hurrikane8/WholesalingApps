@@ -105,3 +105,38 @@ export function getFaqs(): Faq[] {
     },
   ];
 }
+
+/**
+ * The home page's five questions (spec 5.3 §8), answers built from claims.
+ * The offer page shows the first four.
+ */
+export function homeFaqs(): Faq[] {
+  const legalFees = legalFeesSentence();
+  return [
+    {
+      question: "How do you work out your offer?",
+      answer: `I start with what the home would likely sell for once it's fixed up, based on recent sales nearby. Then I subtract the repairs, the costs of buying, holding and reselling, and a profit.${isShown("explainsOfferMath") ? " I walk you through each number." : ""}`,
+      unconfirmed: isUnconfirmed("explainsOfferMath"),
+    },
+    {
+      question: "Will your offer be lower than listing?",
+      answer: `Usually, yes. A cash buyer takes on the repairs, the carrying costs and the risk. What matters is what you walk away with, and how soon.${isShown("tellsWhenListingWins") ? " If listing would likely net you more, I'll tell you." : ""}`,
+      unconfirmed: isUnconfirmed("tellsWhenListingWins"),
+    },
+    {
+      question: "Does it cost anything to get an offer?",
+      answer: `No. There's no fee to talk, no fee for an offer, no commission and no obligation to accept.${legalFees ? ` ${legalFees}` : ""}`,
+      unconfirmed: isUnconfirmed("coversLegalFees"),
+    },
+    {
+      question: "Do you buy the home yourself, or assign the contract?",
+      answer: "Either. Sometimes I buy it myself; sometimes I assign my contract to another investor who buys it. You'll know which, in writing, before you sign.",
+      unconfirmed: isUnconfirmed("assignmentDisclosedBeforeSigning"),
+    },
+    {
+      question: "How fast can you close?",
+      answer: `We close ${closingPhrase()}. Your lawyer handles the paperwork and the money.`,
+      unconfirmed: isUnconfirmed("closeInDays"),
+    },
+  ];
+}

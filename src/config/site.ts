@@ -211,6 +211,13 @@ export const site = {
   /** Optional free Cal.com (or similar) link for booking the first call. */
   bookingUrl: "",
 
+  /**
+   * TO CONFIRM (optional): one sentence for /hello on where letter and door
+   * hanger addresses come from, e.g. "I pick streets where I buy homes and
+   * write to every address on them." Empty leaves the sentence out.
+   */
+  letterSource: "",
+
   propertyTypes,
 
   /** Year the business started. Leave undefined to hide "since …" copy. */

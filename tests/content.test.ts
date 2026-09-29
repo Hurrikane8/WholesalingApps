@@ -19,6 +19,7 @@ const staticRoutes = [
   "/",
   "/get-cash-offer",
   "/how-it-works",
+  "/what-we-buy",
   "/we-buy-houses",
   "/situations",
   "/cash-offer-vs-realtor",

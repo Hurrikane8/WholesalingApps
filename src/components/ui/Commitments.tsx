@@ -25,19 +25,22 @@ export function Commitments({
       {items.map((item) => {
         const link = links[item.flag];
         return (
-          <li key={item.flag} className="py-5">
+          <li key={item.flag} className="py-4 sm:py-5">
             <Heading className="type-h3 text-ink">
               {item.title}
               <Unconfirmed show={item.unconfirmed} />
             </Heading>
-            <p className="measure mt-2 text-ink-2">{item.sentence}</p>
-            {link && (
-              <p className="type-small mt-1">
-                <TextLink href={link.href} className="inline-flex min-h-11 items-center">
-                  {link.label}
-                </TextLink>
-              </p>
-            )}
+            <p className="measure mt-2 text-ink-2">
+              {item.sentence}
+              {link && (
+                <>
+                  {" "}
+                  <TextLink href={link.href} className="font-semibold">
+                    {link.label}
+                  </TextLink>
+                </>
+              )}
+            </p>
           </li>
         );
       })}

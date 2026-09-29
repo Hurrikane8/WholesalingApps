@@ -54,7 +54,7 @@ function allClaimsText(): string {
     ...promiseItems().flatMap((p) => [p.title, p.sentence]),
     ...sampleOfferRows(samples.house).map((r) => `${r.label} ${r.note ?? ""}`),
     ...getFaqs().flatMap((f) => [f.question, f.answer]),
-    ...getComparisonRows().flatMap((r) => [r.label, r.us, r.listing]),
+    ...getComparisonRows().flatMap((r) => [r.label, r.repairList, r.asIs, r.cash]),
   ];
   // "¦" marks a boundary, as scan-build does between HTML blocks.
   return parts.join(" ¦ ");

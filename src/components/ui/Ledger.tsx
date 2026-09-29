@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { formatMoney } from "@/lib/format";
 
-export type LedgerRow = { label: ReactNode; amount: number; note?: ReactNode };
+/** A money amount, or a symbol ("−", "=") when the ledger shows a formula rather than figures. */
+export type LedgerRow = { label: ReactNode; amount: number | string; note?: ReactNode };
 
 /**
  * A written offer or net sheet, set as a document (spec 3.7): white, 6px
@@ -16,6 +17,7 @@ export function Ledger({
   sample = false,
   caption,
   headingLevel = 3,
+  notesFromSm = false,
   className = "",
 }: {
   title: ReactNode;
@@ -25,6 +27,8 @@ export function Ledger({
   sample?: boolean;
   caption?: ReactNode;
   headingLevel?: 2 | 3 | 4;
+  /** Hide the row notes below 640px (the total's note stays). */
+  notesFromSm?: boolean;
   className?: string;
 }) {
   const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
@@ -38,7 +42,7 @@ export function Ledger({
       </div>
       <dl className="px-5 pb-5 sm:px-6">
         {rows.map((row, i) => (
-          <LedgerLine key={i} row={row} />
+          <LedgerLine key={i} row={row} hideNoteOnPhones={notesFromSm} />
         ))}
         <LedgerLine row={total} total />
       </dl>
@@ -48,7 +52,7 @@ export function Ledger({
 }
 
 /** One dt/dd group, laid out as a grid so the dl stays valid: label and leader, amount, then an optional note. */
-function LedgerLine({ row, total = false }: { row: LedgerRow; total?: boolean }) {
+function LedgerLine({ row, total = false, hideNoteOnPhones = false }: { row: LedgerRow; total?: boolean; hideNoteOnPhones?: boolean }) {
   return (
     <div className={`grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-2 ${total ? "mt-3 border-t-2 border-ink pt-3" : "py-1.5"}`}>
       <dt className={`flex min-w-0 items-baseline gap-2 ${total ? "font-display text-[1.375rem] font-extrabold" : ""} text-ink`}>
@@ -56,9 +60,9 @@ function LedgerLine({ row, total = false }: { row: LedgerRow; total?: boolean })
         <span aria-hidden="true" className="min-w-6 flex-1 -translate-y-[0.3em] border-b-2 border-dotted border-mist" />
       </dt>
       <dd className={`nums text-right font-display ${total ? "text-[1.375rem] font-extrabold" : "text-[1.125rem] font-semibold"} text-ink`}>
-        {formatMoney(row.amount)}
+        {typeof row.amount === "number" ? formatMoney(row.amount) : row.amount}
       </dd>
-      {row.note && <dd className="type-fine col-span-2 mt-0.5 max-w-[34rem] text-ink-2">{row.note}</dd>}
+      {row.note && <dd className={`type-fine col-span-2 mt-0.5 max-w-[34rem] text-ink-2 ${hideNoteOnPhones ? "max-sm:hidden" : ""}`}>{row.note}</dd>}
     </div>
   );
 }

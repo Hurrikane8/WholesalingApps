@@ -4,6 +4,7 @@ import { phoneHref, site } from "@/config/site";
 import { Logo } from "@/components/brand/Logo";
 import { RooflineCrop } from "@/components/brand/AuroraRoofline";
 import { TextLink } from "@/components/ui/TextLink";
+import { SkipLink } from "@/components/chrome/SiteHeader";
 
 function FinePrint() {
   const year = new Date().getFullYear();
@@ -28,42 +29,40 @@ export function SiteFooter() {
   return (
     <footer className="bg-frost">
       <RooflineCrop className="text-ink" />
-      <div className="page-wrap grid gap-10 pt-10 pb-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <div>
+      <div className="page-wrap grid gap-y-8 pt-6 pb-10 lg:grid-cols-12 lg:gap-x-12 lg:pt-10">
+        <div className="lg:col-span-5 lg:row-start-1">
           <Logo />
           <p className="measure mt-4 text-ink-2">I buy houses, townhouses, duplexes and condos directly from owners across {site.market.region}.</p>
-          <ul className="type-small mt-4 text-ink">
-            <li>
-              Call{" "}
-              <TextLink href={`tel:${phoneHref}`} className="nums inline-flex min-h-11 items-center font-semibold">
-                {site.phone}
+          <p className="type-small mt-3 text-ink">
+            Call{" "}
+            <TextLink href={`tel:${phoneHref}`} className="nums inline-flex min-h-11 items-center font-semibold">
+              {site.phone}
+            </TextLink>{" "}
+            or{" "}
+            <TextLink href={`sms:${phoneHref}`} className="inline-flex min-h-11 items-center">
+              send a text
+            </TextLink>
+            .
+          </p>
+          {site.email && (
+            <p className="type-small text-ink">
+              Email{" "}
+              <TextLink href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center">
+                {site.email}
               </TextLink>
-            </li>
-            <li>
-              Text{" "}
-              <TextLink href={`sms:${phoneHref}`} className="nums inline-flex min-h-11 items-center font-semibold">
-                {site.phone}
-              </TextLink>
-            </li>
-            {site.email && (
-              <li>
-                Email{" "}
-                <TextLink href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center">
-                  {site.email}
-                </TextLink>
-              </li>
-            )}
-            <li className="mt-1 text-ink-2">{site.hours.label}</li>
-          </ul>
+            </p>
+          )}
+          <p className="type-small text-ink-2">{site.hours.label}</p>
         </div>
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+        {/* Phones: each group wraps onto a line or two, every link still a 44px target. Desktop: columns. */}
+        <nav aria-label="Footer" className="grid gap-y-3 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:grid-cols-3 lg:gap-x-8">
           {footerNav.map((group) => (
             <div key={group.title}>
               <h2 className="type-small font-bold text-ink">{group.title}</h2>
-              <ul className="mt-2">
+              <ul className="flex flex-wrap gap-x-5 lg:mt-2 lg:block">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="type-small inline-flex min-h-11 min-w-11 items-center text-ink-2 hover:text-pine hover:underline">
+                    <Link href={link.href} className="type-small inline-flex min-h-11 min-w-11 items-center text-ink-2 hover:text-pine hover:underline lg:min-h-9">
                       {link.label}
                     </Link>
                   </li>
@@ -72,9 +71,7 @@ export function SiteFooter() {
             </div>
           ))}
         </nav>
-      </div>
-      <div className="page-wrap pb-10">
-        <div className="border-t border-mist pt-6">
+        <div className="border-t border-mist pt-6 lg:col-span-5 lg:row-start-2">
           <FinePrint />
         </div>
       </div>
@@ -86,6 +83,7 @@ export function SiteFooter() {
 export function FocusHeader() {
   return (
     <header className="h-16 border-b border-mist bg-snow">
+      <SkipLink />
       <div className="page-wrap flex h-full items-center justify-between gap-4">
         <Link href="/" className="inline-flex min-h-11 shrink-0 items-center">
           <Logo />

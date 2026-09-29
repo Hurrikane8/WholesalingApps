@@ -54,26 +54,6 @@
   --shadow-float: 0 24px 48px -24px rgb(24 58 49 / 0.35);
 
   --ease-draw: cubic-bezier(0.2, 0.7, 0.2, 1);
-
-  /*
-   * Legacy v1 palette, still used by pages that haven't been rebuilt yet.
-   * Remove with the legacy classes at the bottom of this file once nothing uses them.
-   */
-  --color-brand-50: #eef5fb;
-  --color-brand-100: #d6e6f4;
-  --color-brand-200: #aecde9;
-  --color-brand-300: #7eaed9;
-  --color-brand-400: #4f8cc4;
-  --color-brand-500: #2f6ea8;
-  --color-brand-600: #20568a;
-  --color-brand-700: #1a4570;
-  --color-brand-800: #15365a;
-  --color-brand-900: #0f2842;
-  --color-brand-950: #0a1b2e;
-  --color-accent-300: #fcd34d;
-  --color-accent-400: #fbbf24;
-  --color-accent-500: #f59e0b;
-  --color-accent-600: #d97706;
 }
 
 @layer base {
@@ -141,6 +121,13 @@
   padding-block: 4rem;
   @media (width >= 64rem) {
     padding-block: 6rem;
+  }
+}
+/* The home page runs nine sections inside its length budget (spec 5.20): 48px on phones, 64px on desktop. */
+@utility band-tight {
+  padding-block: 3rem;
+  @media (width >= 64rem) {
+    padding-block: 4rem;
   }
 }
 
@@ -392,71 +379,17 @@
 .prose :where(a):not(:where(.not-prose, .not-prose *)):hover {
   color: var(--color-pine);
 }
+/* Markdown tables sit in a focusable scroll region (src/lib/content.ts) in case one is wider than a phone. */
+.prose .table-scroll {
+  overflow-x: auto;
+  margin-block: 2em;
+}
+.prose .table-scroll table {
+  margin-block: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
 /* Blockquotes in articles are used for callouts, not quotations: no auto quote marks. */
 .prose :where(blockquote p:first-of-type)::before,
 .prose :where(blockquote p:last-of-type)::after {
   content: none;
-}
-
-/* ─── Legacy v1 classes ──────────────────────────────────────────────────────
- * Used by pages that haven't moved to the v2 components yet. Delete each one
- * once nothing references it.
- */
-
-@utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-base font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
-}
-
-@layer components {
-  .container-page {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
-  }
-  .btn-primary {
-    @apply btn bg-accent-400 text-slate-900 shadow-sm hover:bg-accent-300;
-  }
-  .btn-secondary {
-    @apply btn border border-brand-200 bg-white text-brand-800 hover:bg-brand-50;
-  }
-  .btn-ghost-light {
-    @apply btn border border-white/30 text-white hover:bg-white/10;
-  }
-  .eyebrow {
-    @apply text-sm font-semibold uppercase tracking-wider text-brand-600;
-  }
-  .section {
-    @apply py-16 sm:py-20;
-  }
-  .section-title {
-    @apply text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl;
-  }
-  .section-lead {
-    @apply mt-4 max-w-2xl text-lg text-slate-600;
-  }
-  .card {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm;
-  }
-  .field-label {
-    @apply mb-1 block text-sm font-medium text-slate-700;
-  }
-  .field-input {
-    @apply block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
-  }
-  .field-input[aria-invalid="true"] {
-    @apply border-red-500 focus:border-red-500 focus:ring-red-500/30;
-  }
-  .table-scroll {
-    @apply -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0;
-  }
-}
-
-/* The styleguide shows the v2 chrome in place of the v1 header, footer and bar. */
-body:has([data-styleguide]) [data-legacy-chrome] {
-  display: none;
-}
-
-.hero-bg {
-  background-color: var(--color-brand-900);
-  background-image:
-    radial-gradient(circle at 15% 20%, rgb(47 110 168 / 0.45), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgb(251 191 36 / 0.12), transparent 40%);
 }

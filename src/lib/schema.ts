@@ -6,12 +6,14 @@
 import { phoneHref, site } from "@/config/site";
 import type { Faq } from "@/content/faqs";
 import type { Location } from "@/content/locations";
-import { siteDescription } from "@/lib/claims";
+import { founderDisplayName, siteDescription } from "@/lib/claims";
 import { absoluteUrl } from "@/lib/seo";
 
 type Json = Record<string, unknown>;
 
 export const ORG_ID = `${site.url}/#organization`;
+/** Kane: output in full on /about, referenced by @id everywhere else (spec 7.3). */
+export const PERSON_ID = `${site.url}/#kane`;
 const WEBSITE_ID = `${site.url}/#website`;
 
 function sameAs(): string[] {
@@ -83,6 +85,22 @@ export function localBusinessSchema(): Json {
       areaServed: "CA",
       availableLanguage: "English",
     },
+  };
+}
+
+/** The founder as a Person. Only facts from site.founder; nothing that implies a licence. */
+export function personSchema(): Json {
+  const { founder } = site;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: founderDisplayName(),
+    jobTitle: founder.role,
+    worksFor: { "@id": ORG_ID },
+    url: absoluteUrl("/about"),
+    ...(founder.photo ? { image: absoluteUrl(founder.photo) } : {}),
+    ...(founder.linkedin ? { sameAs: [founder.linkedin] } : {}),
   };
 }
 

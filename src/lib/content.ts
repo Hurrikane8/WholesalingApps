@@ -103,12 +103,13 @@ export function renderMarkdown(markdown: string): { html: string; headings: Head
         return `<h${depth} id="${id}">${text}</h${depth}>\n`;
       },
       table(token) {
-        // Wrap tables so they scroll horizontally on phones instead of breaking the layout.
         const header = token.header.map((cell) => `<th>${this.parser.parseInline(cell.tokens)}</th>`).join("");
         const rows = token.rows
           .map((row) => `<tr>${row.map((cell) => `<td>${this.parser.parseInline(cell.tokens)}</td>`).join("")}</tr>`)
           .join("");
-        return `<div class="table-scroll"><table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table></div>\n`;
+        // Focusable and labelled, so keyboard users can scroll it if it's ever wider than the screen.
+        const label = plainText(token.header.map((cell) => this.parser.parseInline(cell.tokens)).join(", "));
+        return `<div class="table-scroll" tabindex="0" role="region" aria-label="Table: ${label.replace(/"/g, "&quot;")}"><table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table></div>\n`;
       },
     },
   });
