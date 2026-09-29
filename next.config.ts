@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { campaignRedirects } from "./src/config/campaigns";
 import { deployEnv, isIndexable } from "./src/lib/env";
 import { launchFindings, placeholderWarnings } from "./src/lib/launch";
 
@@ -45,6 +46,8 @@ const nextConfig: NextConfig = {
       { source: "/cash-offer", destination: "/get-cash-offer", permanent: true },
       { source: "/areas", destination: "/we-buy-houses", permanent: true },
       { source: "/locations", destination: "/we-buy-houses", permanent: true },
+      // Letter and door-hanger short links (src/config/campaigns.ts).
+      ...campaignRedirects(),
     ];
   },
 };

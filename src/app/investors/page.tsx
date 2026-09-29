@@ -1,5 +1,5 @@
 import { BadgeDollarSign, Building2, CircleCheck, ClipboardCheck, FileText, Handshake, House, KeyRound, Mail, Timer, Users } from "lucide-react";
-import { site } from "@/config/site";
+import { phoneHref, site } from "@/config/site";
 import { pageMetadata } from "@/lib/seo";
 import { BuyerForm } from "@/components/BuyerForm";
 import { FaqSection, PageHeader } from "@/components/sections";
@@ -151,7 +151,7 @@ export default function InvestorsPage() {
               agreement, and you&apos;re responsible for your own due diligence and independent advice.
             </p>
           </div>
-          <BuyerForm />
+          <BuyerForm phone={site.phone} phoneHref={phoneHref} />
         </div>
       </section>
 

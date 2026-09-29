@@ -13,6 +13,8 @@ import { MobileMenuLinks } from "@/components/chrome/MobileMenu";
 import { SiteHeader } from "@/components/chrome/SiteHeader";
 import { StickyActions } from "@/components/chrome/StickyActions";
 import { DraftBanner, Unconfirmed } from "@/components/preview";
+import { LeadForm } from "@/components/LeadForm";
+import { OptOutForm } from "@/components/OptOutForm";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Commitments } from "@/components/ui/Commitments";
 import { Faq } from "@/components/ui/Faq";
@@ -241,6 +243,21 @@ export default function StyleguidePage() {
               </Notice>
             </div>
           </FormCard>
+        </div>
+      </Section>
+
+      <Section title="Forms">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div>
+            <Label>Seller form (step 1; step 2 appears after Next)</Label>
+            <LeadForm id="offer" />
+          </div>
+          <div>
+            <Label>Opt-out form (/hello)</Label>
+            <div className="rounded-card border border-mist bg-white p-6 sm:p-8">
+              <OptOutForm phone={site.phone} phoneHref={phoneHref} />
+            </div>
+          </div>
         </div>
       </Section>
 

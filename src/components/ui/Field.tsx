@@ -188,14 +188,64 @@ export function ChipGroup({
   );
 }
 
-/** A checkbox with its label; the label makes the whole row the touch target. */
+/**
+ * Multi-select chips: checkboxes inside a fieldset, the same look as ChipGroup.
+ * Controlled: `values` + `onToggle`.
+ */
+export function CheckChipGroup({
+  id,
+  legend,
+  options,
+  values: selected,
+  onToggle,
+  hint,
+  className = "",
+}: {
+  id: string;
+  legend: ReactNode;
+  options: readonly ChipOption[];
+  values: string[];
+  onToggle: (value: string) => void;
+  hint?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <fieldset className={className} aria-describedby={describedBy(id, { hint })}>
+      <legend className="type-small mb-1.5 font-semibold text-ink">{legend}</legend>
+      <FieldHint id={id}>{hint}</FieldHint>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o, i) => (
+          <label key={o.value} className="relative inline-flex cursor-pointer">
+            <input
+              type="checkbox"
+              id={`${id}-${i}`}
+              value={o.value}
+              checked={selected.includes(o.value)}
+              onChange={() => onToggle(o.value)}
+              className="peer absolute inset-0 m-0 size-full cursor-pointer opacity-0"
+            />
+            <span className="type-small inline-flex min-h-11 items-center rounded-field border border-line bg-frost px-4 text-ink transition-colors peer-checked:border-pine peer-checked:bg-pine peer-checked:font-bold peer-checked:text-white peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus peer-focus-visible:outline-solid">
+              {o.label}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+/** A checkbox with its label; the label makes the whole row the touch target. `fine` sets the label at 14px. */
 export function Checkbox({
   id,
   label,
   error,
+  fine = false,
   className = "",
   ...input
-}: { id: string; label: ReactNode; error?: ReactNode; className?: string } & Omit<ComponentProps<"input">, "id" | "type" | "className">) {
+}: { id: string; label: ReactNode; error?: ReactNode; fine?: boolean; className?: string } & Omit<
+  ComponentProps<"input">,
+  "id" | "type" | "className"
+>) {
   return (
     <div className={className}>
       <div className="flex items-start gap-3">
@@ -207,7 +257,7 @@ export function Checkbox({
           aria-describedby={error ? `${id}-error` : undefined}
           {...input}
         />
-        <label htmlFor={id} className="type-small min-h-11 cursor-pointer text-ink">
+        <label htmlFor={id} className={`${fine ? "type-fine" : "type-small"} min-h-11 cursor-pointer text-ink`}>
           {label}
         </label>
       </div>

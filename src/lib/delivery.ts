@@ -1,12 +1,14 @@
 /**
- * Shared plumbing for the website's form endpoints (/api/leads, /api/buyers):
- * request parsing, rate limiting, spam signals and multi-destination delivery.
+ * Shared plumbing for the form endpoints (/api/leads, /api/buyers,
+ * /api/opt-out): request parsing, rate limiting and spam signals.
+ * Where records go lives in src/lib/sinks; alerts and confirmations in src/lib/notify.
  */
 
 export type Env = Record<string, string | undefined>;
 export type Fetch = typeof fetch;
 
-const TIMEOUT_MS = 8000;
+/** Every outbound call gives up after this long. */
+export const TIMEOUT_MS = 8000;
 
 export function json(body: unknown, status = 200): Response {
   return Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -23,12 +25,12 @@ export function escapeHtml(s: string): string {
 /* ─── Spam signals ──────────────────────────────────────────────────────── */
 
 /** Submissions faster than this after the form loaded are almost certainly bots. */
-export const MIN_FILL_MS = 2500;
+export const MIN_FILL_MS = 3000;
 
-export function isLikelySpam(input: { website?: string; startedAt?: number; name: string }, now = Date.now()): boolean {
+export function isLikelySpam(input: { website?: string; startedAt?: number; name?: string }, now = Date.now()): boolean {
   if (input.website) return true; // honeypot: real people never see this field
   if (typeof input.startedAt === "number" && now - input.startedAt < MIN_FILL_MS) return true;
-  if (/https?:\/\//i.test(input.name)) return true; // links in a name field are a classic spam tell
+  if (input.name && /https?:\/\//i.test(input.name)) return true; // links in a name field are a classic spam tell
   return false;
 }
 
@@ -37,7 +39,7 @@ export function isLikelySpam(input: { website?: string; startedAt?: number; name
 /**
  * Best-effort, per-instance rate limit. Serverless instances don't share
  * memory, so this only slows down naive floods; pair it with your host's
- * firewall (e.g. Vercel WAF) if you get targeted.
+ * firewall if you get targeted.
  */
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_PER_WINDOW = 5;
@@ -57,8 +59,30 @@ export function rateLimit(key: string, now = Date.now()): boolean {
   return true;
 }
 
+/* ─── Duplicate submissions ─────────────────────────────────────────────── */
+
+/** A double-tap or a retry with the same submissionId within 15 minutes isn't delivered twice (per instance). */
+const DUPLICATE_WINDOW_MS = 15 * 60 * 1000;
+const seenSubmissions = new Map<string, number>();
+
+/** True if this submissionId was already accepted recently; records it otherwise. */
+export function isDuplicateSubmission(submissionId: string | undefined, now = Date.now()): boolean {
+  if (!submissionId) return false;
+  for (const [id, at] of seenSubmissions) if (now - at >= DUPLICATE_WINDOW_MS) seenSubmissions.delete(id);
+  if (seenSubmissions.has(submissionId)) return true;
+  seenSubmissions.set(submissionId, now);
+  return false;
+}
+
+/** Lets a submission be retried after its delivery failed. */
+export function forgetSubmission(submissionId: string | undefined): void {
+  if (submissionId) seenSubmissions.delete(submissionId);
+}
+
+/** Tests only: clears the rate limit and duplicate memory. */
 export function resetRateLimit(): void {
   hits.clear();
+  seenSubmissions.clear();
 }
 
 /* ─── Request body ──────────────────────────────────────────────────────── */
@@ -85,98 +109,15 @@ export function fieldErrors(issues: { path: PropertyKey[]; message: string }[]):
   return errors;
 }
 
-/* ─── Destinations ──────────────────────────────────────────────────────── */
-
-export async function postWebhook(url: string, payload: unknown, env: Env, fetchImpl: Fetch): Promise<void> {
-  const res = await fetchImpl(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(env.LEAD_WEBHOOK_SECRET ? { "X-Webhook-Secret": env.LEAD_WEBHOOK_SECRET } : {}),
-    },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
+/** Runs `task`, rejecting if it takes longer than `ms`. */
+export async function withTimeout<T>(task: Promise<T>, ms = TIMEOUT_MS, label = "task"): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
   });
-  if (!res.ok) throw new Error(`webhook responded ${res.status}`);
-}
-
-export async function sendEmail(
-  message: { subject: string; html: string; text: string; replyTo?: string; fromName: string },
-  env: Env,
-  fetchImpl: Fetch,
-): Promise<void> {
-  const res = await fetchImpl("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: env.LEAD_EMAIL_FROM || `${message.fromName} <onboarding@resend.dev>`,
-      to: env.LEAD_EMAIL_TO!.split(",").map((s) => s.trim()).filter(Boolean),
-      subject: message.subject,
-      html: message.html,
-      text: message.text,
-      ...(message.replyTo ? { reply_to: message.replyTo } : {}),
-    }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`resend responded ${res.status}: ${await res.text().catch(() => "")}`);
-}
-
-/** Renders label/value rows as a simple HTML + text email. */
-export function rowsEmail(heading: string, rows: [string, string][], callName?: string, phone?: string) {
-  const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
-  const html = `<h2 style="font-family:sans-serif">${escapeHtml(heading)}</h2>
-<table cellpadding="6" style="font-family:sans-serif;font-size:14px;border-collapse:collapse">
-${rows
-  .map(
-    ([k, v]) =>
-      `<tr><td style="color:#555;border-bottom:1px solid #eee;vertical-align:top"><strong>${escapeHtml(k)}</strong></td><td style="border-bottom:1px solid #eee">${escapeHtml(v).replace(/\n/g, "<br>")}</td></tr>`,
-  )
-  .join("\n")}
-</table>${phone && callName ? `\n<p style="font-family:sans-serif"><a href="tel:${phone.replace(/\D/g, "")}">Call ${escapeHtml(callName)} now</a></p>` : ""}`;
-  return { html, text };
-}
-
-export type Job = { name: string; run: () => Promise<void> };
-export type DeliveryResult = { configured: number; delivered: string[]; failed: string[] };
-
-/** Runs every configured destination; logs the record if none succeed so it's never lost. */
-export async function runDeliveries(jobs: Job[], record: { id: string }, kind: string): Promise<DeliveryResult> {
-  const results = await Promise.allSettled(jobs.map((j) => j.run()));
-  const delivered: string[] = [];
-  const failed: string[] = [];
-  results.forEach((r, i) => {
-    if (r.status === "fulfilled") delivered.push(jobs[i].name);
-    else {
-      failed.push(jobs[i].name);
-      console.error(`[${kind}] ${jobs[i].name} delivery failed for ${record.id}:`, r.reason);
-    }
-  });
-
-  if (delivered.length === 0) {
-    console.warn(
-      jobs.length === 0
-        ? `[${kind}] No delivery destination configured (set AIRTABLE_TOKEN + AIRTABLE_BASE_ID, LEAD_WEBHOOK_URL, or RESEND_API_KEY + LEAD_EMAIL_TO). Record:`
-        : `[${kind}] All deliveries failed. Record:`,
-      JSON.stringify(record),
-    );
+  try {
+    return await Promise.race([task, timeout]);
+  } finally {
+    clearTimeout(timer);
   }
-  return { configured: jobs.length, delivered, failed };
-}
-
-/** Standard destination jobs: webhook(s) + email. Airtable jobs are added by each form. */
-export function standardJobs(
-  env: Env,
-  fetchImpl: Fetch,
-  payload: unknown,
-  email: () => { subject: string; html: string; text: string; replyTo?: string; fromName: string },
-): Job[] {
-  const jobs: Job[] = [];
-  const webhooks = (env.LEAD_WEBHOOK_URL ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-  webhooks.forEach((url, i) =>
-    jobs.push({ name: `webhook${webhooks.length > 1 ? `#${i + 1}` : ""}`, run: () => postWebhook(url, payload, env, fetchImpl) }),
-  );
-  if (env.RESEND_API_KEY && env.LEAD_EMAIL_TO) {
-    jobs.push({ name: "email", run: () => sendEmail(email(), env, fetchImpl) });
-  }
-  return jobs;
 }

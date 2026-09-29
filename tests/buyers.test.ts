@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { buyerAirtableFields, buyerSchema, handleBuyerRequest, toBuyer } from "@/lib/buyers";
+import { buyerSchema, handleBuyerRequest, toBuyer } from "@/lib/buyers";
 import { resetRateLimit } from "@/lib/delivery";
-import { jsonRequest, ok, sentBody } from "./helpers";
+import { buyerAirtableFields } from "@/lib/sinks/airtable";
+import { fail, jsonRequest, ok, sentBody, sentUrl } from "./helpers";
 
 const valid = {
   name: "Casey Investor",
@@ -93,6 +94,22 @@ describe("handleBuyerRequest", () => {
     const res = await handleBuyerRequest(request({ ...valid, consent: false }), { env: {}, now: 10_000 });
     expect(res.status).toBe(400);
     expect((await res.json()).fieldErrors).toHaveProperty("consent");
+  });
+
+  it("also reaches the webhooks (the Sheets \"Buyers\" tab)", async () => {
+    const fetchImpl = vi.fn(ok('{"ok":true}'));
+    const res = await handleBuyerRequest(request(valid), { env: { LEAD_WEBHOOK_URL: "https://sheets.test/exec?secret=s" }, fetchImpl, now: 10_000 });
+    expect(res.status).toBe(200);
+    expect(sentUrl(fetchImpl)).toBe("https://sheets.test/exec?secret=s");
+    expect(sentBody(fetchImpl)).toMatchObject({ type: "buyer_signup", email: "casey@example.org" });
+  });
+
+  it("returns 502 when every sink fails, and when none is configured in production", async () => {
+    const failing = await handleBuyerRequest(request(valid), { env: { LEAD_WEBHOOK_URL: "https://a.test" }, fetchImpl: vi.fn(fail), now: 10_000 });
+    expect(failing.status).toBe(502);
+    const unconfigured = await handleBuyerRequest(request(valid), { env: {}, now: 10_000, mode: "production" });
+    expect(unconfigured.status).toBe(502);
+    expect(console.error).toHaveBeenCalledWith(expect.stringContaining("[buyer:undelivered]"));
   });
 
   it("drops honeypot submissions silently", async () => {

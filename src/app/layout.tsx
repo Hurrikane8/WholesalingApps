@@ -6,6 +6,7 @@ import { siteDescription } from "@/lib/claims";
 import { isIndexable, showDrafts, showUnconfirmed } from "@/lib/env";
 import { localBusinessSchema, websiteSchema } from "@/lib/schema";
 import { Analytics } from "@/components/Analytics";
+import { AttributionCapture } from "@/components/AttributionCapture";
 import { JsonLd } from "@/components/JsonLd";
 import { MobileCtaBar } from "@/components/MobileCtaBar";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <SiteFooter />
         <MobileCtaBar />
+        <AttributionCapture />
         <Analytics />
       </body>
     </html>
